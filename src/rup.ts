@@ -110,7 +110,7 @@ async function fetchAndSave() {
                         continue;
                     }
 
-                    const folder = `data/rup/${daerah}/${jenis}/${tahun}`;
+                    const folder = `../data/rup/${daerah}/${jenis}/${tahun}`;
                     mkdirSync( folder, { recursive: true } );
 
                     // Tentukan nama file berdasarkan tanggal dan jenis data
