@@ -119,7 +119,7 @@ async function fetchAndSave() {
                     // Cek apakah hari ini adalah 31 Maret dan jenis data adalah PaketPenyedia atau PaketSwakelola
                     const today = new Date();
                     if (today.getDate() === 31 && today.getMonth() === 2 && 
-                        (jenis === "RUP-PaketPenyedia-Terumumkan" || jenis === "RUP-PaketSwakelola-Terumumkan")) {
+                        (jenis === "RUP-PaketPenyedia-Terumumkan" || jenis === "RUP-PaketSwakelola-Terumumkan" || jenis === "RUP-StrukturAnggaranPD")) {
                         fileName = "data31.json";
                     }
 
