@@ -117,12 +117,21 @@ async function fetchAndSave() {
                         continue;
                     }
 
-                    // Simpan data ke file JSON
+                    // Buat folder penyimpanan
                     const folder = `data/rup/${daerah}/${jenis}/${tahun}`;
                     mkdirSync(folder, { recursive: true });
-                    const jsonPath = join(folder, "data.json");
-                    writeFileSync(jsonPath, JSON.stringify(data, null, 2));
-                    console.log(`✅ JSON disimpan: ${jsonPath}`);
+                    
+                    // Simpan data khusus 31 Maret jika sesuai kriteria
+                    const today = new Date();
+                    if (today.getDate() === 31 && today.getMonth() === 2 && 
+                        ["RUP-PaketPenyedia-Terumumkan", "RUP-PaketSwakelola-Terumumkan", "RUP-StrukturAnggaranPD"].includes(jenis)) {
+                        writeFileSync(join(folder, "data31.json"), JSON.stringify(data, null, 2));
+                        console.log(`✅ JSON 31 Maret disimpan: ${join(folder, "data31.json")}`);
+                    }
+
+                    // Simpan data reguler
+                    writeFileSync(join(folder, "data.json"), JSON.stringify(data, null, 2));
+                    console.log(`✅ JSON disimpan: ${join(folder, "data.json")}`);
 
                 } catch (err: any) {
                     console.error(`❌ Gagal: ${daerah}/${jenis}/${tahun} =>`, err.message);
