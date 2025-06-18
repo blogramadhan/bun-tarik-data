@@ -14,7 +14,7 @@ export const jenisDataTypes = [
 export type JenisData = typeof jenisDataTypes[number];
 
 export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: string }>> = {
-    "D197": {
+    "D197": { // PROV. KALIMANTAN BARAT
         "RUP-PaketPenyedia-Terumumkan": { apiKey: "999bd6d6-9e67-4c7d-83bd-650430ce2fe7", kode: "3342" },
         "RUP-PaketSwakelola-Terumumkan": { apiKey: "07f8350f-d005-42ce-bcaf-a39eaf3fbb02", kode: "3345" },
         "RUP-StrukturAnggaranPD": { apiKey: "3adfa365-7962-4994-8bce-4e6ca5e10320", kode: "6987" },
