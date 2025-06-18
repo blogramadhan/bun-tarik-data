@@ -124,7 +124,9 @@ async function fetchAndSave() {
                     // Simpan data khusus 31 Maret jika sesuai kriteria
                     const today = new Date();
                     if (today.getDate() === 31 && today.getMonth() === 2 && 
-                        ["RUP-PaketPenyedia-Terumumkan", "RUP-PaketSwakelola-Terumumkan", "RUP-StrukturAnggaranPD"].includes(jenis)) {
+                        ["RUP-PaketPenyedia-Terumumkan", 
+                        "RUP-PaketSwakelola-Terumumkan", 
+                        "RUP-StrukturAnggaranPD"].includes(jenis)) {
                         writeFileSync(join(folder, "data31.json"), JSON.stringify(data, null, 2));
                         console.log(`✅ JSON 31 Maret disimpan: ${join(folder, "data31.json")}`);
                     }
