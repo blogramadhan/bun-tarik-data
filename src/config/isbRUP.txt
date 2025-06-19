@@ -1,6 +1,6 @@
 // Kota Pontianak
 https://isb.lkpp.go.id/isb-2/api/c6bcddde-9f61-4aeb-814a-667800878a08/json/4010/RUP-PaketPenyedia-Terumumkan/tipe/4:12/parameter/2025:D199
-https://isb.lkpp.go.id/isb-2/api/c6bcddde-9f61-4aeb-814a-667800878a08/json/4010/RUP-PaketPenyedia-Terumumkan/tipe/4:12/parameter/2025:D199
+https://isb.lkpp.go.id/isb-2/api/a19f3701-4b9d-4d36-ac86-2f0fd7a08f71/json/4013/RUP-PaketSwakelola-Terumumkan/tipe/4:12/parameter/2025:D199
 https://isb.lkpp.go.id/isb-2/api/8974bad3-4a6c-439f-a408-ea3e28cd5772/json/6993/RUP-StrukturAnggaranPD/tipe/4:12/parameter/2025:D199
 https://isb.lkpp.go.id/isb-2/api/3ceb56ea-aa95-4803-94c1-3bb9ed95756e/json/4853/RUP-MasterSatker/tipe/12:12/parameter/D199:2025
 https://isb.lkpp.go.id/isb-2/api/9786b715-9732-4519-b30a-bf8130a81fa5/json/4014/RUP-ProgramMaster/tipe/4:12/parameter/2025:D199
