@@ -109,7 +109,14 @@ https://isb.lkpp.go.id/isb-2/api/b70e609f-4c08-4ff3-83c6-2bff13ffc524/json/8962/
 https://isb.lkpp.go.id/isb-2/api/c4432f2b-ea2d-49e9-92b2-e03d13ea65a9/json/8963/RUP-PaketAnggaranPenyedia/tipe/4:12/parameter/2025:D209
 
 // Kab Ketapang
-
+https://isb.lkpp.go.id/isb-2/api/50405646-142c-4c6b-b580-b2c4902d398f/json/11591/RUP-PaketPenyedia-Terumumkan/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/eae2d830-4dbc-4f9c-b41e-1b99aa0e912e/json/11555/RUP-PaketSwakelola-Terumumkan/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/74929947-0837-48f9-99c4-852ebc2fdaf1/json/11586/RUP-StrukturAnggaranPD/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/17287b83-4ff1-462b-ad63-0193a324089a/json/11568/RUP-MasterSatker/tipe/12:12/parameter/D201:2025
+https://isb.lkpp.go.id/isb-2/api/218aad1d-a649-42b4-80f5-bd5a2f139a2e/json/11566/RUP-ProgramMaster/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/d8663bfe-d238-4e0d-8324-afbf608dece3/json/11547/RUP-KegiatanMaster/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/0bd0c5fb-171a-4c12-a2c0-f6fc1759337a/json/11556/RUP-SubKegiatanMaster/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/b4e6bd3c-7f9b-4fd5-bee7-344c15b1fb05/json/11557/RUP-PaketAnggaranPenyedia/tipe/4:12/parameter/2025:D201
 
 // Kab Katingan
 
