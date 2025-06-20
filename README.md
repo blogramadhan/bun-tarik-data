@@ -1,6 +1,6 @@
 # Tarik Data - Cloudflare R2 Upload Tool
 
-Aplikasi untuk mengupload data ke Cloudflare R2 Object Storage menggunakan Bun.
+Aplikasi untuk mengupload file **Parquet** ke Cloudflare R2 Object Storage menggunakan Bun.
 
 ## 🚀 Quick Start
 
@@ -30,11 +30,17 @@ Untuk panduan lengkap setup credentials, lihat [ENV_SETUP.md](./ENV_SETUP.md).
 bun run validate-env
 ```
 
-### 4. Upload Data ke R2
+### 4. Upload File Parquet ke R2
 
 ```bash
-# Upload folder ke R2
+# Upload file .parquet ke R2 (versi standar)
 bun run upload-r2
+
+# Upload file .parquet ke R2 (versi robust untuk file besar)
+bun run upload-r2-robust
+
+# Upload file .parquet ke R2 (versi simple dengan timeout besar)
+bun run upload-r2-simple
 
 # Atau jalankan dengan watch mode untuk development
 bun run dev
@@ -50,7 +56,9 @@ tarik-data/
 ├── README.md              # Dokumentasi ini
 ├── package.json           # Dependencies dan scripts
 └── src/
-    ├── sendR2.ts          # Script upload ke R2
+    ├── sendR2.ts          # Script upload file .parquet ke R2 (standar)
+    ├── sendR2-robust.ts   # Script upload file .parquet ke R2 (robust untuk file besar)
+    ├── sendR2-simple.ts   # Script upload file .parquet ke R2 (simple dengan timeout besar)
     ├── validate-env.ts    # Script validasi environment
     ├── config/            # Konfigurasi lainnya
     ├── katalog.ts         # Script katalog
@@ -62,8 +70,39 @@ tarik-data/
 ## 🛠️ Scripts Available
 
 - `bun run validate-env` - Validasi environment variables
-- `bun run upload-r2` - Upload data ke Cloudflare R2
+- `bun run upload-r2` - Upload file .parquet ke Cloudflare R2 (versi standar)
+- `bun run upload-r2-robust` - Upload file .parquet ke Cloudflare R2 (versi robust untuk file besar)
+- `bun run upload-r2-simple` - Upload file .parquet ke Cloudflare R2 (versi simple dengan timeout besar)
 - `bun run dev` - Jalankan dengan watch mode
+
+## 🔧 Perbedaan Versi Upload
+
+### Versi Standar (`upload-r2`)
+- **Target**: File .parquet kecil hingga menengah (< 100MB)
+- **Timeout**: 5 menit
+- **Retry**: 3 kali
+- **Fitur**: Upload langsung, cepat untuk file kecil
+
+### Versi Robust (`upload-r2-robust`)
+- **Target**: File .parquet besar (> 100MB)
+- **Timeout**: 5 menit
+- **Retry**: 3 kali
+- **Fitur**: Multipart upload, chunking, progress tracking detail
+
+### Versi Simple (`upload-r2-simple`)
+- **Target**: Semua ukuran file .parquet
+- **Timeout**: 10 menit
+- **Retry**: 5 kali
+- **Fitur**: Timeout sangat besar, retry agresif
+
+## 📊 Fitur Upload Parquet
+
+- ✅ **Hanya upload file .parquet** - File lain akan di-skip
+- ✅ **Progress tracking** - Melihat progress upload
+- ✅ **Statistik upload** - Jumlah file berhasil/gagal
+- ✅ **Recursive upload** - Upload semua subfolder
+- ✅ **Error handling** - Retry otomatis jika gagal
+- ✅ **File size detection** - Otomatis pilih metode upload
 
 ## 🔧 Dependencies
 
@@ -74,6 +113,7 @@ tarik-data/
 ## 📖 Dokumentasi Lengkap
 
 - [Setup Environment Variables](./ENV_SETUP.md) - Panduan lengkap setup Cloudflare R2
+- [Upload Guide](./UPLOAD_GUIDE.md) - Panduan detail semua versi upload
 - [Cloudflare R2 Documentation](https://developers.cloudflare.com/r2/) - Dokumentasi resmi Cloudflare R2
 
 ## 🔒 Keamanan
@@ -91,3 +131,13 @@ bun add @aws-sdk/client-s3
 
 ### Error: "Environment variables yang diperlukan tidak ditemukan"
 Pastikan file `.env` sudah dibuat dengan format yang benar. Lihat [ENV_SETUP.md](./ENV_SETUP.md) untuk panduan lengkap.
+
+### Error: "TimeoutError: The socket connection was closed unexpectedly"
+- Gunakan versi simple: `bun run upload-r2-simple`
+- Periksa koneksi internet
+- Pastikan file tidak terlalu besar untuk koneksi Anda
+
+### Error: "Tidak ada file .parquet ditemukan"
+- Pastikan ada file dengan ekstensi `.parquet` di folder yang dituju
+- Periksa struktur folder dan nama file
+- File dengan ekstensi lain akan di-skip otomatis

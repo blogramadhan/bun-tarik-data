@@ -4,6 +4,8 @@
   "scripts": {
     "validate-env": "bun run src/validate-env.ts",
     "upload-r2": "bun run src/sendR2.ts",
+    "upload-r2-robust": "bun run src/sendR2-robust.ts",
+    "upload-r2-simple": "bun run src/sendR2-simple.ts",
     "dev": "bun --watch src/sendR2.ts"
   },
   "devDependencies": {

@@ -27,10 +27,10 @@ export function validateEnvConfig() {
     });
     console.error('\n📝 Buat file .env dengan konfigurasi berikut:');
     console.error(`
-      R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
-      R2_ACCESS_KEY_ID=your-access-key-id
-      R2_SECRET_ACCESS_KEY=your-secret-access-key
-      R2_BUCKET_NAME=your-bucket-name
+R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
+R2_ACCESS_KEY_ID=your-access-key-id
+R2_SECRET_ACCESS_KEY=your-secret-access-key
+R2_BUCKET_NAME=your-bucket-name
     `);
     return false;
   }
