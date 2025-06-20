@@ -580,12 +580,12 @@
     "kd_satker": 264469,
     "kd_satker_str": "2.15.0.00.0.00.01.0000",
     "nama_satker": "DINAS PERHUBUNGAN PROVINSI KALIMANTAN BARAT",
-    "belanja_operasi": 6534752982,
+    "belanja_operasi": 6522214482,
     "belanja_modal": 1711738556,
     "belanja_btt": 0,
     "belanja_non_pengadaan": 0,
-    "belanja_pengadaan": 8246491538,
-    "total_belanja": 8246491538
+    "belanja_pengadaan": 8233953038,
+    "total_belanja": 8233953038
   },
   {
     "tahun_anggaran": 2025,
@@ -636,12 +636,12 @@
     "kd_satker": 264473,
     "kd_satker_str": "2.19.3.26.0.00.01.0000",
     "nama_satker": "DINAS KEPEMUDAAN, OLAHRAGA DAN PARIWISATA PROVINSI KALIMANTAN BARAT",
-    "belanja_operasi": 20305249108,
-    "belanja_modal": 20994000,
+    "belanja_operasi": 23508098204,
+    "belanja_modal": 0,
     "belanja_btt": 0,
-    "belanja_non_pengadaan": 37550000000,
-    "belanja_pengadaan": 20326243108,
-    "total_belanja": 57876243108
+    "belanja_non_pengadaan": 6097500000,
+    "belanja_pengadaan": 23508098204,
+    "total_belanja": 29605598204
   },
   {
     "tahun_anggaran": 2025,
