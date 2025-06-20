@@ -2,18 +2,24 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { createReadStream } from 'fs';
 import { readdir, stat } from 'fs/promises';
 import path from 'path';
+import { envConfig, validateEnvConfig } from './env.config';
+
+// Validasi environment variables sebelum membuat client
+if (!validateEnvConfig()) {
+  process.exit(1);
+}
 
 // Konfigurasi untuk Cloudflare R2
 const s3Client = new S3Client({
   region: 'auto',
-  endpoint: process.env.R2_ENDPOINT,
+  endpoint: envConfig.R2_ENDPOINT,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+    accessKeyId: envConfig.R2_ACCESS_KEY_ID,
+    secretAccessKey: envConfig.R2_SECRET_ACCESS_KEY,
   },
 });
 
-const bucketName = process.env.R2_BUCKET_NAME || '';
+const bucketName = envConfig.R2_BUCKET_NAME;
 
 /**
  * Fungsi untuk mengupload file ke Cloudflare R2
