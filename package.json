@@ -2,20 +2,24 @@
   "name": "tarik-data",
   "private": true,
   "scripts": {
-    "validate-env": "bun run src/validate-env.ts",
-    "upload-r2": "bun run src/sendR2.ts",
-    "upload-r2-robust": "bun run src/sendR2-robust.ts",
-    "upload-r2-simple": "bun run src/sendR2-simple.ts",
-    "dev": "bun --watch src/sendR2.ts"
+    "upload": "bun run src/upload.ts",
+    "run": "bun run src/run.ts",
+    "spse": "bun run src/spse.ts",
+    "katalog": "bun run src/katalog.ts",
+    "katalogv6": "bun run src/katalogv6.ts",
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/nodemailer": "^6.4.17"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.832.0",
-    "duckdb": "^1.3.0"
+    "dotenv": "^16.5.0",
+    "duckdb": "^1.3.0",
+    "nodemailer": "^7.0.3",
+    "undici": "^7.10.0"
   }
 }
