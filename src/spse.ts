@@ -54,6 +54,47 @@ async function convertJsonToParquet() {
     console.log("✅ Konversi JSON ke Parquet selesai");
 }
 
+// Konversi file JSON ke format Excel
+async function convertJsonToExcel() {
+    console.log("🔄 Memulai konversi JSON ke Excel...");
+    
+    const dataDir = "data/rup";
+    if (!existsSync(dataDir)) {
+        console.log("⚠️ Direktori data tidak ditemukan");
+        return;
+    }
+    
+    // Cari semua file JSON
+    const jsonFiles = findJsonFiles(dataDir);
+    console.log(`🔍 Ditemukan ${jsonFiles.length} file JSON untuk dikonversi ke Excel`);
+    
+    const db = new duckdb.Database(':memory:');
+    const conn = db.connect();
+    
+    for (const jsonFile of jsonFiles) {
+        try {
+            const excelFile = jsonFile.replace('.json', '.xlsx');
+            mkdirSync(dirname(excelFile), { recursive: true });
+            
+            // Gunakan DuckDB untuk membaca JSON dan mengekspor ke Excel
+            conn.exec(`
+                INSTALL 'excel';
+                LOAD 'excel';
+                COPY (SELECT * FROM read_json('${jsonFile}', auto_detect=true))
+                TO '${excelFile}' (FORMAT 'XLSX');
+            `);
+            
+            console.log(`✅ Konversi berhasil: ${jsonFile} -> ${excelFile}`);
+        } catch (err: any) {
+            console.error(`❌ Gagal mengkonversi ${jsonFile} ke Excel: ${err.message}`);
+        }
+    }
+    
+    conn.close();
+    db.close();
+    console.log("✅ Konversi JSON ke Excel selesai");
+}
+
 // Mencari file JSON secara rekursif
 function findJsonFiles(dir: string): string[] {
     let results: string[] = [];
@@ -105,8 +146,9 @@ async function fetchAndSave() {
         }
     }
     
-    // Konversi semua file JSON ke Parquet
+    // Konversi semua file JSON ke Parquet dan Excel
     await convertJsonToParquet();
+    await convertJsonToExcel();
 }
 
 // Jalankan program
