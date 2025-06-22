@@ -58,7 +58,7 @@ async function convertJsonToParquet() {
 async function convertJsonToExcel() {
     console.log("🔄 Memulai konversi JSON ke Excel...");
     
-    const dataDir = "data/rup";
+    const dataDir = "data/spse";
     if (!existsSync(dataDir)) {
         console.log("⚠️ Direktori data tidak ditemukan");
         return;
