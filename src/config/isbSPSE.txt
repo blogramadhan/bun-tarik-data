@@ -1,29 +1,182 @@
 // Kota Pontianak
-
+https://isb.lkpp.go.id/isb-2/api/fb5e1743-5886-41b1-a92b-8afd1c4db084/json/4007/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/56f38683-b58e-45fa-8397-4251c9bee54b/json/4015/SPSE-TenderSelesai/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/08f3b26b-86e5-4392-bd80-f33055f88d3c/json/4006/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/760ed651-aa8d-4aa2-b4b5-ec083ea68416/json/5849/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/622501aa-1463-4a63-8e80-b5e6b26292d9/json/5499/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/9d956984-3a81-4d48-868c-8744a6065a0d/json/6049/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/245dd9a3-466a-4c1e-9ddc-09cdd6fc8dc6/json/5949/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/5ae7b684-d3fd-4141-87bf-b8ae77fa86c6/json/4005/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/44f76f88-57e5-404f-ad66-fe4e793daeef/json/4002/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/affab3ce-eb04-4410-a329-3af7266ef323/json/6666/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/bed45f05-53e3-4230-b743-e4860f4d456a/json/6558/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/b2d303ee-401a-4567-850a-4773c15e9325/json/6882/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/2260659d-2f1a-4ad4-b646-b7d7f813c582/json/6774/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/afbea441-adf3-4ccc-8c39-4fb781fd474c/json/4021/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/6a1e802d-3062-4200-826b-cc8dccadb038/json/4022/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/d907325c-9d11-4ef5-8f82-b1ad25659323/json/4023/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/42adbe89-3f7a-4488-8f7b-fdf6a535956a/json/4024/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:62
+https://isb.lkpp.go.id/isb-2/api/389757d4-e10b-4679-8c91-861dd66a9c27/json/4031/SPSE-PesertaTender/tipe/4:4/parameter/2025:62
 
 // Kab Kubu Raya
-
+https://isb.lkpp.go.id/isb-2/api/88c1976b-c6de-449a-9ebc-8f19cd7a58aa/json/4169/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/fd8a8f59-7ca4-4049-9ca4-962eec955cde/json/4175/SPSE-TenderSelesai/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/a35b85a6-ac60-46e3-a30d-a1ae76f7062a/json/4168/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/8a6570dc-37dd-4d34-92e0-adadabde7e0a/json/5851/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/58f0de3f-c5c9-4022-a1ca-72d76df562e2/json/5501/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/9008c962-e4cb-4c7d-a480-4d5428a6cfb1/json/6051/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/1345f512-f9a4-460b-acd6-77e8aae6db8c/json/5951/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/0754f5f3-8416-4c84-9669-263080ce1029/json/4167/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/bc52395d-672c-4831-8ecf-e7dd3cae31fd/json/4162/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/b748476e-9212-4f86-af62-e5248647d82f/json/6668/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/8b2d0975-be79-4f67-b33a-54478c9f1e96/json/6560/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/b3c73bf8-e60a-4f6f-bca2-5e389cb2a60d/json/6884/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/5e7fc98c-88dc-4945-940c-3fd0a51daebe/json/6776/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/582afcf8-02b9-4620-b377-1a62b9100e71/json/4181/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/074c8396-811c-4e17-8a33-c81927f56bd1/json/4182/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/5baac354-9687-44b4-9646-702cbfa6c961/json/4183/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/a69f4550-e0c6-43a2-b87a-6d767665736f/json/4184/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:188
+https://isb.lkpp.go.id/isb-2/api/8ac8edd1-9887-4f60-bff0-d8a31397fdbf/json/4193/SPSE-PesertaTender/tipe/4:4/parameter/2025:188
 
 // Kab Mempawah
-
+https://isb.lkpp.go.id/isb-2/api/0426fffc-531d-460a-80d6-dc6ac9b5eec3/json/12172/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/a9f25027-d8b7-4edd-b394-6840cd92eab8/json/12195/SPSE-TenderSelesai/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/24fb07a9-66c8-4823-91bd-1c8c9f16a993/json/12194/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/04a1ace8-7252-4130-ab9d-4c044f0de6ac/json/12175/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/846bf91d-6f12-47da-a617-27712c31360a/json/12178/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/9de5cc69-c12a-4530-9b08-bfc6a8da4d81/json/12176/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/0311febd-ce1b-4af9-af0e-4c84f0eb2c3d/json/12177/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/d949e72d-23e1-49ac-bdfc-6a6fc1c7c299/json/12173/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/ef6fcdd2-edda-4ef7-83e9-194873a1a9cd/json/12174/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/d734c7d9-abf4-457a-b0d3-d9f52013e15b/json/12189/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/5a9c40a4-289b-441b-ac8a-b52febf7aa74/json/12155/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/0a0f4e8a-71a8-41be-8423-7afd394fdfc5/json/12167/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/0f1ad98e-bf43-4fc4-95c8-7b7e4f7fb582/json/12168/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/1ed7f5be-9b21-481e-9092-375fe62cae21/json/12183/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/f153f8e2-bd1c-4a34-a599-356b44f6668c/json/12184/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/68499612-c731-4430-a4d3-b1da4da4e6de/json/12181/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/d787c0ae-6fb8-448e-a4f6-8207e4b7db36/json/12182/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:118
+https://isb.lkpp.go.id/isb-2/api/8101a7b5-d5b8-4802-9385-954c75bbfb48/json/12193/SPSE-PesertaTender/tipe/4:4/parameter/2025:118
 
 // Kota Singkawang
-
+https://isb.lkpp.go.id/isb-2/api/9b6aab5e-230d-40b3-b30d-d11da980e92b/json/9714/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/68537df6-2e4f-4043-82cc-dbdd0b662069/json/9739/SPSE-TenderSelesai/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/3ef56f3c-1d30-4988-8ad1-7825b9aaa804/json/9738/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/b545dc6f-5b2e-407e-a2b4-16b2fd1444c4/json/9718/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/a61718bf-3f0b-4a11-a591-175888bcdfed/json/9721/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/576a6615-fd56-411b-98c2-03c31833d6a8/json/9719/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/190403a1-d6b9-44e5-adc9-4fa78408e4c9/json/9720/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/5b15aa33-f696-43ef-aa01-08594fcdde5f/json/9715/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/18fcb7d9-1cb4-4c47-8699-46f579748cc1/json/9716/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/b04eee87-d45f-45f2-b67e-43f0a68256af/json/9732/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/6ab5e5aa-f6dd-405c-a080-77fc11689a23/json/9699/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/007a73ca-a71e-44a1-9a1d-a52d711d7b4e/json/9709/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/cc43a11f-b94e-4635-acfd-5d5134fde952/json/9710/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/e465badb-3ce7-488d-803a-b4d78730715b/json/9725/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/97c0d83d-ec30-4609-8a16-21ef0cc3d35b/json/9727/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/3b5b05fa-6904-4b6b-8d84-72ce16c60ee2/json/9723/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/42f917e3-3781-49a1-a17d-1b4d71bb6488/json/9724/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:132
+https://isb.lkpp.go.id/isb-2/api/093da2fd-6030-4394-b34d-9ff59e764b3c/json/9737/SPSE-PesertaTender/tipe/4:4/parameter/2025:132
 
 // Kab Bengkayang
-
+https://isb.lkpp.go.id/isb-2/api/4bf3e97e-82e8-4c62-b34d-a5bb54b68639/json/8107/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/c9c2e644-62f1-49d3-9f75-b5a58d4651e6/json/8100/SPSE-TenderSelesai/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/12f4cbac-b25f-4eee-938c-43c391dfa6fb/json/8101/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/8abdbfef-936e-48f6-b08c-b6350019ee88/json/8111/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/4a8f68ed-a59e-43f5-ad3d-2c046d3e2c7a/json/8114/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/780b2664-11d4-4fa6-8faf-f3962aa5f195/json/8112/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/df57433e-fd79-41dc-9c4e-985f345aeb5c/json/8113/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/287d6e33-5871-4dcc-8edf-faf1cff5bf53/json/8108/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/0eef3385-ae3e-4ee8-9cb0-164bbd01b2c2/json/8109/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/5ff9c609-6dd6-42bd-8c02-54f3d92899a5/json/8125/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/0115a18c-4169-4931-9a58-e6f07158add8/json/8092/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/f9a2fbd8-9bec-41c4-b180-ed701a10d307/json/8102/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/3c680a9f-cc7e-4282-918c-bff1a87d9cd6/json/8103/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/fb27633f-e237-42c9-8863-4889d0008f3c/json/8118/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/e6d36aa3-c59a-4257-be3f-f83d28d1082e/json/8120/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/287c76af-1ee1-4368-9fca-6cec8dcb368e/json/8116/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/cb3ce43e-f2d6-4b67-8fce-7ef8bb3abd47/json/8117/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:444
+https://isb.lkpp.go.id/isb-2/api/92ca0ef7-122f-4b67-8b6a-24af56502286/json/8130/SPSE-PesertaTender/tipe/4:4/parameter/2025:444
 
 // Kab Landak
-
+https://isb.lkpp.go.id/isb-2/api/1af3c218-7ffe-426a-b5d5-965646f38c70/json/9564/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/07c6eaf4-b9eb-4775-9295-7febd707fa79/json/9589/SPSE-TenderSelesai/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/20b3827d-4480-4599-ae14-56938b37cfb4/json/9588/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/db797021-3d42-4047-9b4e-cbc8acd1399f/json/9568/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/0960cee8-9c6f-4ee2-aa78-fea9284aa0f1/json/9571/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/d8bf3f2c-3614-41e1-b6ac-687af59af33e/json/9569/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/60ae4db4-8f83-4bd5-be68-ac55fc607561/json/9570/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/70d3c172-865c-4bb1-bf42-e04d071a6397/json/9565/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/0627db4d-441b-4f02-a619-aa2080464176/json/9566/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/589d9d1f-7f6b-47ed-ae27-31f172ed05f8/json/9582/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/ded9e876-9003-40f2-b73c-22496455a136/json/9549/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/cb1f1f15-6941-484c-ad37-7e69c3b76c0e/json/9559/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/251fed79-1cd2-44ab-af6e-f573e175835c/json/9560/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/323c0ad5-9143-49d4-a98d-85e59df1375c/json/9575/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/088b6626-b417-4c8a-a6d5-2d8ed210847e/json/9577/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/0b427a42-cc00-4670-aa77-fd31fd054775/json/9573/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/7a2c9c1a-ce48-4a11-978e-2e4b849c116b/json/9574/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:496
+https://isb.lkpp.go.id/isb-2/api/38705ed9-0942-417f-ab6c-7336c8f36402/json/9587/SPSE-PesertaTender/tipe/4:4/parameter/2025:496
 
 // Kab Sanggau
-
+https://isb.lkpp.go.id/isb-2/api/dcf65e8f-1f84-4911-8e20-521e3e937b2e/json/4130/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/7aebee83-63ef-4adf-8f97-807129f2c389/json/4138/SPSE-TenderSelesai/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/08851528-bbe9-4a8b-b300-188ae514a5f4/json/4129/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/aa601435-518d-491c-9733-f8f64cf2a059/json/5846/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/e4bff688-9717-48dc-95e9-7c752eb534ee/json/5496/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/8121a355-078e-4d19-afea-379b610fea3e/json/6046/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/bb3227c3-843e-4183-a0db-2e88e56583ec/json/5946/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/896d3adf-e4b9-418e-adfa-b675c644c6ca/json/4128/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/34119be6-7b4a-434f-8b0e-659abfc39f62/json/4125/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/1352a8e2-408f-43e8-94b5-21c673ba38e6/json/6663/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/950897c6-eaa3-4a1f-ab15-bed708d1f4a2/json/6555/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/09a56502-d675-4638-be2f-73d914f79e35/json/6879/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/93f39f14-4ada-4d16-bc51-da2de49ba9eb/json/6771/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/175d5a9a-f095-46c1-b19c-95f97676be2e/json/4144/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/f7ff6584-4e71-4c90-ba77-4b2d8e53b53f/json/4145/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/e58161cc-89a0-4e32-87f1-26b4e260da2a/json/4146/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/5e124608-09d9-4834-a3b4-266fbbd8483f/json/4147/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:298
+https://isb.lkpp.go.id/isb-2/api/7bb953c0-3f55-49a6-a0e6-e56b68592405/json/4154/SPSE-PesertaTender/tipe/4:4/parameter/2025:298
 
 // Kab Sekadau
-
+https://isb.lkpp.go.id/isb-2/api/1842aa60-9068-4380-9c54-aa49de1ed018/json/11075/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/7360103f-fdcb-40a7-b4a5-44327a91c4d4/json/11101/SPSE-TenderSelesai/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/8ef1eb62-2a29-4191-b750-16b2654f07e5/json/11100/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/921fb2da-3645-4337-9783-43b618b606ae/json/11079/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/f6dd8252-6be5-4ce6-a194-bba2354cb98e/json/11082/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/01e42711-ae58-4622-b9ca-e8cb75fd66a0/json/11080/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/e176a21e-2962-4349-9169-fb3544d89c24/json/11081/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/41708671-cb9b-40d6-ab4e-05a9560b141e/json/11076/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/ff154baf-f101-4117-9321-366ec96fc943/json/11077/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/75327743-b92e-4f2c-af01-347722be7ac6/json/11095/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/791049cd-9128-4717-be41-cff45bbbe5fe/json/11057/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/5f067b94-0300-4ddc-9300-788299281693/json/11070/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/75f6ce73-e657-4e34-b740-fcee61d02717/json/11071/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/eb3343eb-0911-47e9-bc2a-e3bbc87a9e0f/json/11087/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/d42266a6-ce7e-4b47-8fb3-882487fa42bc/json/11089/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/5439ed5e-b77a-4407-a70a-57d6d9d7da7c/json/11085/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/20eef5c4-603b-4114-afe2-65ffb73ac34c/json/11086/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:175
+https://isb.lkpp.go.id/isb-2/api/df4e6fe4-82c1-46fb-83ee-e786cf688ed2/json/11099/SPSE-PesertaTender/tipe/4:4/parameter/2025:175
 
 // Kab Sintang
-
+https://isb.lkpp.go.id/isb-2/api/7a6e1139-95b2-4b8e-bd1d-aa163f0bf6f6/json/12123/SPSE-TenderPengumuman/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/56acf923-60e4-4dc2-9545-6ade1be8ed6c/json/12146/SPSE-TenderSelesai/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/f2aeefc2-179b-43ce-a3e2-6cd104a4e41d/json/12145/SPSE-TenderSelesaiNilai/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/a8c32958-458b-4aa6-a549-77708be69a4b/json/12126/SPSE-TenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/2f28c45c-ba28-4e61-858d-baba76bc47f5/json/12129/SPSE-TenderEkontrak-Kontrak/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/6e827a58-3ec1-4451-a613-888982c2e4f6/json/12127/SPSE-TenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/a20cd35f-0451-4a37-81ea-3f3d1312a43b/json/12128/SPSE-TenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/2be89c0a-58a2-4a85-ba55-59bcb0438a38/json/12124/SPSE-NonTenderPengumuman/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/9d4b4400-d290-4300-8481-44ca709e278a/json/12125/SPSE-NonTenderSelesai/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/da63e36e-0a2b-4a4a-8b3a-d192e3c26b8c/json/12140/SPSE-NonTenderEkontrak-SPPBJ/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/be228b58-fd58-4fe9-814b-1c8766c51627/json/12106/SPSE-NonTenderEkontrak-Kontrak/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/43171fcd-0423-42c9-a5ac-2615542b4802/json/12118/SPSE-NonTenderEkontrak-SPMKSPP/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/607a2b93-cc06-43fe-ba3d-33aeee731be9/json/12119/SPSE-NonTenderEkontrak-BAPBAST/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/924a1b76-fb13-4fdb-bdb6-ff1ccfadfdce/json/12134/SPSE-PencatatanNonTender/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/bad6b302-30c4-4bca-8c09-4caa6ccb0b5f/json/12135/SPSE-PencatatanNonTenderRealisasi/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/01370e11-e332-4dfc-ac5a-113ed70a33e0/json/12132/SPSE-PencatatanSwakelola/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/46a5696d-7f01-4654-a72b-8fe83429c9cd/json/12133/SPSE-PencatatanSwakelolaRealisasi/tipe/4:4/parameter/2025:345
+https://isb.lkpp.go.id/isb-2/api/6e6d9ff0-4fbd-4ac7-bbc2-4c3a95752f0a/json/12144/SPSE-PesertaTender/tipe/4:4/parameter/2025:345
 
 // Kab Melawi
 

@@ -1,4 +1,5 @@
-export const daerahList = ["97"] as const;
+export const daerahList = ["97", "62", "188", "118", "132", "444"] as const;
+
 export type Daerah = typeof daerahList[number];
 
 export const jenisDataTypes = [
@@ -21,6 +22,7 @@ export const jenisDataTypes = [
     "SPSE-PencatatanSwakelolaRealisasi",
     "SPSE-PesertaTender",
 ] as const;
+
 export type JenisData = typeof jenisDataTypes[number];
 
 export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: string }>> = {
@@ -44,4 +46,124 @@ export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: st
         "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "d4538ef1-6212-4e2d-8e1f-f60591a593ff", kode: "3356" },
         "SPSE-PesertaTender": { apiKey: "1812800c-bfed-437d-bee9-26ed8b0fd955", kode: "3951" }
     },
+    "62": { // Kota Pontianak
+        "SPSE-TenderPengumuman": { apiKey: "fb5e1743-5886-41b1-a92b-8afd1c4db084", kode: "4007" },
+        "SPSE-TenderSelesai": { apiKey: "56f38683-b58e-45fa-8397-4251c9bee54b", kode: "4015" },
+        "SPSE-TenderSelesaiNilai": { apiKey: "08f3b26b-86e5-4392-bd80-f33055f88d3c", kode: "4006" },
+        "SPSE-TenderEkontrak-SPPBJ": { apiKey: "760ed651-aa8d-4aa2-b4b5-ec083ea68416", kode: "5849" },
+        "SPSE-TenderEkontrak-Kontrak": { apiKey: "622501aa-1463-4a63-8e80-b5e6b26292d9", kode: "5499" },
+        "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "9d956984-3a81-4d48-868c-8744a6065a0d", kode: "6049" },
+        "SPSE-TenderEkontrak-BAPBAST": { apiKey: "245dd9a3-466a-4c1e-9ddc-09cdd6fc8dc6", kode: "5949" },
+        "SPSE-NonTenderPengumuman": { apiKey: "5ae7b684-d3fd-4141-87bf-b8ae77fa86c6", kode: "4005" },
+        "SPSE-NonTenderSelesai": { apiKey: "44f76f88-57e5-404f-ad66-fe4e793daeef", kode: "4002" },
+        "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "affab3ce-eb04-4410-a329-3af7266ef323", kode: "6666" },
+        "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "bed45f05-53e3-4230-b743-e4860f4d456a", kode: "6558" },
+        "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "b2d303ee-401a-4567-850a-4773c15e9325", kode: "6882" },
+        "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "2260659d-2f1a-4ad4-b646-b7d7f813c582", kode: "6774" },
+        "SPSE-PencatatanNonTender": { apiKey: "afbea441-adf3-4ccc-8c39-4fb781fd474c", kode: "4021" },
+        "SPSE-PencatatanNonTenderRealisasi": { apiKey: "6a1e802d-3062-4200-826b-cc8dccadb038", kode: "4022" },
+        "SPSE-PencatatanSwakelola": { apiKey: "d907325c-9d11-4ef5-8f82-b1ad25659323", kode: "4023" },
+        "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "42adbe89-3f7a-4488-8f7b-fdf6a535956a", kode: "4024" },
+        "SPSE-PesertaTender": { apiKey: "389757d4-e10b-4679-8c91-861dd66a9c27", kode: "4031" }
+    },
+    "188": { // Kab Kubu Raya
+        "SPSE-TenderPengumuman": { apiKey: "88c1976b-c6de-449a-9ebc-8f19cd7a58aa", kode: "4169" },
+        "SPSE-TenderSelesai": { apiKey: "fd8a8f59-7ca4-4049-9ca4-962eec955cde", kode: "4175" },
+        "SPSE-TenderSelesaiNilai": { apiKey: "a35b85a6-ac60-46e3-a30d-a1ae76f7062a", kode: "4168" },
+        "SPSE-TenderEkontrak-SPPBJ": { apiKey: "8a6570dc-37dd-4d34-92e0-adadabde7e0a", kode: "5851" },
+        "SPSE-TenderEkontrak-Kontrak": { apiKey: "58f0de3f-c5c9-4022-a1ca-72d76df562e2", kode: "5501" },
+        "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "9008c962-e4cb-4c7d-a480-4d5428a6cfb1", kode: "6051" },
+        "SPSE-TenderEkontrak-BAPBAST": { apiKey: "1345f512-f9a4-460b-acd6-77e8aae6db8c", kode: "5951" },
+        "SPSE-NonTenderPengumuman": { apiKey: "0754f5f3-8416-4c84-9669-263080ce1029", kode: "4167" },
+        "SPSE-NonTenderSelesai": { apiKey: "bc52395d-672c-4831-8ecf-e7dd3cae31fd", kode: "4162" },
+        "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "b748476e-9212-4f86-af62-e5248647d82f", kode: "6668" },
+        "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "8b2d0975-be79-4f67-b33a-54478c9f1e96", kode: "6560" },
+        "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "b3c73bf8-e60a-4f6f-bca2-5e389cb2a60d", kode: "6884" },
+        "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "5e7fc98c-88dc-4945-940c-3fd0a51daebe", kode: "6776" },
+        "SPSE-PencatatanNonTender": { apiKey: "582afcf8-02b9-4620-b377-1a62b9100e71", kode: "4181" },
+        "SPSE-PencatatanNonTenderRealisasi": { apiKey: "074c8396-811c-4e17-8a33-c81927f56bd1", kode: "4182" },
+        "SPSE-PencatatanSwakelola": { apiKey: "5baac354-9687-44b4-9646-702cbfa6c961", kode: "4183" },
+        "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "a69f4550-e0c6-43a2-b87a-6d767665736f", kode: "4184" },
+        "SPSE-PesertaTender": { apiKey: "8ac8edd1-9887-4f60-bff0-d8a31397fdbf", kode: "4193" }
+    },
+    "118": { // Kab Mempawah
+        "SPSE-TenderPengumuman": { apiKey: "0426fffc-531d-460a-80d6-dc6ac9b5eec3", kode: "12172" },
+        "SPSE-TenderSelesai": { apiKey: "a9f25027-d8b7-4edd-b394-6840cd92eab8", kode: "12195" },
+        "SPSE-TenderSelesaiNilai": { apiKey: "24fb07a9-66c8-4823-91bd-1c8c9f16a993", kode: "12194" },
+        "SPSE-TenderEkontrak-SPPBJ": { apiKey: "04a1ace8-7252-4130-ab9d-4c044f0de6ac", kode: "12175" },
+        "SPSE-TenderEkontrak-Kontrak": { apiKey: "846bf91d-6f12-47da-a617-27712c31360a", kode: "12178" },
+        "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "9de5cc69-c12a-4530-9b08-bfc6a8da4d81", kode: "12176" },
+        "SPSE-TenderEkontrak-BAPBAST": { apiKey: "0311febd-ce1b-4af9-af0e-4c84f0eb2c3d", kode: "12177" },
+        "SPSE-NonTenderPengumuman": { apiKey: "d949e72d-23e1-49ac-bdfc-6a6fc1c7c299", kode: "12173" },
+        "SPSE-NonTenderSelesai": { apiKey: "ef6fcdd2-edda-4ef7-83e9-194873a1a9cd", kode: "12174" },
+        "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "d734c7d9-abf4-457a-b0d3-d9f52013e15b", kode: "12189" },
+        "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "5a9c40a4-289b-441b-ac8a-b52febf7aa74", kode: "12155" },
+        "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "0a0f4e8a-71a8-41be-8423-7afd394fdfc5", kode: "12167" },
+        "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "0f1ad98e-bf43-4fc4-95c8-7b7e4f7fb582", kode: "12168" },
+        "SPSE-PencatatanNonTender": { apiKey: "1ed7f5be-9b21-481e-9092-375fe62cae21", kode: "12183" },
+        "SPSE-PencatatanNonTenderRealisasi": { apiKey: "f153f8e2-bd1c-4a34-a599-356b44f6668c", kode: "12184" },
+        "SPSE-PencatatanSwakelola": { apiKey: "68499612-c731-4430-a4d3-b1da4da4e6de", kode: "12181" },
+        "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "d787c0ae-6fb8-448e-a4f6-8207e4b7db36", kode: "12182" },
+        "SPSE-PesertaTender": { apiKey: "8101a7b5-d5b8-4802-9385-954c75bbfb48", kode: "12193" }
+    },
+    "132": { // Kota Singkawang
+        "SPSE-TenderPengumuman": { apiKey: "9b6aab5e-230d-40b3-b30d-d11da980e92b", kode: "9714" },
+        "SPSE-TenderSelesai": { apiKey: "68537df6-2e4f-4043-82cc-dbdd0b662069", kode: "9739" },
+        "SPSE-TenderSelesaiNilai": { apiKey: "3ef56f3c-1d30-4988-8ad1-7825b9aaa804", kode: "9738" },
+        "SPSE-TenderEkontrak-SPPBJ": { apiKey: "b545dc6f-5b2e-407e-a2b4-16b2fd1444c4", kode: "9718" },
+        "SPSE-TenderEkontrak-Kontrak": { apiKey: "a61718bf-3f0b-4a11-a591-175888bcdfed", kode: "9721" },
+        "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "576a6615-fd56-411b-98c2-03c31833d6a8", kode: "9719" },
+        "SPSE-TenderEkontrak-BAPBAST": { apiKey: "190403a1-d6b9-44e5-adc9-4fa78408e4c9", kode: "9720" },
+        "SPSE-NonTenderPengumuman": { apiKey: "5b15aa33-f696-43ef-aa01-08594fcdde5f", kode: "9715" },
+        "SPSE-NonTenderSelesai": { apiKey: "18fcb7d9-1cb4-4c47-8699-46f579748cc1", kode: "9716" },
+        "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "b04eee87-d45f-45f2-b67e-43f0a68256af", kode: "9732" },
+        "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "6ab5e5aa-f6dd-405c-a080-77fc11689a23", kode: "9699" },
+        "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "007a73ca-a71e-44a1-9a1d-a52d711d7b4e", kode: "9709" },
+        "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "cc43a11f-b94e-4635-acfd-5d5134fde952", kode: "9710" },
+        "SPSE-PencatatanNonTender": { apiKey: "e465badb-3ce7-488d-803a-b4d78730715b", kode: "9725" },
+        "SPSE-PencatatanNonTenderRealisasi": { apiKey: "97c0d83d-ec30-4609-8a16-21ef0cc3d35b", kode: "9727" },
+        "SPSE-PencatatanSwakelola": { apiKey: "3b5b05fa-6904-4b6b-8d84-72ce16c60ee2", kode: "9723" },
+        "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "42f917e3-3781-49a1-a17d-1b4d71bb6488", kode: "9724" },
+        "SPSE-PesertaTender": { apiKey: "093da2fd-6030-4394-b34d-9ff59e764b3c", kode: "9737" }
+    },
+    "444": { // Kab Bengkayang
+        "SPSE-TenderPengumuman": { apiKey: "4bf3e97e-82e8-4c62-b34d-a5bb54b68639", kode: "8107" },
+        "SPSE-TenderSelesai": { apiKey: "c9c2e644-62f1-49d3-9f75-b5a58d4651e6", kode: "8100" },
+        "SPSE-TenderSelesaiNilai": { apiKey: "12f4cbac-b25f-4eee-938c-43c391dfa6fb", kode: "8101" },
+        "SPSE-TenderEkontrak-SPPBJ": { apiKey: "8abdbfef-936e-48f6-b08c-b6350019ee88", kode: "8111" },
+        "SPSE-TenderEkontrak-Kontrak": { apiKey: "4a8f68ed-a59e-43f5-ad3d-2c046d3e2c7a", kode: "8114" },
+        "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "780b2664-11d4-4fa6-8faf-f3962aa5f195", kode: "8112" },
+        "SPSE-TenderEkontrak-BAPBAST": { apiKey: "df57433e-fd79-41dc-9c4e-985f345aeb5c", kode: "8113" },
+        "SPSE-NonTenderPengumuman": { apiKey: "287d6e33-5871-4dcc-8edf-faf1cff5bf53", kode: "8108" },
+        "SPSE-NonTenderSelesai": { apiKey: "0eef3385-ae3e-4ee8-9cb0-164bbd01b2c2", kode: "8109" },
+        "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "5ff9c609-6dd6-42bd-8c02-54f3d92899a5", kode: "8125" },
+        "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "0115a18c-4169-4931-9a58-e6f07158add8", kode: "8092" },
+        "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "f9a2fbd8-9bec-41c4-b180-ed701a10d307", kode: "8102" },
+        "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "3c680a9f-cc7e-4282-918c-bff1a87d9cd6", kode: "8103" },
+        "SPSE-PencatatanNonTender": { apiKey: "fb27633f-e237-42c9-8863-4889d0008f3c", kode: "8118" },
+        "SPSE-PencatatanNonTenderRealisasi": { apiKey: "e6d36aa3-c59a-4257-be3f-f83d28d1082e", kode: "8120" },
+        "SPSE-PencatatanSwakelola": { apiKey: "287c76af-1ee1-4368-9fca-6cec8dcb368e", kode: "8116" },
+        "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "cb3ce43e-f2d6-4b67-8fce-7ef8bb3abd47", kode: "8117" },
+        "SPSE-PesertaTender": { apiKey: "92ca0ef7-122f-4b67-8b6a-24af56502286", kode: "8130" }
+    },
+    // "62": { // Kota Pontianak
+    //     "SPSE-TenderPengumuman": { apiKey: "", kode: "" },
+    //     "SPSE-TenderSelesai": { apiKey: "", kode: "" },
+    //     "SPSE-TenderSelesaiNilai": { apiKey: "", kode: "" },
+    //     "SPSE-TenderEkontrak-SPPBJ": { apiKey: "", kode: "" },
+    //     "SPSE-TenderEkontrak-Kontrak": { apiKey: "", kode: "" },
+    //     "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "", kode: "" },
+    //     "SPSE-TenderEkontrak-BAPBAST": { apiKey: "", kode: "" },
+    //     "SPSE-NonTenderPengumuman": { apiKey: "", kode: "" },
+    //     "SPSE-NonTenderSelesai": { apiKey: "", kode: "" },
+    //     "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "", kode: "" },
+    //     "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "", kode: "" },
+    //     "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "", kode: "" },
+    //     "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "", kode: "" },
+    //     "SPSE-PencatatanNonTender": { apiKey: "", kode: "" },
+    //     "SPSE-PencatatanNonTenderRealisasi": { apiKey: "", kode: "" },
+    //     "SPSE-PencatatanSwakelola": { apiKey: "", kode: "" },
+    //     "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "", kode: "" },
+    //     "SPSE-PesertaTender": { apiKey: "", kode: "" }
+    // }
 }; 
