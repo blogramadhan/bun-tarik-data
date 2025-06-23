@@ -13,6 +13,9 @@ function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
     const config = configMap[daerah][jenis];
     if (!config) throw new Error(`Jenis data tidak dikenal untuk daerah ${daerah}: ${jenis}`);
     
+    if (jenis === "RUP-MasterSatker") {
+        return `${baseUrl}/${config.apiKey}/json/${config.kode}/${jenis}/tipe/12:12/parameter/${daerah}:${tahun}`;
+    }
     return `${baseUrl}/${config.apiKey}/json/${config.kode}/${jenis}/tipe/4:12/parameter/${tahun}:${daerah}`;
 }
 
