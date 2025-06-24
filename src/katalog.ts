@@ -135,18 +135,20 @@ async function fetchAndSave() {
     // Ambil data untuk setiap daerah dan tahun
     for (const daerah of daerahList) {
         for (const tahun of tahunList) {
-            // Skip jika bukan tahun berjalan dan semua file sudah ada
+            // Cek apakah semua file sudah ada
             const allFilesExist = jenisDataTypes.every(jenis => {
                 const jsonPath = `data/katalog/${daerah}/${jenis}/${tahun}/data.json`;
                 return existsSync(jsonPath);
             });
 
             // Skip jika:
-            // 1. Tahun sebelumnya dan semua file sudah ada
-            // 2. Tahun berjalan, bulan > Februari, dan semua file sudah ada
-            if ((tahun < currentYear && allFilesExist) || 
-                (tahun === currentYear && currentMonth > 2 && allFilesExist)) {
-                console.log(`⏭️ Semua data untuk ${daerah} tahun ${tahun} sudah ada, melewati...`);
+            // 1. Semua file sudah ada
+            // 2. Bukan tahun berjalan
+            // 3. Bukan tahun sebelumnya (jika sudah melewati Februari tahun berjalan)
+            if (allFilesExist && 
+                !(tahun === currentYear || 
+                  (tahun === currentYear - 1 && currentMonth <= 2))) {
+                console.log(`⏭️ Melewati data tahun ${tahun} untuk ${daerah} (sudah lengkap)`);
                 continue;
             }
 

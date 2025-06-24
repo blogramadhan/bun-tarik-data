@@ -114,9 +114,29 @@ function findJsonFiles(dir: string): string[] {
 
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+
     for (const daerah of daerahList) {
         for (const jenis of jenisDataTypes) {
             for (const tahun of tahunList) {
+                // Cek apakah semua file sudah ada
+                const allFilesExist = jenisDataTypes.every(jenis => {
+                    const jsonPath = `data/daring/${daerah}/${jenis}/${tahun}/data.json`;
+                    return existsSync(jsonPath);
+                });
+
+                // Skip jika:
+                // 1. Semua file sudah ada
+                // 2. Bukan tahun berjalan
+                // 3. Bukan tahun sebelumnya (jika sudah melewati Februari tahun berjalan)
+                if (allFilesExist && 
+                    !(tahun === currentYear || 
+                      (tahun === currentYear - 1 && currentMonth <= 2))) {
+                    console.log(`⏭️ Melewati data ${jenis} ${tahun} untuk ${daerah} (sudah lengkap)`);
+                    continue;
+                }
+
                 console.log(`🔄 Mengambil ${jenis} ${tahun} untuk ${daerah} ...`);
                 try {
                     // Ambil data dari API
