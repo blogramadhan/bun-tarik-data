@@ -130,6 +130,7 @@ function findJsonFiles(dir: string): string[] {
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
     const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
 
     // Ambil data untuk setiap daerah dan tahun
     for (const daerah of daerahList) {
@@ -140,7 +141,11 @@ async function fetchAndSave() {
                 return existsSync(jsonPath);
             });
 
-            if (tahun !== currentYear && allFilesExist) {
+            // Skip jika:
+            // 1. Tahun sebelumnya dan semua file sudah ada
+            // 2. Tahun berjalan, bulan > Februari, dan semua file sudah ada
+            if ((tahun < currentYear && allFilesExist) || 
+                (tahun === currentYear && currentMonth > 2 && allFilesExist)) {
                 console.log(`⏭️ Semua data untuk ${daerah} tahun ${tahun} sudah ada, melewati...`);
                 continue;
             }
