@@ -1,5 +1,3 @@
-https://isb.lkpp.go.id/isb-2/api/ba2c6327-9451-49c9-8c61-408936baaff6/json/4847/RUP-MasterSatker/tipe/12:12/parameter/D197:2025
-
 // Kota Pontianak
 https://isb.lkpp.go.id/isb-2/api/c6bcddde-9f61-4aeb-814a-667800878a08/json/4010/RUP-PaketPenyedia-Terumumkan/tipe/4:12/parameter/2025:D199
 https://isb.lkpp.go.id/isb-2/api/a19f3701-4b9d-4d36-ac86-2f0fd7a08f71/json/4013/RUP-PaketSwakelola-Terumumkan/tipe/4:12/parameter/2025:D199

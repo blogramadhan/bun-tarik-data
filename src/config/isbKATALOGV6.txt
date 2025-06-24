@@ -1,0 +1,44 @@
+// Prov Kalbar
+https://isb.lkpp.go.id/isb-2/api/972895ec-519b-40a6-a612-0f7dc4f7191a/json/30960/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D197
+
+// Kota Pontianak
+https://isb.lkpp.go.id/isb-2/api/ce71f858-7a09-4c5f-a95b-9f03aa5eb519/json/30964/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D199
+
+// Kab Kubu Raya
+https://isb.lkpp.go.id/isb-2/api/4f171b6e-5e4b-4f07-a8eb-9895aa6b7938/json/30979/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D202
+
+// Kab Mempawah
+https://isb.lkpp.go.id/isb-2/api/35d43f22-8025-43cb-b5fe-f36fec6d6856/json/31088/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D552
+
+// Kota Singkawang
+https://isb.lkpp.go.id/isb-2/api/9d2299c2-a9c6-4fa1-bb9c-868565766b26/json/31054/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D200
+
+// Kab Bengkayang
+https://isb.lkpp.go.id/isb-2/api/da4b531b-3dd3-4490-ae19-5043d1bcf9a7/json/31019/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D206
+
+// Kab Landak
+https://isb.lkpp.go.id/isb-2/api/948b2797-4f5c-4fe0-a575-84f11941750c/json/31042/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D205
+
+// Kab Sanggau
+https://isb.lkpp.go.id/isb-2/api/75511006-6cfe-407b-898f-24c452c241fc/json/30963/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D204
+
+// Kab Sekadau
+https://isb.lkpp.go.id/isb-2/api/65c63a0a-cbb7-442d-97b6-0abee30994d1/json/31070/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D198
+
+// Kab Sintang
+https://isb.lkpp.go.id/isb-2/api/8113005e-fcb6-44c0-aed5-94c9776ef88f/json/31096/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D211
+
+// Kab Melawi
+https://isb.lkpp.go.id/isb-2/api/828986d3-b398-4f7d-82ff-ad3fc67fc276/json/31059/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D210
+
+// Kab Kapuas Hulu
+https://isb.lkpp.go.id/isb-2/api/a715dca3-e7c4-4e48-b907-7a7b328e2985/json/31034/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D209
+
+// Kab Ketapang
+https://isb.lkpp.go.id/isb-2/api/ad505a5f-58e8-4626-9572-8a6cb64ecadd/json/31086/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D201
+
+// Kab Katingan
+
+
+// Kab Tanggerang
+https://isb.lkpp.go.id/isb-2/api/2f2895f7-f360-4afc-ad2d-06f6b431114b/json/30933/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D50
