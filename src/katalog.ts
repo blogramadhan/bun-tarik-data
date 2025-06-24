@@ -3,7 +3,7 @@ import { join, dirname } from "path";
 import * as duckdb from "duckdb";
 import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configKATALOG";
 
-const tahunList = [2025];
+const tahunList = [2023, 2024, 2025];
 
 // Membuat URL API berdasarkan parameter
 function buildURL(daerah: Daerah, jenis: JenisData, params: { tahun?: number, kodeKomoditas?: string }): string {
@@ -29,7 +29,7 @@ function buildURL(daerah: Daerah, jenis: JenisData, params: { tahun?: number, ko
 async function convertJsonToParquet() {
     console.log("🔄 Memulai konversi JSON ke Parquet...");
     
-    const dataDir = "data/katalogv6";
+    const dataDir = "data/katalog";
     if (!existsSync(dataDir)) {
         console.log("⚠️ Direktori data tidak ditemukan");
         return;
@@ -123,70 +123,68 @@ function findJsonFiles(dir: string): string[] {
 
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
-    const uniqueKodeKomoditas = new Set<string>();
-
+    // Ambil data paket e-purchasing terlebih dahulu
     for (const daerah of daerahList) {
-        for (const jenis of jenisDataTypes) {
-            for (const tahun of tahunList) {
-                console.log(`🔄 Mengambil ${jenis} ${tahun} untuk ${daerah} ...`);
-                try {
-                    // Ambil data dari API
-                    const url = buildURL(daerah as Daerah, jenis as JenisData, { tahun });
-                    const res = await fetch(url);
-                    if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
-                    const response = await res.json() as { data?: any[] } | any[];
-                    
-                    // Pastikan data adalah array
-                    const data = Array.isArray(response) ? response : response.data || [];
-                    if (!data.length) {
-                        console.log(`⚠️ Tidak ada data untuk ${daerah}/${jenis}/${tahun}`);
-                        continue;
-                    }
-
-                    // Kumpulkan kd_komoditas unik
-                    data.forEach(item => {
-                        if (item.kd_komoditas) {
-                            uniqueKodeKomoditas.add(item.kd_komoditas);
-                        }
-                    });
-
-                    // Simpan data ke file JSON
-                    const folder = `data/katalog/${daerah}/${jenis}/${tahun}`;
-                    mkdirSync(folder, { recursive: true });
-                    const jsonPath = join(folder, "data.json");
-                    writeFileSync(jsonPath, JSON.stringify(data, null, 2));
-                    console.log(`✅ JSON disimpan: ${jsonPath}`);
-
-                } catch (err: any) {
-                    console.error(`❌ Gagal: ${daerah}/${jenis}/${tahun} =>`, err.message);
+        for (const tahun of tahunList) {
+            console.log(`🔄 Mengambil Ecat-PaketEPurchasing ${tahun} untuk ${daerah} ...`);
+            try {
+                // Ambil data dari API
+                const url = buildURL(daerah as Daerah, "Ecat-PaketEPurchasing", { tahun });
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
+                const response = await res.json() as { data?: any[] } | any[];
+                
+                // Pastikan data adalah array
+                const data = Array.isArray(response) ? response : response.data || [];
+                if (!data.length) {
+                    console.log(`⚠️ Tidak ada data untuk ${daerah}/Ecat-PaketEPurchasing/${tahun}`);
+                    continue;
                 }
+
+                // Simpan data ke file JSON
+                const folder = `data/katalog/${daerah}/Ecat-PaketEPurchasing/${tahun}`;
+                mkdirSync(folder, { recursive: true });
+                const jsonPath = join(folder, "data.json");
+                writeFileSync(jsonPath, JSON.stringify(data, null, 2));
+                console.log(`✅ JSON disimpan: ${jsonPath}`);
+
+                // Kumpulkan kd_komoditas unik dari data yang baru diambil
+                const uniqueKodeKomoditas = new Set<string>();
+                data.forEach(item => {
+                    if (item.kd_komoditas) {
+                        uniqueKodeKomoditas.add(item.kd_komoditas);
+                    }
+                });
+
+                // Ambil detail komoditas untuk setiap kd_komoditas unik
+                console.log(`🔄 Mengambil detail untuk ${uniqueKodeKomoditas.size} komoditas untuk ${daerah} tahun ${tahun}...`);
+                const komoditasDetails: Record<string, any> = {};
+
+                for (const kodeKomoditas of uniqueKodeKomoditas) {
+                    try {
+                        const url = buildURL(daerah as Daerah, "Ecat-KomoditasDetail", { kodeKomoditas });
+                        const res = await fetch(url);
+                        if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
+                        const data = await res.json();
+                        komoditasDetails[kodeKomoditas] = data;
+                        // console.log(`✅ Detail komoditas ${kodeKomoditas} berhasil diambil`);
+                    } catch (err: any) {
+                        console.error(`❌ Gagal mengambil detail komoditas ${kodeKomoditas}:`, err.message);
+                    }
+                }
+
+                // Simpan detail komoditas ke file JSON dengan struktur direktori yang sama
+                const komoditasFolder = `data/katalog/${daerah}/Ecat-KomoditasDetail/${tahun}`;
+                mkdirSync(komoditasFolder, { recursive: true });
+                const komoditasPath = join(komoditasFolder, "data.json");
+                writeFileSync(komoditasPath, JSON.stringify(komoditasDetails, null, 2));
+                console.log(`✅ Detail komoditas disimpan: ${komoditasPath}`);
+
+            } catch (err: any) {
+                console.error(`❌ Gagal: ${daerah}/Ecat-PaketEPurchasing/${tahun} =>`, err.message);
             }
         }
     }
-
-    // Ambil detail komoditas untuk setiap kd_komoditas unik
-    console.log(`🔄 Mengambil detail untuk ${uniqueKodeKomoditas.size} komoditas...`);
-    const komoditasDetails: Record<string, any> = {};
-
-    for (const kodeKomoditas of uniqueKodeKomoditas) {
-        try {
-            const url = buildURL(daerahList[0] as Daerah, "Ecat-KomoditasDetail", { kodeKomoditas });
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
-            const data = await res.json();
-            komoditasDetails[kodeKomoditas] = data;
-            console.log(`✅ Detail komoditas ${kodeKomoditas} berhasil diambil`);
-        } catch (err: any) {
-            console.error(`❌ Gagal mengambil detail komoditas ${kodeKomoditas}:`, err.message);
-        }
-    }
-
-    // Simpan detail komoditas ke file JSON
-    const komoditasFolder = `data/katalog/komoditas`;
-    mkdirSync(komoditasFolder, { recursive: true });
-    const komoditasPath = join(komoditasFolder, "data.json");
-    writeFileSync(komoditasPath, JSON.stringify(komoditasDetails, null, 2));
-    console.log(`✅ Detail komoditas disimpan: ${komoditasPath}`);
     
     // Konversi semua file JSON ke Parquet dan Excel
     await convertJsonToParquet();
