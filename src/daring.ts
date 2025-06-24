@@ -3,7 +3,7 @@ import { join, dirname } from "path";
 import * as duckdb from "duckdb";
 import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configDARING";
 
-const tahunList = [2025];
+const tahunList = [2023, 2024, 2025];
 
 // Membuat URL API berdasarkan parameter
 function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
@@ -13,7 +13,7 @@ function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
     const config = configMap[daerah][jenis];
     if (!config) throw new Error(`Jenis data tidak dikenal untuk daerah ${daerah}: ${jenis}`);
     
-    return `${baseUrl}/${config.apiKey}/json/${config.kode}/${jenis}/tipe/4:4/parameter/${daerah}:${tahun}`;
+    return `${baseUrl}/${config.apiKey}/json/${config.kode}/${jenis}/tipe/12:4/parameter/${daerah}:${tahun}`;
 }
 
 // Konversi file JSON ke format Parquet
