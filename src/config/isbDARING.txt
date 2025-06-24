@@ -1,0 +1,44 @@
+// Prov Kalbar
+https://isb.lkpp.go.id/isb-2/api/4cf1694f-5bd9-4560-bc29-dbcab4ba98d4/json/3352/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D197:2025
+
+// Kota Pontianak
+https://isb.lkpp.go.id/isb-2/api/c69061fd-b7cb-4b08-9899-a36f832c473b/json/4020/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D199:2025
+
+// Kab Kubu Raya
+https://isb.lkpp.go.id/isb-2/api/416ee583-b4d7-4dbe-93d4-50dd8c7dbbe0/json/4180/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D202:2025
+
+// Kab Mempawah
+https://isb.lkpp.go.id/isb-2/api/439e2245-6cab-444a-a89a-d73688e64821/json/12179/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D552:2025
+
+// Kota Singkawang
+https://isb.lkpp.go.id/isb-2/api/d55b5f1b-c39b-4323-a480-4e4012f46158/json/9722/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D200:2025
+
+// Kab Bengkayang
+https://isb.lkpp.go.id/isb-2/api/2405dd62-8cac-4dfb-9eee-a8255523b1ce/json/8115/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D206:2025
+
+// Kab Landak
+https://isb.lkpp.go.id/isb-2/api/670ddb72-5d58-40f2-bc60-c63c59e8cf61/json/9572/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D205:2025
+
+// Kab Sanggau
+https://isb.lkpp.go.id/isb-2/api/52da3794-8b33-483a-81e6-0a0f29f99c30/json/4143/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D204:2025
+
+// Kab Sekadau
+https://isb.lkpp.go.id/isb-2/api/a96f0b54-1034-4ec1-a788-72cbcbe2a1f9/json/11083/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D198:2025
+
+// Kab Sintang
+https://isb.lkpp.go.id/isb-2/api/bd13b918-c784-4c9d-abac-c333d3297ae4/json/12130/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D211:2025
+
+// Kab Melawi
+https://isb.lkpp.go.id/isb-2/api/eb7960ba-2a1d-4f6c-9faa-eb1be53ca602/json/10574/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D210:2025
+
+// Kab Kapuas Hulu
+https://isb.lkpp.go.id/isb-2/api/9538ac44-082d-4da8-b71b-85baaf56354f/json/8986/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D209:2025
+
+// Kab Ketapang
+https://isb.lkpp.go.id/isb-2/api/7e5f0d13-a675-4f85-8ece-db677d9575f3/json/11577/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D201:2025
+
+// Kab Katingan
+
+
+// Kab Tanggerang
+https://isb.lkpp.go.id/isb-2/api/9db47be6-905f-4bed-a85a-f1743727a46a/json/3056/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D50:2025
