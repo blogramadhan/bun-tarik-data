@@ -13,7 +13,7 @@ function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
     const config = configMap[daerah][jenis];
     if (!config) throw new Error(`Jenis data tidak dikenal untuk daerah ${daerah}: ${jenis}`);
     
-    return `${baseUrl}/${config.apiKey}/json/${config.kode}/${jenis}/tipe/12:4/parameter/${tahun}:${daerah}`;
+    return `${baseUrl}/${config.apiKey}/json/${config.kode}/${jenis}/tipe/12:4/parameter/${daerah}:${tahun}`;
 }
 
 // Konversi file JSON ke format Parquet
