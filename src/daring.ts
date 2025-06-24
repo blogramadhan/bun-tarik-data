@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import * as duckdb from "duckdb";
-import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configKATALOGV6";
+import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configDARING";
 
 const tahunList = [2025];
 
