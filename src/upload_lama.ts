@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { readdirSync, statSync, readFileSync } from "fs";
 import { join } from "path";
 import * as dotenv from "dotenv";
@@ -104,44 +104,11 @@ async function notifyAll(message: string) {
   console.log(`📢 Notification: ${message}`);
 }
 
-// Cek apakah file perlu diupload berdasarkan tahun
-function shouldUploadFile(key: string): boolean {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
-
-  // Cek apakah path mengandung tahun
-  const yearMatch = key.match(/\b(20\d{2})\b/);
-  if (!yearMatch || !yearMatch[1]) return true; // Jika tidak ada tahun, upload saja
-
-  const fileYear = parseInt(yearMatch[1]);
-
-  // Upload jika:
-  // 1. File untuk tahun berjalan
-  // 2. File untuk tahun sebelumnya dan sekarang masih Jan/Feb
-  return fileYear === currentYear || 
-         (fileYear === currentYear - 1 && currentMonth <= 2);
-}
-
-// Cek apakah file sudah ada di S3
-async function fileExistsInS3(bucketName: string, key: string): Promise<boolean> {
-  try {
-    const command = new HeadObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-    });
-    await s3.send(command);
-    return true;
-  } catch (error) {
-    return false;
-  }
-}
-
 // Upload rekursif semua file
 async function uploadAllFiles(localDir: string, bucketName: string, prefix = "") {
   const entries = readdirSync(localDir);
   let uploadedCount = 0;
   let failedCount = 0;
-  let skippedCount = 0;
   
   for (const entry of entries) {
     const fullPath = join(localDir, entry);
@@ -152,27 +119,11 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
       const subResult = await uploadAllFiles(fullPath, bucketName, join(prefix, entry));
       uploadedCount += subResult.uploadedCount;
       failedCount += subResult.failedCount;
-      skippedCount += subResult.skippedCount;
     } else {
       // Upload semua file
+      const fileContent = readFileSync(fullPath);
       const key = join(prefix, entry).replace(/\\/g, "/");
 
-      // Cek apakah file perlu diupload berdasarkan tahun
-      if (!shouldUploadFile(key)) {
-        skippedCount++;
-        console.log(`⏭️ Skipped (old year): ${key}`);
-        continue;
-      }
-
-      // Cek apakah file sudah ada di S3
-      const exists = await fileExistsInS3(bucketName, key);
-      if (exists) {
-        skippedCount++;
-        console.log(`⏭️ Skipped (already exists): ${key}`);
-        continue;
-      }
-
-      const fileContent = readFileSync(fullPath);
       const uploadCommand = new PutObjectCommand({
         Bucket: bucketName,
         Key: key,
@@ -194,7 +145,7 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
     }
   }
   
-  return { uploadedCount, failedCount, skippedCount };
+  return { uploadedCount, failedCount };
 }
 
 // Main function
@@ -203,7 +154,7 @@ async function main() {
     console.log("🚀 Starting file upload to Cloudflare R2...");
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     
-    const summary = `🎉 Upload completed! Success: ${result.uploadedCount}, Failed: ${result.failedCount}, Skipped: ${result.skippedCount}`;
+    const summary = `🎉 Upload completed! Success: ${result.uploadedCount}, Failed: ${result.failedCount}`;
     console.log(summary);
     await notifyAll(summary);
   } catch (err: any) {
