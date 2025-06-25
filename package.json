@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "upload": "bun run src/upload.ts",
+    "upload-full": "bun run src/upload_full.ts",
     "rup": "bun run src/rup.ts",
     "spse": "bun run src/spse.ts",
     "katalog": "bun run src/katalog.ts",
