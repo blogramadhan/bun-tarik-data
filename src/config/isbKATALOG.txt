@@ -2,42 +2,82 @@
 
 
 // Kota Pontianak
-
+https://isb.lkpp.go.id/isb-2/api/7fa493f6-70d5-40c9-9d00-111803341e3c/json/3998/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D199
+https://isb.lkpp.go.id/isb-2/api/28cb5723-64ef-499f-8d7a-61d3c9673b24/json/4004/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/f3e3f052-b6a9-418f-b40c-469ff6123974/json/3996/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/fd0c026b-ee03-4169-8ee7-7f95ae83986a/json/3997/Ecat-InstansiSatker/tipe/12/parameter/D199
 
 // Kab Kubu Raya
-
+https://isb.lkpp.go.id/isb-2/api/04b0200f-408e-4e10-849f-907a514473ac/json/4159/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D202
+https://isb.lkpp.go.id/isb-2/api/1a0731bc-28ce-4c32-a653-0b8b87c2ff1c/json/4165/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/da5053cb-9cb4-40b3-be8b-86c73384e2be/json/4157/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/c0109c8e-f0bf-4f9e-9282-0ec5407de014/json/4158/Ecat-InstansiSatker/tipe/12/parameter/D202
 
 // Kab Mempawah
-
+https://isb.lkpp.go.id/isb-2/api/61fe0bb0-0a33-4dbe-bd04-4f06968395a2/json/12180/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D552
+https://isb.lkpp.go.id/isb-2/api/7899785b-4b94-4382-8bb3-1c0966cd4401/json/12163/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/ff05f138-0576-4847-ad15-6b7cdaffcc2a/json/12153/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/d78399c8-c0c7-40fa-9456-477452b289bf/json/12154/Ecat-InstansiSatker/tipe/12/parameter/D552
 
 // Kota Singkawang
-
+https://isb.lkpp.go.id/isb-2/api/d541dcb9-b7c9-4452-8be8-91fc31303d88/json/9708/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D200
+https://isb.lkpp.go.id/isb-2/api/1a71d679-4215-42c8-b41c-7100325b91d8/json/9703/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/5a685946-dac0-46e4-a32f-561c71f783e1/json/9693/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/9aca569e-b613-4878-8cef-440510881c0c/json/9694/Ecat-InstansiSatker/tipe/12/parameter/D200
 
 // Kab Bengkayang
-
+https://isb.lkpp.go.id/isb-2/api/960b1e03-c0c6-4524-a493-c638b48d5e15/json/8098/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D206
+https://isb.lkpp.go.id/isb-2/api/ed650b8c-220d-4ee9-84ff-e87f1c47ae06/json/8096/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/e295924f-56cf-4a5e-afb8-10671b286fb2/json/8086/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/4c99f371-b0d5-4316-ab74-79808afe1e54/json/8087/Ecat-InstansiSatker/tipe/12/parameter/D206
 
 // Kab Landak
-
+https://isb.lkpp.go.id/isb-2/api/dd080d11-d98d-4799-8d8e-bd76b68945ba/json/9558/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D205
+https://isb.lkpp.go.id/isb-2/api/89d78ed2-bf18-4f2d-b5a5-e441bf0771b2/json/9553/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/8f159dee-5560-4dbd-9f2f-ccdbdeff3142/json/9543/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/6cc8d2b2-0a13-4826-837f-0c6ec66ffa89/json/9544/Ecat-InstansiSatker/tipe/12/parameter/D205
 
 // Kab Sanggau
-
+https://isb.lkpp.go.id/isb-2/api/33c53132-422b-4b66-88d0-19e548e10228/json/4121/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D204
+https://isb.lkpp.go.id/isb-2/api/4d7e020c-6491-41dd-9e97-51e6a2d96c48/json/4127/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/63f5a5df-3446-4940-8853-3a4e425a65fe/json/4119/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/1b17240a-ed46-4091-b04d-958b1f5c3403/json/4120/Ecat-InstansiSatker/tipe/12/parameter/D204
 
 // Kab Sekadau
-
+https://isb.lkpp.go.id/isb-2/api/6a2183ca-0e86-4a6b-aaa5-c1ebf428602b/json/11084/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D198
+https://isb.lkpp.go.id/isb-2/api/7b0dee27-c8a8-4101-9d65-60c51647f420/json/11065/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/70942e46-d447-4660-b1a4-ef7b6a9d2d07/json/11055/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/1936d3dd-ff27-49f3-93a7-ba7c3b343731/json/11056/Ecat-InstansiSatker/tipe/12/parameter/D198
 
 // Kab Sintang
-
+https://isb.lkpp.go.id/isb-2/api/a73705ee-4c3b-40d3-8b34-f59c77a66104/json/12131/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D211
+https://isb.lkpp.go.id/isb-2/api/d0763611-6035-42d3-8d97-beca006fbe3d/json/12114/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/10ebcc4a-2145-4ec3-bfbe-d2923873ee7f/json/12104/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/0c6397c2-6e24-4e21-8096-3f4f7cecb35d/json/12105/Ecat-InstansiSatker/tipe/12/parameter/D211
 
 // Kab Melawi
-
+https://isb.lkpp.go.id/isb-2/api/2f4fd744-438f-48f2-adf3-d30053190065/json/10575/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D210
+https://isb.lkpp.go.id/isb-2/api/e2c3129b-8aa1-4967-8573-5dcf171a91ef/json/10556/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/34e2a35f-d5c6-48a1-95cc-ac5f050400b0/json/10546/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/96a010c4-1a9c-4d92-8227-b80f6b3eef2f/json/10547/Ecat-InstansiSatker/tipe/12/parameter/D210
 
 // Kab Kapuas Hulu
-
+https://isb.lkpp.go.id/isb-2/api/8e639d6c-2b98-485c-8451-3bf59408a24d/json/8968/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D209
+https://isb.lkpp.go.id/isb-2/api/466b064c-d1e2-48cb-85e1-186fae4d66c2/json/8965/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/2d9445f5-6de6-415b-9f25-1035db257f62/json/8955/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/68db0686-bfb7-4d42-8861-9822396c7a8d/json/8956/Ecat-InstansiSatker/tipe/12/parameter/D209
 
 // Kab Ketapang
-
+https://isb.lkpp.go.id/isb-2/api/2293cc18-b341-4354-b89d-377f83578eab/json/11578/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D201
+https://isb.lkpp.go.id/isb-2/api/40412205-fb49-4b90-bfc3-ea0c4aee6f48/json/11559/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/18f20ef7-dfd5-4472-9125-680f5df3c6e2/json/11549/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/865790ed-4ef3-4894-b047-d960ea1055b7/json/11550/Ecat-InstansiSatker/tipe/12/parameter/D201
 
 // Kab Katingan
 
 
 // Kab Tanggerang
+https://isb.lkpp.go.id/isb-2/api/eb5ad422-da2c-45e7-994d-c72af6ab2699/json/2422/Ecat-PaketEPurchasing/tipe/4:12/parameter/2025:D50
+https://isb.lkpp.go.id/isb-2/api/a9f68efa-d479-487c-af02-cb3b1272b19c/json/2428/Ecat-KomoditasDetail/tipe/4/parameter/567
+https://isb.lkpp.go.id/isb-2/api/3eec651f-3d17-420c-bfb0-0516d3e662c1/json/2420/Ecat-PenyediaDetail/tipe/4/parameter/439515
+https://isb.lkpp.go.id/isb-2/api/bd06c716-cf67-4b1a-aab2-7a4eb59eca78/json/2421/Ecat-InstansiSatker/tipe/12/parameter/D50
