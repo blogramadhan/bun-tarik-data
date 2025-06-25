@@ -111,13 +111,13 @@ function shouldUploadFile(key: string): boolean {
 
   // Cek apakah path mengandung tahun
   const yearMatch = key.match(/\b(20\d{2})\b/);
-  if (!yearMatch || !yearMatch[1]) return true; // Jika tidak ada tahun, upload saja
+  if (!yearMatch || !yearMatch[1]) return false; // Jika tidak ada tahun, jangan upload
 
   const fileYear = parseInt(yearMatch[1]);
 
-  // Upload jika:
-  // 1. File untuk tahun berjalan
-  // 2. File untuk tahun sebelumnya dan sekarang masih Jan/Feb
+  // Upload hanya jika:
+  // 1. File untuk tahun berjalan, atau
+  // 2. File untuk tahun sebelumnya dan sekarang masih Februari
   return fileYear === currentYear || 
          (fileYear === currentYear - 1 && currentMonth <= 2);
 }
@@ -160,7 +160,7 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
       // Cek apakah file perlu diupload berdasarkan tahun
       if (!shouldUploadFile(key)) {
         skippedCount++;
-        console.log(`⏭️ Skipped (old year): ${key}`);
+        console.log(`⏭️ Skipped (not current/previous year): ${key}`);
         continue;
       }
 
