@@ -185,17 +185,14 @@ async function fetchAndSave() {
 
                 // Ambil dan simpan detail komoditas
                 const komoditasPath = `data/katalog/${daerah}/Ecat-KomoditasDetail/${tahun}/data.json`;
-                const komoditasDetails: any[] = [];
+                const komoditasDetails: Record<string, any> = {};
                 
                 for (const kodeKomoditas of uniqueKodeKomoditas) {
                     try {
                         const url = buildURL(daerah as Daerah, "Ecat-KomoditasDetail", { kodeKomoditas });
                         const res = await fetch(url);
                         if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
-                        const data = await res.json();
-                        if (Array.isArray(data)) {
-                            komoditasDetails.push(...data);
-                        }
+                        komoditasDetails[kodeKomoditas] = await res.json();
                     } catch (err: any) {
                         console.error(`❌ Gagal mengambil detail komoditas ${kodeKomoditas}:`, err.message);
                     }
@@ -207,17 +204,14 @@ async function fetchAndSave() {
 
                 // Ambil dan simpan detail penyedia
                 const penyediaPath = `data/katalog/${daerah}/Ecat-PenyediaDetail/${tahun}/data.json`;
-                const penyediaDetails: any[] = [];
+                const penyediaDetails: Record<string, any> = {};
                 
                 for (const kodePenyedia of uniqueKodePenyedia) {
                     try {
                         const url = buildURL(daerah as Daerah, "Ecat-PenyediaDetail", { kodePenyedia });
                         const res = await fetch(url);
                         if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
-                        const data = await res.json();
-                        if (Array.isArray(data)) {
-                            penyediaDetails.push(...data);
-                        }
+                        penyediaDetails[kodePenyedia] = await res.json();
                     } catch (err: any) {
                         console.error(`❌ Gagal mengambil detail penyedia ${kodePenyedia}:`, err.message);
                     }
@@ -229,17 +223,14 @@ async function fetchAndSave() {
 
                 // Ambil dan simpan detail satker
                 const satkerPath = `data/katalog/${daerah}/Ecat-InstansiSatker/${tahun}/data.json`;
-                const satkerDetails: any[] = [];
+                const satkerDetails: Record<string, any> = {};
                 
                 for (const kdKlpd of uniqueKodeKlpd) {
                     try {
                         const url = buildURL(daerah as Daerah, "Ecat-InstansiSatker", { kdKlpd });
                         const res = await fetch(url);
                         if (!res.ok) throw new Error(`Gagal fetch: ${res.status}`);
-                        const data = await res.json();
-                        if (Array.isArray(data)) {
-                            satkerDetails.push(...data);
-                        }
+                        satkerDetails[kdKlpd] = await res.json();
                     } catch (err: any) {
                         console.error(`❌ Gagal mengambil detail satker ${kdKlpd}:`, err.message);
                     }
