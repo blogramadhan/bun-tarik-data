@@ -28,7 +28,7 @@ const {
   // WHATSAPP_MESSAGE_HEADER,
 } = process.env;
 
-// Init S3 Client
+// Inisialisasi S3 Client untuk koneksi ke Cloudflare R2
 const s3 = new S3Client({
   region: "auto",
   endpoint: R2_ENDPOINT,
@@ -38,7 +38,7 @@ const s3 = new S3Client({
   },
 });
 
-// Notifikasi ke Telegram
+// Fungsi untuk mengirim notifikasi ke Telegram (dinonaktifkan)
 // async function sendTelegram(message: string) {
 //   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
 //   try {
@@ -55,7 +55,7 @@ const s3 = new S3Client({
 //   }
 // }
 
-// Notifikasi ke Email
+// Fungsi untuk mengirim notifikasi melalui Email (dinonaktifkan)
 // async function sendEmail(subject: string, message: string) {
 //   if (!EMAIL_SMTP_HOST || !EMAIL_SMTP_USER || !EMAIL_SMTP_PASS) return;
 //   try {
@@ -80,7 +80,7 @@ const s3 = new S3Client({
 //   }
 // }
 
-// Notifikasi ke WhatsApp (Dummy via GET Request)
+// Fungsi untuk mengirim notifikasi ke WhatsApp melalui API GET Request (dinonaktifkan)
 // async function sendWhatsApp(message: string) {
 //   if (!WHATSAPP_NUMBERS || !WHATSAPP_API_URL) return;
 //   const numbers = WHATSAPP_NUMBERS.split(",");
@@ -94,7 +94,7 @@ const s3 = new S3Client({
 //   }
 // }
 
-// Kirim semua notifikasi
+// Fungsi untuk mengirim notifikasi ke semua platform (saat ini hanya console.log)
 async function notifyAll(message: string) {
   // await Promise.all([
   //   sendTelegram(message),
@@ -104,25 +104,25 @@ async function notifyAll(message: string) {
   console.log(`📢 Notification: ${message}`);
 }
 
-// Cek apakah file perlu diupload berdasarkan tahun
+// Fungsi untuk memeriksa apakah file perlu diupload berdasarkan tahun pada path file
 function shouldUploadFile(key: string): boolean {
   const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+  const currentMonth = new Date().getMonth() + 1; // getMonth() mengembalikan 0-11
 
-  // Cek apakah path mengandung tahun
+  // Memeriksa apakah path file mengandung format tahun (2022, 2023, dll)
   const yearMatch = key.match(/\b(20\d{2})\b/);
-  if (!yearMatch || !yearMatch[1]) return false; // Jika tidak ada tahun, jangan upload
+  if (!yearMatch || !yearMatch[1]) return false; // Jika tidak ada tahun dalam path, jangan upload
 
   const fileYear = parseInt(yearMatch[1]);
 
-  // Upload hanya jika:
-  // 1. File untuk tahun berjalan, atau
-  // 2. File untuk tahun sebelumnya dan sekarang masih Februari
+  // Aturan upload:
+  // 1. File untuk tahun berjalan selalu diupload, atau
+  // 2. File untuk tahun sebelumnya diupload jika bulan saat ini masih Januari atau Februari
   return fileYear === currentYear || 
          (fileYear === currentYear - 1 && currentMonth <= 2);
 }
 
-// Cek apakah file sudah ada di S3
+// Fungsi untuk memeriksa apakah file sudah ada di penyimpanan S3/R2
 async function fileExistsInS3(bucketName: string, key: string): Promise<boolean> {
   try {
     const command = new HeadObjectCommand({
@@ -130,13 +130,13 @@ async function fileExistsInS3(bucketName: string, key: string): Promise<boolean>
       Key: key,
     });
     await s3.send(command);
-    return true;
+    return true; // File ditemukan
   } catch (error) {
-    return false;
+    return false; // File tidak ditemukan
   }
 }
 
-// Upload rekursif semua file
+// Fungsi untuk mengupload semua file secara rekursif dari direktori lokal ke S3/R2
 async function uploadAllFiles(localDir: string, bucketName: string, prefix = "") {
   const entries = readdirSync(localDir);
   let uploadedCount = 0;
@@ -148,27 +148,27 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
     const stat = statSync(fullPath);
 
     if (stat.isDirectory()) {
-      // Recursive untuk subfolder
+      // Proses rekursif untuk subfolder
       const subResult = await uploadAllFiles(fullPath, bucketName, join(prefix, entry));
       uploadedCount += subResult.uploadedCount;
       failedCount += subResult.failedCount;
       skippedCount += subResult.skippedCount;
     } else {
-      // Upload semua file
-      const key = join(prefix, entry).replace(/\\/g, "/");
+      // Proses upload untuk file
+      const key = join(prefix, entry).replace(/\\/g, "/"); // Konversi path Windows ke format URL
 
-      // Cek apakah file perlu diupload berdasarkan tahun
-      if (!shouldUploadFile(key)) {
-        skippedCount++;
-        console.log(`⏭️ Skipped (not current/previous year): ${key}`);
-        continue;
-      }
-
-      // Cek apakah file sudah ada di S3
+      // Memeriksa apakah file sudah ada di S3/R2 untuk menghindari upload ulang
       const exists = await fileExistsInS3(bucketName, key);
       if (exists) {
         skippedCount++;
-        console.log(`⏭️ Skipped (already exists): ${key}`);
+        console.log(`⏭️ Dilewati (sudah ada): ${key}`);
+        continue;
+      }
+
+      // Memeriksa apakah file perlu diupload berdasarkan aturan tahun
+      if (!shouldUploadFile(key)) {
+        skippedCount++;
+        console.log(`⏭️ Dilewati (bukan tahun berjalan/sebelumnya): ${key}`);
         continue;
       }
 
@@ -182,12 +182,12 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
       try {
         await s3.send(uploadCommand);
         uploadedCount++;
-        const msg = `✅ Uploaded: ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
+        const msg = `✅ Berhasil upload: ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
         console.log(msg);
         await notifyAll(msg);
       } catch (error) {
         failedCount++;
-        const msg = `❌ Failed: ${key} - ${error}`;
+        const msg = `❌ Gagal upload: ${key} - ${error}`;
         console.error(msg);
         await notifyAll(msg);
       }
@@ -197,13 +197,13 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
   return { uploadedCount, failedCount, skippedCount };
 }
 
-// Main function
+// Fungsi utama program
 async function main() {
   try {
-    console.log("🚀 Starting file upload to Cloudflare R2...");
+    console.log("🚀 Memulai proses upload file ke Cloudflare R2...");
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     
-    const summary = `🎉 Upload completed! Success: ${result.uploadedCount}, Failed: ${result.failedCount}, Skipped: ${result.skippedCount}`;
+    const summary = `🎉 Upload selesai! Berhasil: ${result.uploadedCount}, Gagal: ${result.failedCount}, Dilewati: ${result.skippedCount}`;
     console.log(summary);
     await notifyAll(summary);
   } catch (err: any) {
