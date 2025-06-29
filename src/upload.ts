@@ -135,7 +135,7 @@ async function folderExistsInS3(bucketName: string, prefix: string): Promise<boo
     });
     
     const response = await s3.send(command);
-    return (response.Contents && response.Contents.length > 0);
+    return !!(response.Contents && response.Contents.length > 0);
   } catch (error) {
     return false;
   }
