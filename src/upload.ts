@@ -111,7 +111,7 @@ function shouldUploadFile(key: string): boolean {
 
   // Memeriksa apakah path file mengandung format tahun (2022, 2023, dll)
   const yearMatch = key.match(/\b(20\d{2})\b/);
-  if (!yearMatch || !yearMatch[1]) return false; // Jika tidak ada tahun dalam path, jangan upload
+  if (!yearMatch || !yearMatch[1]) return false; 
 
   const fileYear = parseInt(yearMatch[1]);
 
