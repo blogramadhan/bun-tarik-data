@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { readdirSync, statSync, readFileSync } from "fs";
 import { join } from "path";
 import * as dotenv from "dotenv";
@@ -122,6 +122,25 @@ function shouldUploadFile(key: string): boolean {
          (fileYear === currentYear - 1 && currentMonth <= 2);
 }
 
+// Fungsi untuk memeriksa apakah folder sudah ada di penyimpanan S3/R2
+async function folderExistsInS3(bucketName: string, prefix: string): Promise<boolean> {
+  try {
+    // Pastikan prefix berakhir dengan '/' untuk menandakan folder
+    const folderPrefix = prefix.endsWith('/') ? prefix : `${prefix}/`;
+    
+    const command = new ListObjectsV2Command({
+      Bucket: bucketName,
+      Prefix: folderPrefix,
+      MaxKeys: 1,
+    });
+    
+    const response = await s3.send(command);
+    return (response.Contents && response.Contents.length > 0);
+  } catch (error) {
+    return false;
+  }
+}
+
 // Fungsi untuk memeriksa apakah file sudah ada di penyimpanan S3/R2
 async function fileExistsInS3(bucketName: string, key: string): Promise<boolean> {
   try {
@@ -146,50 +165,79 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
   for (const entry of entries) {
     const fullPath = join(localDir, entry);
     const stat = statSync(fullPath);
+    const key = join(prefix, entry).replace(/\\/g, "/"); // Konversi path Windows ke format URL
 
     if (stat.isDirectory()) {
-      // Proses rekursif untuk subfolder
-      const subResult = await uploadAllFiles(fullPath, bucketName, join(prefix, entry));
-      uploadedCount += subResult.uploadedCount;
-      failedCount += subResult.failedCount;
-      skippedCount += subResult.skippedCount;
+      // Cek apakah folder sudah ada di S3/R2
+      const folderExists = await folderExistsInS3(bucketName, key);
+      
+      // Jika folder belum ada, lakukan upload semua file di dalamnya
+      if (!folderExists) {
+        console.log(`📁 Folder baru ditemukan: ${key}, mengupload semua konten...`);
+        const subResult = await uploadAllFiles(fullPath, bucketName, key);
+        uploadedCount += subResult.uploadedCount;
+        failedCount += subResult.failedCount;
+        skippedCount += subResult.skippedCount;
+      } else {
+        // Jika folder sudah ada, tetap periksa file berdasarkan aturan tahun
+        console.log(`📁 Folder sudah ada: ${key}, memeriksa konten berdasarkan aturan tahun...`);
+        const subResult = await uploadAllFiles(fullPath, bucketName, key);
+        uploadedCount += subResult.uploadedCount;
+        failedCount += subResult.failedCount;
+        skippedCount += subResult.skippedCount;
+      }
     } else {
       // Proses upload untuk file
-      const key = join(prefix, entry).replace(/\\/g, "/"); // Konversi path Windows ke format URL
-
-      // Memeriksa apakah file sudah ada di S3/R2 untuk menghindari upload ulang
+      // Memeriksa apakah file sudah ada di S3/R2
       const exists = await fileExistsInS3(bucketName, key);
-      if (exists) {
-        skippedCount++;
-        console.log(`⏭️ Dilewati (sudah ada): ${key}`);
-        continue;
-      }
+      
+      if (!exists) {
+        // File belum ada, upload langsung
+        const fileContent = readFileSync(fullPath);
+        const uploadCommand = new PutObjectCommand({
+          Bucket: bucketName,
+          Key: key,
+          Body: fileContent,
+        });
 
-      // Memeriksa apakah file perlu diupload berdasarkan aturan tahun
-      if (!shouldUploadFile(key)) {
-        skippedCount++;
-        console.log(`⏭️ Dilewati (bukan tahun berjalan/sebelumnya): ${key}`);
-        continue;
-      }
+        try {
+          await s3.send(uploadCommand);
+          uploadedCount++;
+          const msg = `✅ Berhasil upload (file baru): ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
+          console.log(msg);
+          await notifyAll(msg);
+        } catch (error) {
+          failedCount++;
+          const msg = `❌ Gagal upload: ${key} - ${error}`;
+          console.error(msg);
+          await notifyAll(msg);
+        }
+      } else {
+        // File sudah ada, periksa berdasarkan aturan tahun
+        if (shouldUploadFile(key)) {
+          const fileContent = readFileSync(fullPath);
+          const uploadCommand = new PutObjectCommand({
+            Bucket: bucketName,
+            Key: key,
+            Body: fileContent,
+          });
 
-      const fileContent = readFileSync(fullPath);
-      const uploadCommand = new PutObjectCommand({
-        Bucket: bucketName,
-        Key: key,
-        Body: fileContent,
-      });
-
-      try {
-        await s3.send(uploadCommand);
-        uploadedCount++;
-        const msg = `✅ Berhasil upload: ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
-        console.log(msg);
-        await notifyAll(msg);
-      } catch (error) {
-        failedCount++;
-        const msg = `❌ Gagal upload: ${key} - ${error}`;
-        console.error(msg);
-        await notifyAll(msg);
+          try {
+            await s3.send(uploadCommand);
+            uploadedCount++;
+            const msg = `✅ Berhasil update: ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
+            console.log(msg);
+            await notifyAll(msg);
+          } catch (error) {
+            failedCount++;
+            const msg = `❌ Gagal update: ${key} - ${error}`;
+            console.error(msg);
+            await notifyAll(msg);
+          }
+        } else {
+          skippedCount++;
+          console.log(`⏭️ Dilewati (bukan tahun berjalan/sebelumnya): ${key}`);
+        }
       }
     }
   }
