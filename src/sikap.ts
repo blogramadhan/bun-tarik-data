@@ -20,7 +20,7 @@ function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
 async function convertJsonToParquet() {
     console.log("🔄 Memulai konversi JSON ke Parquet...");
     
-    const dataDir = "data/katalogv6";
+    const dataDir = "data/sikap";
     if (!existsSync(dataDir)) {
         console.log("⚠️ Direktori data tidak ditemukan");
         return;
@@ -58,7 +58,7 @@ async function convertJsonToParquet() {
 async function convertJsonToExcel() {
     console.log("🔄 Memulai konversi JSON ke Excel...");
     
-    const dataDir = "data/katalogv6";
+    const dataDir = "data/sikap";
     if (!existsSync(dataDir)) {
         console.log("⚠️ Direktori data tidak ditemukan");
         return;
@@ -122,7 +122,7 @@ async function fetchAndSave() {
             for (const tahun of tahunList) {
                 // Cek apakah semua file sudah ada
                 const allFilesExist = jenisDataTypes.every(jenis => {
-                    const jsonPath = `data/katalogv6/${daerah}/${jenis}/${tahun}/data.json`;
+                    const jsonPath = `data/sikap/${daerah}/${jenis}/${tahun}/data.json`;
                     return existsSync(jsonPath);
                 });
 
@@ -153,7 +153,7 @@ async function fetchAndSave() {
                     }
 
                     // Simpan data ke file JSON
-                    const folder = `data/katalogv6/${daerah}/${jenis}/${tahun}`;
+                    const folder = `data/sikap/${daerah}/${jenis}/${tahun}`;
                     mkdirSync(folder, { recursive: true });
                     const jsonPath = join(folder, "data.json");
                     writeFileSync(jsonPath, JSON.stringify(data, null, 2));
