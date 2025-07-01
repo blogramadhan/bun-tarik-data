@@ -1,0 +1,57 @@
+// Prov Kalbar
+https://isb.lkpp.go.id/isb-2/api/0ad35ce0-2237-48c3-918c-66e84668db58/json/7045/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D197
+https://isb.lkpp.go.id/isb-2/api/4d59aa07-998c-4803-93a6-ba349fa68750/json/7047/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D197
+
+// Kota Pontianak
+https://isb.lkpp.go.id/isb-2/api/597d6a7b-9c7a-4d88-8f1b-02f4b17f98f4/json/8441/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D199
+https://isb.lkpp.go.id/isb-2/api/5af24483-8395-4810-ae8e-f8c89da69e56/json/8442/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D199
+
+// Kab Kubu Raya
+
+
+
+// Kab Mempawah
+
+
+
+// Kota Singkawang
+
+
+
+// Kab Bengkayang
+https://isb.lkpp.go.id/isb-2/api/423538cd-cd09-4339-ba5a-f173159aebe3/json/12025/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D206
+https://isb.lkpp.go.id/isb-2/api/d8745e6d-de12-4596-803e-05ad0a0c1a3b/json/12024/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D206
+
+// Kab Landak
+
+
+
+// Kab Sanggau
+https://isb.lkpp.go.id/isb-2/api/a07e40d6-5349-4401-9783-24e51c868d5f/json/12554/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D204
+https://isb.lkpp.go.id/isb-2/api/7b2c5665-f46c-445d-a3c7-c809f5ae4748/json/12553/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D204
+
+// Kab Sekadau
+
+
+
+// Kab Sintang
+
+
+
+// Kab Melawi
+
+
+
+// Kab Kapuas Hulu
+https://isb.lkpp.go.id/isb-2/api/d0249b80-c18c-4f82-876f-9a5cbde1df1a/json/12030/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D209
+https://isb.lkpp.go.id/isb-2/api/683f68a2-9a32-46c6-bd70-23fe922a3628/json/12029/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D209
+
+// Kab Ketapang
+
+
+// Kab Katingan
+
+
+// Kab Tanggerang
+https://isb.lkpp.go.id/isb-2/api/4fc8a3cd-6ef1-4998-86ac-f373b22687e8/json/4071/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D50
+https://isb.lkpp.go.id/isb-2/api/debad062-ea1c-4418-8d0e-2158224402c0/json/4072/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D50
