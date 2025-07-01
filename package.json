@@ -8,7 +8,8 @@
     "spse": "bun run src/spse.ts",
     "katalog": "bun run src/katalog.ts",
     "katalogv6": "bun run src/katalogv6.ts",
-    "daring": "bun run src/daring.ts"
+    "daring": "bun run src/daring.ts",
+    "sikap": "bun run src/sikap.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
