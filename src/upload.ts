@@ -83,7 +83,7 @@ async function notifyAll(message: string) {
   //   sendTelegram(message),
   //   sendEmail("Upload R2 Notification", message),
   // ]);
-  await sendWhatsApp(message);
+  // await sendWhatsApp(message);
   console.log(`📢 Notification: ${message}`);
 }
 
