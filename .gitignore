@@ -35,8 +35,7 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # Finder (MacOS) folder config
 .DS_Store
 
-# WhatsApp Web.js auth files
-.wwebjs_auth
+
 
 # Mengabaikan file deb dan installer
 *.deb

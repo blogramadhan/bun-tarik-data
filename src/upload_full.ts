@@ -23,9 +23,7 @@ const {
   // EMAIL_SMTP_USER,
   // EMAIL_SMTP_PASS,
 
-  // WHATSAPP_API_URL,
-  // WHATSAPP_NUMBERS,
-  // WHATSAPP_MESSAGE_HEADER,
+
 } = process.env;
 
 // Init S3 Client
@@ -80,26 +78,13 @@ const s3 = new S3Client({
 //   }
 // }
 
-// Notifikasi ke WhatsApp (Dummy via GET Request)
-// async function sendWhatsApp(message: string) {
-//   if (!WHATSAPP_NUMBERS || !WHATSAPP_API_URL) return;
-//   const numbers = WHATSAPP_NUMBERS.split(",");
-//   for (const number of numbers) {
-//     const url = `${WHATSAPP_API_URL}?phone=${number}&text=${encodeURIComponent(`${WHATSAPP_MESSAGE_HEADER} ${message}`)}`;
-//     try {
-//       await request(url, { method: "GET" });
-//     } catch (e) {
-//       console.error("WhatsApp error", e);
-//     }
-//   }
-// }
+
 
 // Kirim semua notifikasi
 async function notifyAll(message: string) {
   // await Promise.all([
   //   sendTelegram(message),
   //   sendEmail("Upload R2 Notification", message),
-  //   sendWhatsApp(message),
   // ]);
   console.log(`📢 Notification: ${message}`);
 }

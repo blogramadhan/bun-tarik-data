@@ -4,7 +4,7 @@ import { join } from "path";
 import * as dotenv from "dotenv";
 // import { request } from "undici";
 // import nodemailer from "nodemailer";
-// import { sendWhatsApp, waitUntilWhatsAppReady, isWhatsAppReady } from "./whatsapp";
+
 
 dotenv.config();
 
@@ -83,7 +83,7 @@ async function notifyAll(message: string) {
   //   sendTelegram(message),
   //   sendEmail("Upload R2 Notification", message),
   // ]);
-  // await sendWhatsApp(message);
+
   console.log(`📢 Notification: ${message}`);
 }
 
@@ -233,12 +233,7 @@ async function main() {
   try {
     console.log("🚀 Memulai proses upload file ke Cloudflare R2...");
     
-    // Tunggu hingga WhatsApp siap (maksimal 30 detik)
-    const isReady = await waitUntilWhatsAppReady(30);
-    
-    if (isReady) {
-      await notifyAll("🚀 Proses upload ke Cloudflare R2 dimulai...");
-    }
+    await notifyAll("🚀 Proses upload ke Cloudflare R2 dimulai...");
     
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     
