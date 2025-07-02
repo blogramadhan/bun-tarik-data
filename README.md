@@ -37,11 +37,39 @@ WHATSAPP_RECIPIENT_NUMBERS=628123456789,628987654321
 
 Sebelum menggunakan fitur notifikasi WhatsApp, Anda perlu melakukan autentikasi terlebih dahulu:
 
+#### Di Komputer Lokal:
+
 ```bash
 bun run auth-whatsapp
 ```
 
-Ini akan menampilkan QR Code yang perlu Anda scan dengan aplikasi WhatsApp di handphone. Setelah berhasil, sesi akan disimpan dan Anda tidak perlu melakukan scan ulang setiap kali menjalankan aplikasi.
+Ini akan menampilkan QR Code di terminal yang perlu Anda scan dengan aplikasi WhatsApp di handphone. 
+
+#### Di Server melalui SSH:
+
+Jika Anda menjalankan di server dan perlu menutup terminal SSH, gunakan PM2:
+
+```bash
+# Install PM2 jika belum ada
+bun install -g pm2
+
+# Jalankan autentikasi WhatsApp dengan PM2
+bun run auth-whatsapp:pm2
+
+# Lihat log untuk mendapatkan QR code atau cek file gambar QR
+pm2 logs whatsapp-auth
+
+# QR code juga disimpan sebagai file gambar di:
+# ./qrcode/whatsapp-qrcode.png
+```
+
+Setelah berhasil melakukan scan dan autentikasi, Anda bisa menghentikan proses:
+
+```bash
+bun run auth-whatsapp:pm2:stop
+```
+
+Setelah berhasil, sesi akan disimpan dan Anda tidak perlu melakukan scan ulang setiap kali menjalankan aplikasi.
 
 ### Upload Data ke R2
 
@@ -68,4 +96,5 @@ bun run logout-whatsapp
 - Aturan upload berdasarkan tahun pada path file
 - Mendukung pengiriman ke multiple nomor WhatsApp
 - Modul WhatsApp terpisah untuk kemudahan maintenance
-- Penyimpanan sesi WhatsApp untuk autentikasi sekali 
+- Penyimpanan sesi WhatsApp untuk autentikasi sekali
+- QR Code tersimpan sebagai file gambar untuk penggunaan di server 

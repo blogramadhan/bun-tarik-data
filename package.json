@@ -11,21 +11,25 @@
     "daring": "bun run src/daring.ts",
     "sikap": "bun run src/sikap.ts",
     "auth-whatsapp": "bun run src/auth-whatsapp.ts",
-    "logout-whatsapp": "bun run src/logout-whatsapp.ts"
+    "logout-whatsapp": "bun run src/logout-whatsapp.ts",
+    "auth-whatsapp:pm2": "pm2 start 'bun run auth-whatsapp' --name whatsapp-auth",
+    "auth-whatsapp:pm2:stop": "pm2 stop whatsapp-auth && pm2 delete whatsapp-auth"
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@types/nodemailer": "^6.4.17"
+    "@types/nodemailer": "^6.4.17",
+    "@types/qrcode": "^1.5.5",
+    "@types/qrcode-terminal": "^0.12.2"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.832.0",
-    "@types/qrcode-terminal": "^0.12.2",
     "dotenv": "^16.5.0",
     "duckdb": "^1.3.0",
     "nodemailer": "^7.0.3",
+    "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0",
     "undici": "^7.10.0",
     "whatsapp-web.js": "^1.31.0"

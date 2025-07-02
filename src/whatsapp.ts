@@ -27,10 +27,27 @@ const client = new Client({
 // Status WhatsApp connection
 let whatsappReady = false;
 
+// Callback untuk QR code yang bisa diakses dari luar
+export type QRCallback = (qr: string) => void;
+let externalQRCallback: QRCallback | null = null;
+
+/**
+ * Mengatur callback untuk QR code
+ * @param callback Fungsi yang akan dipanggil ketika QR code diterima
+ */
+export function setQRCallback(callback: QRCallback): void {
+  externalQRCallback = callback;
+}
+
 // Setup WhatsApp client
 client.on('qr', (qr) => {
   console.log('QR RECEIVED, scan dengan aplikasi WhatsApp di HP Anda:');
   qrcode.generate(qr, {small: true});
+  
+  // Panggil callback eksternal jika ada
+  if (externalQRCallback) {
+    externalQRCallback(qr);
+  }
 });
 
 client.on('ready', () => {
