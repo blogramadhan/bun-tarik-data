@@ -25,10 +25,13 @@ const s3 = new S3Client({
 
 // Fungsi untuk mengirim notifikasi ke semua platform
 async function notifyAll(message: string) {
-  await axios.post('http://localhost:3000/send-message', {
-    number: '62811577280',
-    message: message
-  });
+  // Hanya kirim pesan ke WhatsApp jika berisi summary (mengandung kata "selesai" atau "dimulai")
+  if (message.includes("selesai") || message.includes("dimulai")) {
+    await axios.post('http://localhost:3000/send-message', {
+      number: '62811577280',
+      message: message
+    });
+  }
   console.log(`📢 Notification: ${message}`);
 }
 
