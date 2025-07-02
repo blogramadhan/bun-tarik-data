@@ -2,8 +2,6 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { readdirSync, statSync, readFileSync } from "fs";
 import { join } from "path";
 import * as dotenv from "dotenv";
-// import { request } from "undici";
-// import nodemailer from "nodemailer";
 
 dotenv.config();
 
@@ -12,18 +10,6 @@ const {
   R2_ACCESS_KEY_ID,
   R2_SECRET_ACCESS_KEY,
   R2_BUCKET_NAME,
-
-  // TELEGRAM_BOT_TOKEN,
-  // TELEGRAM_CHAT_ID,
-
-  // EMAIL_FROM,
-  // EMAIL_TO,
-  // EMAIL_SMTP_HOST,
-  // EMAIL_SMTP_PORT,
-  // EMAIL_SMTP_USER,
-  // EMAIL_SMTP_PASS,
-
-
 } = process.env;
 
 // Init S3 Client
@@ -36,56 +22,8 @@ const s3 = new S3Client({
   },
 });
 
-// Notifikasi ke Telegram
-// async function sendTelegram(message: string) {
-//   if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) return;
-//   try {
-//     await request(
-//       `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-//       {
-//         method: "POST",
-//         headers: { "content-type": "application/json" },
-//         body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message }),
-//       }
-//     );
-//   } catch (e) {
-//     console.error("Telegram error", e);
-//   }
-// }
-
-// Notifikasi ke Email
-// async function sendEmail(subject: string, message: string) {
-//   if (!EMAIL_SMTP_HOST || !EMAIL_SMTP_USER || !EMAIL_SMTP_PASS) return;
-//   try {
-//     const transporter = nodemailer.createTransporter({
-//       host: EMAIL_SMTP_HOST,
-//       port: Number(EMAIL_SMTP_PORT),
-//       secure: false,
-//       auth: {
-//         user: EMAIL_SMTP_USER,
-//         pass: EMAIL_SMTP_PASS,
-//       },
-//     });
-
-//     await transporter.sendMail({
-//       from: EMAIL_FROM,
-//       to: EMAIL_TO,
-//       subject,
-//       text: message,
-//     });
-//   } catch (e) {
-//     console.error("Email error", e);
-//   }
-// }
-
-
-
 // Kirim semua notifikasi
 async function notifyAll(message: string) {
-  // await Promise.all([
-  //   sendTelegram(message),
-  //   sendEmail("Upload R2 Notification", message),
-  // ]);
   console.log(`📢 Notification: ${message}`);
 }
 
