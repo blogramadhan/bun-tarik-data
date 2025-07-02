@@ -2,6 +2,7 @@ import { S3Client, PutObjectCommand, HeadObjectCommand, ListObjectsV2Command } f
 import { readdirSync, statSync, readFileSync } from "fs";
 import { join } from "path";
 import * as dotenv from "dotenv";
+import axios from "axios";
 
 dotenv.config();
 
@@ -24,6 +25,10 @@ const s3 = new S3Client({
 
 // Fungsi untuk mengirim notifikasi ke semua platform
 async function notifyAll(message: string) {
+  await axios.post('http://localhost:3000/send-message', {
+    number: '62811577280',
+    message: message
+  });
   console.log(`📢 Notification: ${message}`);
 }
 
