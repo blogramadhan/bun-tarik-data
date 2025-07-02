@@ -6,6 +6,32 @@
 echo "🚀 Menjalankan Autentikasi WhatsApp dengan Docker"
 echo "================================================"
 
+# Fungsi untuk mendeteksi command Docker Compose yang tersedia
+detect_docker_compose() {
+    if command -v docker-compose &> /dev/null; then
+        echo "docker-compose"
+    elif docker compose version &> /dev/null 2>&1; then
+        echo "docker compose"
+    else
+        echo ""
+    fi
+}
+
+# Cek apakah Docker dan Docker Compose tersedia
+DOCKER_COMPOSE_CMD=$(detect_docker_compose)
+
+if [ -z "$DOCKER_COMPOSE_CMD" ]; then
+    echo "❌ Docker Compose tidak ditemukan!"
+    echo "📦 Silakan install Docker dan Docker Compose terlebih dahulu:"
+    echo "   https://docs.docker.com/compose/install/"
+    echo ""
+    echo "💡 Alternatif: Jalankan tanpa Docker dengan Bun:"
+    echo "   bun run src/auth-whatsapp.ts"
+    exit 1
+fi
+
+echo "✅ Menggunakan: $DOCKER_COMPOSE_CMD"
+
 # Cek apakah file .env ada
 if [ ! -f ".env" ]; then
     echo "❌ File .env tidak ditemukan!"
@@ -32,10 +58,10 @@ fi
 
 # Bersihkan container yang lama jika ada
 echo "🧹 Membersihkan container lama..."
-docker-compose down 2>/dev/null || true
+$DOCKER_COMPOSE_CMD down 2>/dev/null || true
 
 # Build dan jalankan container
 echo "🔨 Building dan menjalankan container..."
-docker-compose up --build
+$DOCKER_COMPOSE_CMD up --build
 
 echo "✅ Proses selesai!" 
