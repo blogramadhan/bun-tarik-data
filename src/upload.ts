@@ -180,9 +180,9 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
 // Fungsi utama program
 async function main() {
   try {
-    console.log("🚀 Memulai proses upload file ke Cloudflare R2...");
+    console.log("🚀 Memulai proses upload data ISB ke Cloudflare R2...");
     
-    await notifyAll("🚀 Proses upload ke Cloudflare R2 dimulai...");
+    await notifyAll("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
     
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     
