@@ -10,8 +10,12 @@ const { WHATSAPP_RECIPIENT_NUMBERS } = process.env;
 
 // Pastikan direktori untuk menyimpan data sesi tersedia
 const SESSIONS_DIR = join(process.cwd(), '.wwebjs_auth');
+const SESSION_DATA_DIR = join(SESSIONS_DIR, 'session-data');
 if (!existsSync(SESSIONS_DIR)) {
   mkdirSync(SESSIONS_DIR, { recursive: true });
+}
+if (!existsSync(SESSION_DATA_DIR)) {
+  mkdirSync(SESSION_DATA_DIR, { recursive: true });
 }
 
 // Inisialisasi WhatsApp Client dengan LocalAuth untuk menyimpan sesi
@@ -20,7 +24,10 @@ const client = new Client({
     dataPath: SESSIONS_DIR
   }),
   puppeteer: {
-    args: ['--no-sandbox'],
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage'],
+    executablePath: '/usr/bin/google-chrome',
+    userDataDir: SESSION_DATA_DIR
   }
 });
 
