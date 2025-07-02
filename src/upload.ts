@@ -4,6 +4,7 @@ import { join } from "path";
 import * as dotenv from "dotenv";
 // import { request } from "undici";
 // import nodemailer from "nodemailer";
+import { sendWhatsApp, waitUntilWhatsAppReady, isWhatsAppReady } from "./whatsapp";
 
 dotenv.config();
 
@@ -22,10 +23,6 @@ const {
   // EMAIL_SMTP_PORT,
   // EMAIL_SMTP_USER,
   // EMAIL_SMTP_PASS,
-
-  // WHATSAPP_API_URL,
-  // WHATSAPP_NUMBERS,
-  // WHATSAPP_MESSAGE_HEADER,
 } = process.env;
 
 // Inisialisasi S3 Client untuk koneksi ke Cloudflare R2
@@ -80,27 +77,13 @@ const s3 = new S3Client({
 //   }
 // }
 
-// Fungsi untuk mengirim notifikasi ke WhatsApp melalui API GET Request (dinonaktifkan)
-// async function sendWhatsApp(message: string) {
-//   if (!WHATSAPP_NUMBERS || !WHATSAPP_API_URL) return;
-//   const numbers = WHATSAPP_NUMBERS.split(",");
-//   for (const number of numbers) {
-//     const url = `${WHATSAPP_API_URL}?phone=${number}&text=${encodeURIComponent(`${WHATSAPP_MESSAGE_HEADER} ${message}`)}`;
-//     try {
-//       await request(url, { method: "GET" });
-//     } catch (e) {
-//       console.error("WhatsApp error", e);
-//     }
-//   }
-// }
-
-// Fungsi untuk mengirim notifikasi ke semua platform (saat ini hanya console.log)
+// Fungsi untuk mengirim notifikasi ke semua platform
 async function notifyAll(message: string) {
   // await Promise.all([
   //   sendTelegram(message),
   //   sendEmail("Upload R2 Notification", message),
-  //   sendWhatsApp(message),
   // ]);
+  await sendWhatsApp(message);
   console.log(`📢 Notification: ${message}`);
 }
 
@@ -249,6 +232,14 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
 async function main() {
   try {
     console.log("🚀 Memulai proses upload file ke Cloudflare R2...");
+    
+    // Tunggu hingga WhatsApp siap (maksimal 30 detik)
+    const isReady = await waitUntilWhatsAppReady(30);
+    
+    if (isReady) {
+      await notifyAll("🚀 Proses upload ke Cloudflare R2 dimulai...");
+    }
+    
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     
     const summary = `🎉 Upload selesai! Berhasil: ${result.uploadedCount}, Gagal: ${result.failedCount}, Dilewati: ${result.skippedCount}`;
@@ -258,6 +249,10 @@ async function main() {
     const msg = `❌ Upload total gagal: ${err.message}`;
     console.error(msg);
     await notifyAll(msg);
+  } finally {
+    // Tunggu beberapa detik untuk memastikan pesan terkirim sebelum keluar
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    process.exit();
   }
 }
 
