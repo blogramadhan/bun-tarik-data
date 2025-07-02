@@ -1,0 +1,47 @@
+# Node modules
+node_modules
+
+# Data dan cache
+data/
+.wwebjs_auth/
+qrcode/*.png
+
+# Log files
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Chrome/Chromium files
+*.deb
+google-chrome*
+
+# Backup files
+*.backup
+*.bak
+
+# Documentation (tidak perlu di dalam container)
+*.md
+PANDUAN_*
+README* 
