@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  whatsapp-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: whatsapp-service
+    restart: unless-stopped
+    volumes:
+      - ./.wwebjs_auth:/app/.wwebjs_auth
+      - ./qrcode:/app/qrcode
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+    # Command untuk menjalankan auth-whatsapp.ts, ganti sesuai kebutuhan
+    # - Untuk autentikasi: ["bun", "src/auth-whatsapp.ts"]
+    # - Untuk logout: ["bun", "src/logout-whatsapp.ts"]
+    command: ["bun", "src/auth-whatsapp.ts"] 

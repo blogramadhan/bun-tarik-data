@@ -37,7 +37,7 @@ const client = new Client({
       '--no-zygote',
       '--no-first-run',
     ],
-    executablePath: '/usr/bin/google-chrome',
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium',
     ignoreDefaultArgs: ['--disable-extensions']
   }
 });

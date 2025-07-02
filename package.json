@@ -11,9 +11,7 @@
     "daring": "bun run src/daring.ts",
     "sikap": "bun run src/sikap.ts",
     "auth-whatsapp": "bun run src/auth-whatsapp.ts",
-    "logout-whatsapp": "bun run src/logout-whatsapp.ts",
-    "auth-whatsapp:pm2": "pm2 start 'bun run auth-whatsapp' --name whatsapp-auth",
-    "auth-whatsapp:pm2:stop": "pm2 stop whatsapp-auth && pm2 delete whatsapp-auth"
+    "logout-whatsapp": "bun run src/logout-whatsapp.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",

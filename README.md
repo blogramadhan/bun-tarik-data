@@ -98,3 +98,64 @@ bun run logout-whatsapp
 - Modul WhatsApp terpisah untuk kemudahan maintenance
 - Penyimpanan sesi WhatsApp untuk autentikasi sekali
 - QR Code tersimpan sebagai file gambar untuk penggunaan di server 
+
+# Bun Tarik Data dengan WhatsApp
+
+## Menjalankan WhatsApp di Docker
+
+### Prasyarat
+- Docker dan Docker Compose terinstal di sistem Anda
+
+### Langkah-langkah
+1. Build dan jalankan container:
+   ```bash
+   docker-compose build
+   docker-compose up
+   ```
+
+2. Scan QR code yang muncul di terminal atau lihat file QR code yang tersimpan di folder `qrcode`
+
+3. Setelah berhasil autentikasi, data sesi akan tersimpan di folder `.wwebjs_auth`
+
+### Opsi Command
+Anda dapat mengubah command yang dijalankan di dalam container dengan mengedit `docker-compose.yml`:
+
+- Untuk autentikasi (default):
+  ```yaml
+  command: ["bun", "src/auth-whatsapp.ts"]
+  ```
+
+- Untuk logout:
+  ```yaml
+  command: ["bun", "src/logout-whatsapp.ts"]
+  ```
+
+### Troubleshooting
+- Jika mengalami masalah dengan library yang hilang, pastikan semua dependensi sudah terinstal di Dockerfile
+- Untuk debugging, tambahkan:
+  ```yaml
+  environment:
+    - DEBUG=true
+  ```
+
+## Struktur Aplikasi
+- `src/whatsapp.ts` - Modul untuk fungsionalitas WhatsApp
+- `src/auth-whatsapp.ts` - Script untuk autentikasi WhatsApp
+- `src/logout-whatsapp.ts` - Script untuk logout WhatsApp
+- `src/upload.ts` - Script untuk mengupload data dengan notifikasi WhatsApp
+
+## Environment Variables
+Buat file `.env` dengan konfigurasi berikut:
+
+```
+# WhatsApp Configuration
+WHATSAPP_RECIPIENT_NUMBERS=628123456789,628987654321
+```
+
+### Autentikasi WhatsApp
+Autentikasi WhatsApp dilakukan melalui Docker dengan perintah:
+```bash
+docker-compose up
+```
+
+Ini akan menampilkan QR Code yang perlu Anda scan dengan aplikasi WhatsApp di handphone. 
