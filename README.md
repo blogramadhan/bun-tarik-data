@@ -31,27 +31,37 @@ R2_BUCKET_NAME=your_bucket_name
 WHATSAPP_RECIPIENT_NUMBERS=628123456789,628987654321
 ```
 
-## Penggunaan WhatsApp
+## Arsitektur Aplikasi
 
-WhatsApp dapat dijalankan dengan dua cara: langsung di host atau melalui Docker.
+Aplikasi ini terdiri dari dua komponen utama:
 
-### Cara 1: Menjalankan WhatsApp di Docker (Direkomendasikan)
+1. **Layanan WhatsApp di Docker**:
+   - Berjalan di container Docker terpisah
+   - Menangani autentikasi WhatsApp dan mempertahankan sesi
+   - Menyediakan API untuk pengiriman pesan WhatsApp
 
-#### Prasyarat
+2. **Upload Script (upload.ts)**:
+   - Berjalan di host/sistem utama
+   - Menangani proses upload file ke Cloudflare R2
+   - Menggunakan layanan WhatsApp di Docker untuk mengirim notifikasi status
+
+## Menjalankan WhatsApp di Docker
+
+### Prasyarat
 - Docker dan Docker Compose terinstal di sistem Anda
 
-#### Langkah-langkah
-1. Build dan jalankan container:
+### Langkah-langkah
+1. Build dan jalankan container WhatsApp:
    ```bash
    docker-compose build
-   docker-compose up
+   docker-compose up -d
    ```
 
-2. Scan QR code yang muncul di terminal atau lihat file QR code yang tersimpan di folder `qrcode`
+2. Scan QR code yang tersimpan di folder `qrcode` untuk autentikasi WhatsApp
 
 3. Setelah berhasil autentikasi, data sesi akan tersimpan di folder `.wwebjs_auth`
 
-#### Opsi Command
+### Opsi Command
 Anda dapat mengubah command yang dijalankan di dalam container dengan mengedit `docker-compose.yml`:
 
 - Untuk autentikasi (default):
@@ -64,7 +74,7 @@ Anda dapat mengubah command yang dijalankan di dalam container dengan mengedit `
   command: ["bun", "src/logout-whatsapp.ts"]
   ```
 
-#### Troubleshooting Docker
+### Troubleshooting Docker
 - Jika mengalami masalah dengan library yang hilang, pastikan semua dependensi sudah terinstal di Dockerfile
 - Untuk debugging, tambahkan:
   ```yaml
@@ -72,33 +82,16 @@ Anda dapat mengubah command yang dijalankan di dalam container dengan mengedit `
     - DEBUG=true
   ```
 
-### Cara 2: Menjalankan WhatsApp Langsung di Host
+## Menggunakan Upload Script dengan Notifikasi WhatsApp
 
-#### Autentikasi WhatsApp (Hanya Sekali)
+Setelah layanan WhatsApp di Docker berjalan dan telah diautentikasi:
 
-```bash
-bun run auth-whatsapp
-```
+1. Jalankan script upload di host:
+   ```bash
+   bun run upload
+   ```
 
-Ini akan menampilkan QR Code di terminal yang perlu Anda scan dengan aplikasi WhatsApp di handphone.
-
-#### Logout WhatsApp (Opsional)
-
-Jika Anda ingin menghapus sesi WhatsApp dan melakukan autentikasi ulang:
-
-```bash
-bun run logout-whatsapp
-```
-
-### Upload Data ke R2
-
-Setelah autentikasi WhatsApp berhasil (baik via Docker atau langsung), jalankan proses upload:
-
-```bash
-bun run upload
-```
-
-Notifikasi status upload akan dikirimkan ke nomor WhatsApp yang telah dikonfigurasi.
+2. Script upload akan menghubungi layanan WhatsApp di Docker untuk mengirim notifikasi status upload ke nomor yang telah dikonfigurasi
 
 ## Fitur
 
@@ -106,7 +99,6 @@ Notifikasi status upload akan dikirimkan ke nomor WhatsApp yang telah dikonfigur
 - Mengirim notifikasi status upload melalui WhatsApp
 - Aturan upload berdasarkan tahun pada path file
 - Mendukung pengiriman ke multiple nomor WhatsApp
-- Dukungan Docker untuk WhatsApp
-- Modul WhatsApp terpisah untuk kemudahan maintenance
+- Arsitektur terdistribusi dengan WhatsApp di Docker
 - Penyimpanan sesi WhatsApp untuk autentikasi sekali
-- QR Code tersimpan sebagai file gambar untuk penggunaan di server 
+- QR Code tersimpan sebagai file gambar untuk pemindaian yang mudah 
