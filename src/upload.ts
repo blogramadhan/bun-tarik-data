@@ -11,6 +11,7 @@ const {
   R2_ACCESS_KEY_ID,
   R2_SECRET_ACCESS_KEY,
   R2_BUCKET_NAME,
+  WHATSAPP_NUMBER,
 } = process.env;
 
 // Inisialisasi S3 Client untuk koneksi ke Cloudflare R2
@@ -28,7 +29,7 @@ async function notifyAll(message: string) {
   // Hanya kirim pesan ke WhatsApp jika berisi summary (mengandung kata "selesai" atau "dimulai")
   if (message.includes("selesai") || message.includes("dimulai")) {
     await axios.post('http://localhost:3000/send-message', {
-      number: '62811577280',
+      number: WHATSAPP_NUMBER,
       message: message
     });
   }
