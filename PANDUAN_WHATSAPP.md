@@ -31,7 +31,13 @@ WHATSAPP_RECIPIENT_NUMBERS=628123456789
 
 ### 🔐 1. Autentikasi WhatsApp (Pertama Kali)
 
-#### Menggunakan Docker:
+#### Menggunakan Script Helper (DIREKOMENDASIKAN):
+```bash
+# Menggunakan script otomatis
+./run-auth.sh
+```
+
+#### Atau menggunakan Docker langsung:
 ```bash
 # Build dan jalankan container untuk autentikasi
 docker-compose up --build
@@ -107,6 +113,34 @@ command: ["bun", "src/logout-whatsapp.ts"]
 
 ## 🔍 Troubleshooting
 
+### ❌ Error "Protocol error (Network.setUserAgentOverride): Session closed"
+**Masalah:** Browser session tertutup prematur setelah scan QR code berhasil.
+
+**Solusi:**
+```bash
+# 1. Reset semua container dan volume
+docker-compose down
+docker system prune -f
+docker volume prune -f
+
+# 2. Hapus data auth lama
+rm -rf .wwebjs_auth/
+
+# 3. Jalankan ulang dengan script helper
+./run-auth.sh
+```
+
+**Penyebab:** Konfigurasi Puppeteer yang tidak cocok dengan Docker environment sudah diperbaiki di versi terbaru.
+
+### ❌ QR Code muncul berulang kali
+**Masalah:** QR Code baru muncul setelah scan berhasil.
+
+**Solusi:**
+1. **JANGAN SCAN** QR code kedua dan seterusnya
+2. Tunggu hingga container berhenti otomatis  
+3. Cek folder `.wwebjs_auth/` - jika ada isi, autentikasi sudah berhasil
+4. Restart container untuk test koneksi
+
 ### ❌ QR Code tidak muncul
 - Pastikan Docker container berjalan dengan benar
 - Cek file `qrcode/whatsapp-qrcode.png`
@@ -127,12 +161,8 @@ command: ["bun", "src/logout-whatsapp.ts"]
 # Cek log error
 docker-compose logs
 
-# Rebuild image
-docker-compose build --no-cache
-
-# Reset everything
-docker-compose down
-docker system prune -f
+# Reset semua dan coba lagi
+./run-auth.sh
 ```
 
 ## 🧪 Testing Koneksi

@@ -35,48 +35,72 @@ async function main() {
   console.log("🔑 Memulai proses autentikasi WhatsApp...");
   console.log("🔍 Silahkan siapkan aplikasi WhatsApp di HP Anda...");
   
-  try {
-    // Inisialisasi WhatsApp
-    await initWhatsApp();
-    
-    // Menunggu QR Code di-scan dan proses autentikasi selesai
-    console.log("⏳ Menunggu QR Code di-scan dan autentikasi selesai...");
-    
-    // Tunggu maksimal 5 menit (300 detik) untuk proses autentikasi
-    let isReady = false;
-    let attempts = 0;
-    const maxAttempts = 300; // 5 menit
-    
-    while (!isReady && attempts < maxAttempts) {
-      isReady = isWhatsAppReady();
-      if (!isReady) {
-        if (attempts % 30 === 0) { // Tampilkan pesan setiap 30 detik
-          if (qrSaved) {
-            console.log(`⏳ [${attempts}s/300s] Menunggu QR Code di-scan... QR code tersimpan di ${join(QR_DIR, 'whatsapp-qrcode.png')}`);
-          } else {
-            console.log(`⏳ [${attempts}s/300s] Menunggu QR Code ditampilkan...`);
+  let retryCount = 0;
+  const maxRetries = 3;
+  
+  while (retryCount < maxRetries) {
+    try {
+      console.log(`\n🚀 Percobaan ${retryCount + 1}/${maxRetries}`);
+      
+      // Reset state
+      qrSaved = false;
+      
+      // Inisialisasi WhatsApp
+      await initWhatsApp();
+      
+      // Menunggu QR Code di-scan dan proses autentikasi selesai
+      console.log("⏳ Menunggu QR Code di-scan dan autentikasi selesai...");
+      
+      // Tunggu maksimal 5 menit (300 detik) untuk proses autentikasi
+      let isReady = false;
+      let attempts = 0;
+      const maxAttempts = 300; // 5 menit
+      
+      while (!isReady && attempts < maxAttempts) {
+        try {
+          isReady = isWhatsAppReady();
+          if (!isReady) {
+            if (attempts % 30 === 0) { // Tampilkan pesan setiap 30 detik
+              if (qrSaved) {
+                console.log(`⏳ [${attempts}s/300s] Menunggu QR Code di-scan... QR code tersimpan di ${join(QR_DIR, 'whatsapp-qrcode.png')}`);
+              } else {
+                console.log(`⏳ [${attempts}s/300s] Menunggu QR Code ditampilkan...`);
+              }
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            attempts++;
           }
-        }
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        attempts++;
+                 } catch (innerError) {
+           console.log(`⚠️ Error saat cek status: ${(innerError as Error).message}`);
+           break;
+         }
+      }
+      
+      if (isReady) {
+        console.log("✅ Autentikasi WhatsApp berhasil!");
+        console.log("🔔 Sesi telah disimpan, Anda tidak perlu scan QR Code lagi untuk penggunaan selanjutnya.");
+        console.log("📱 Anda sekarang dapat menggunakan fitur notifikasi WhatsApp saat upload file.");
+        
+        // Tunggu sebentar untuk memastikan sesi tersimpan
+        console.log("💾 Menyimpan sesi...");
+        await new Promise(resolve => setTimeout(resolve, 10000));
+        return; // Berhasil, keluar dari loop
+      } else {
+        throw new Error("Timeout waiting for authentication");
+      }
+         } catch (error) {
+       console.error(`❌ Percobaan ${retryCount + 1} gagal:`, (error as Error).message);
+       retryCount++;
+      
+      if (retryCount < maxRetries) {
+        console.log(`🔄 Mencoba lagi dalam 10 detik... (${retryCount}/${maxRetries})`);
+        await new Promise(resolve => setTimeout(resolve, 10000));
       }
     }
-    
-    if (isReady) {
-      console.log("✅ Autentikasi WhatsApp berhasil!");
-      console.log("🔔 Sesi telah disimpan, Anda tidak perlu scan QR Code lagi untuk penggunaan selanjutnya.");
-      console.log("📱 Anda sekarang dapat menggunakan fitur notifikasi WhatsApp saat upload file.");
-    } else {
-      console.log("❌ Timeout! Autentikasi WhatsApp gagal. Silakan coba lagi.");
-    }
-  } catch (error) {
-    console.error("❌ Terjadi kesalahan saat autentikasi WhatsApp:", error);
-  } finally {
-    // Berikan waktu untuk memastikan semua proses selesai
-    console.log("⏱️ Menunggu 5 detik sebelum keluar...");
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    process.exit(0);
   }
+  
+  console.log("❌ Semua percobaan autentikasi gagal. Silakan coba restart container.");
+  process.exit(1);
 }
 
 main(); 

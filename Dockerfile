@@ -36,6 +36,9 @@ RUN apt-get update && apt-get install -y \
 # Set environment variable untuk Puppeteer
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DISPLAY=:99
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 
 # Copy package.json dan bun.lockb
 COPY package.json bun.lockb* ./
