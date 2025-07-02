@@ -14,6 +14,9 @@ if (!existsSync(SESSIONS_DIR)) {
   mkdirSync(SESSIONS_DIR, { recursive: true });
 }
 
+// Flag untuk menandai apakah client sudah diinisialisasi
+let clientInitialized = false;
+
 // Inisialisasi WhatsApp Client dengan LocalAuth untuk menyimpan sesi
 const client = new Client({
   authStrategy: new LocalAuth({
@@ -81,6 +84,7 @@ client.on('auth_failure', (msg) => {
 client.on('disconnected', () => {
   console.log('WhatsApp client terputus!');
   whatsappReady = false;
+  clientInitialized = false;
 });
 
 /**
@@ -88,18 +92,21 @@ client.on('disconnected', () => {
  * @returns Promise<void>
  */
 export async function initWhatsApp(): Promise<void> {
+  // Jika client sudah diinisialisasi, jangan inisialisasi lagi
+  if (clientInitialized) {
+    console.log('WhatsApp client sudah diinisialisasi sebelumnya.');
+    return;
+  }
+  
   try {
+    clientInitialized = true;
     await client.initialize();
   } catch (err) {
+    clientInitialized = false;
     console.error('Gagal menginisialisasi WhatsApp client:', err);
     throw err;
   }
 }
-
-// Inisialisasi WhatsApp client secara otomatis saat modul diimpor
-initWhatsApp().catch(err => {
-  console.error('Gagal menginisialisasi WhatsApp client:', err);
-});
 
 /**
  * Fungsi untuk mengirim pesan melalui WhatsApp
@@ -161,6 +168,8 @@ export function isWhatsAppReady(): boolean {
 export async function logoutWhatsApp(): Promise<void> {
   if (whatsappReady) {
     await client.logout();
+    clientInitialized = false;
+    whatsappReady = false;
     console.log('WhatsApp berhasil logout dan sesi dihapus.');
   }
 } 
