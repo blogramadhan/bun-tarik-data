@@ -49,6 +49,9 @@ RUN bun install
 # Copy source code
 COPY . .
 
+# Bersihkan Chrome profile locks jika ada
+RUN rm -rf /tmp/chromium-user-data* || true
+
 # Volume untuk menyimpan auth data
 VOLUME ["/app/.wwebjs_auth"]
 

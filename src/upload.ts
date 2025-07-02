@@ -4,7 +4,7 @@ import { join } from "path";
 import * as dotenv from "dotenv";
 // import { request } from "undici";
 // import nodemailer from "nodemailer";
-import { sendWhatsApp, waitUntilWhatsAppReady, isWhatsAppReady } from "./whatsapp";
+// import { sendWhatsApp, waitUntilWhatsAppReady, isWhatsAppReady } from "./whatsapp";
 
 dotenv.config();
 
