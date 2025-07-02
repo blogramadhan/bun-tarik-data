@@ -1,13 +1,28 @@
-import { Client } from "whatsapp-web.js";
+import { Client, LocalAuth } from "whatsapp-web.js";
 import qrcode from "qrcode-terminal";
 import * as dotenv from "dotenv";
+import { existsSync, mkdirSync } from "fs";
+import { join } from "path";
 
 dotenv.config();
 
 const { WHATSAPP_RECIPIENT_NUMBERS } = process.env;
 
-// Inisialisasi WhatsApp Client
-const client = new Client({});
+// Pastikan direktori untuk menyimpan data sesi tersedia
+const SESSIONS_DIR = join(process.cwd(), '.wwebjs_auth');
+if (!existsSync(SESSIONS_DIR)) {
+  mkdirSync(SESSIONS_DIR, { recursive: true });
+}
+
+// Inisialisasi WhatsApp Client dengan LocalAuth untuk menyimpan sesi
+const client = new Client({
+  authStrategy: new LocalAuth({
+    dataPath: SESSIONS_DIR
+  }),
+  puppeteer: {
+    args: ['--no-sandbox'],
+  }
+});
 
 // Status WhatsApp connection
 let whatsappReady = false;
@@ -23,13 +38,34 @@ client.on('ready', () => {
   whatsappReady = true;
 });
 
+client.on('authenticated', () => {
+  console.log('WhatsApp berhasil diautentikasi!');
+});
+
+client.on('auth_failure', (msg) => {
+  console.error('Autentikasi WhatsApp gagal:', msg);
+});
+
 client.on('disconnected', () => {
   console.log('WhatsApp client terputus!');
   whatsappReady = false;
 });
 
-// Inisialisasi WhatsApp client
-client.initialize().catch(err => {
+/**
+ * Inisialisasi WhatsApp client
+ * @returns Promise<void>
+ */
+export async function initWhatsApp(): Promise<void> {
+  try {
+    await client.initialize();
+  } catch (err) {
+    console.error('Gagal menginisialisasi WhatsApp client:', err);
+    throw err;
+  }
+}
+
+// Inisialisasi WhatsApp client secara otomatis saat modul diimpor
+initWhatsApp().catch(err => {
   console.error('Gagal menginisialisasi WhatsApp client:', err);
 });
 
@@ -84,4 +120,15 @@ export async function waitUntilWhatsAppReady(timeout = 30): Promise<boolean> {
  */
 export function isWhatsAppReady(): boolean {
   return whatsappReady;
+}
+
+/**
+ * Logout dan hapus data sesi WhatsApp
+ * @returns Promise<void>
+ */
+export async function logoutWhatsApp(): Promise<void> {
+  if (whatsappReady) {
+    await client.logout();
+    console.log('WhatsApp berhasil logout dan sesi dihapus.');
+  }
 } 

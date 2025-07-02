@@ -6,6 +6,8 @@ Aplikasi untuk mengupload data ke penyimpanan Cloudflare R2 dengan notifikasi Wh
 
 - `src/upload.ts` - Kode utama untuk upload file ke Cloudflare R2
 - `src/whatsapp.ts` - Modul terpisah untuk fungsionalitas WhatsApp
+- `src/auth-whatsapp.ts` - Script untuk autentikasi WhatsApp terpisah
+- `src/logout-whatsapp.ts` - Script untuk logout dan menghapus sesi WhatsApp
 
 ## Instalasi
 
@@ -31,13 +33,33 @@ WHATSAPP_RECIPIENT_NUMBERS=628123456789,628987654321
 
 ## Penggunaan
 
+### Autentikasi WhatsApp (Hanya Sekali)
+
+Sebelum menggunakan fitur notifikasi WhatsApp, Anda perlu melakukan autentikasi terlebih dahulu:
+
+```bash
+bun run auth-whatsapp
+```
+
+Ini akan menampilkan QR Code yang perlu Anda scan dengan aplikasi WhatsApp di handphone. Setelah berhasil, sesi akan disimpan dan Anda tidak perlu melakukan scan ulang setiap kali menjalankan aplikasi.
+
 ### Upload Data ke R2
+
+Setelah autentikasi WhatsApp berhasil, jalankan proses upload:
 
 ```bash
 bun run upload
 ```
 
-Pada saat pertama kali menjalankan, akan muncul QR Code di terminal. Scan QR Code tersebut dengan aplikasi WhatsApp di handphone Anda untuk melakukan autentikasi. Setelah berhasil terhubung, notifikasi status upload akan dikirimkan ke nomor WhatsApp yang telah dikonfigurasi.
+Notifikasi status upload akan dikirimkan ke nomor WhatsApp yang telah dikonfigurasi.
+
+### Logout WhatsApp (Opsional)
+
+Jika Anda ingin menghapus sesi WhatsApp dan melakukan autentikasi ulang:
+
+```bash
+bun run logout-whatsapp
+```
 
 ## Fitur
 
@@ -45,4 +67,5 @@ Pada saat pertama kali menjalankan, akan muncul QR Code di terminal. Scan QR Cod
 - Mengirim notifikasi status upload melalui WhatsApp
 - Aturan upload berdasarkan tahun pada path file
 - Mendukung pengiriman ke multiple nomor WhatsApp
-- Modul WhatsApp terpisah untuk kemudahan maintenance 
+- Modul WhatsApp terpisah untuk kemudahan maintenance
+- Penyimpanan sesi WhatsApp untuk autentikasi sekali 

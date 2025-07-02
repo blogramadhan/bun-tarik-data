@@ -9,7 +9,9 @@
     "katalog": "bun run src/katalog.ts",
     "katalogv6": "bun run src/katalogv6.ts",
     "daring": "bun run src/daring.ts",
-    "sikap": "bun run src/sikap.ts"
+    "sikap": "bun run src/sikap.ts",
+    "auth-whatsapp": "bun run src/auth-whatsapp.ts",
+    "logout-whatsapp": "bun run src/logout-whatsapp.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
