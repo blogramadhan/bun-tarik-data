@@ -53,3 +53,53 @@ R2_BUCKET_NAME=your_bucket_name
 - Multiple script untuk berbagai jenis data
 - Notifikasi console untuk status upload
 - Optimized untuk performance dengan Bun runtime 
+
+# 📲 Bun WhatsApp Gateway (Dockerized)
+
+Gateway pengiriman pesan WhatsApp berbasis **Bun JS** dan **whatsapp-web.js**, dilengkapi REST API untuk menerima notifikasi dari sistem lain.
+
+---
+
+## 🚀 Fitur
+
+- Kirim pesan WhatsApp via HTTP `POST /send-message`
+- Dibangun dengan [Bun](https://bun.sh/) untuk performa tinggi
+- Gunakan [whatsapp-web.js](https://github.com/pedroslopez/whatsapp-web.js)
+- Dockerized, siap untuk deploy production
+- Menyimpan session login agar tidak perlu scan QR setiap kali
+
+---
+
+## 📦 Struktur
+
+
+---
+
+## ⚙️ Build & Jalankan
+
+### 1. Build Docker image
+
+```bash
+docker build -t bun-whatsapp-gateway .
+
+docker run -d \
+  --name whatsapp-gateway \
+  -p 3000:3000 \
+  -v $(pwd)/.wwebjs_auth:/app/.wwebjs_auth \
+  bun-whatsapp-gateway
+
+docker logs -f whatsapp-gateway
+
+curl -X POST http://localhost:3000/send-message \
+  -H 'Content-Type: application/json' \
+  -d '{"number": "6281234567890", "message": "Halo dari Bun WhatsApp Gateway"}'
+
+import axios from 'axios';
+
+await axios.post('http://localhost:3000/send-message', {
+  number: '6281234567890',
+  message: 'Notifikasi dari sistem Anda'
+});
+
+docker stop whatsapp-gateway
+docker rm whatsapp-gateway
