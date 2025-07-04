@@ -88,6 +88,14 @@ docker run -d \
   -v $(pwd)/.wwebjs_auth:/app/.wwebjs_auth \
   bun-whatsapp-gateway
 
+docker run -d \
+  --name whatsapp-ai-gateway \
+  -e DEEPINFRA_API_KEY=sk-xxx \
+  -p 3000:3000 \
+  -v $(pwd)/.wwebjs_auth:/app/.wwebjs_auth \
+  -v $(pwd)/data:/app/data \
+  whatsapp-ai-gateway
+
 docker logs -f whatsapp-gateway
 
 curl -X POST http://localhost:3000/send-message \
@@ -103,3 +111,4 @@ await axios.post('http://localhost:3000/send-message', {
 
 docker stop whatsapp-gateway
 docker rm whatsapp-gateway
+
