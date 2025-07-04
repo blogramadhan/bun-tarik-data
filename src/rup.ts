@@ -160,7 +160,7 @@ async function fetchAndSave() {
                         continue;
                     }
 
-                    totalDataFetched += data.length; // Tambahkan jumlah data yang diambil
+                    totalDataFetched++; // Tambahkan jumlah data yang diambil
 
                     // Buat folder penyimpanan
                     const folder = `data/rup/${daerah}/${jenis}/${tahun}`;
@@ -198,7 +198,7 @@ async function fetchAndSave() {
         number: process.env.WHATSAPP_NUMBER,
         message: message
     });
-    console.log(`🎉 Notifikasi : ${message}`);
+    console.log(message);
 }
 
 // Jalankan program

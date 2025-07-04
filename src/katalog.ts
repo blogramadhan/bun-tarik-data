@@ -2,6 +2,7 @@ import { mkdirSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import * as duckdb from "duckdb";
 import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configKATALOG";
+import axios from "axios"; // Import axios untuk mengirim pesan WhatsApp
 
 const tahunList = [2023, 2024, 2025];
 
@@ -131,6 +132,9 @@ function findJsonFiles(dir: string): string[] {
 async function fetchAndSave() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
+    let totalDataFetched = 0; // Variabel untuk menghitung total data yang diambil
+    let totalDataFailed = 0; // Variabel untuk menghitung total data yang gagal diambil
+    let totalDataSkipped = 0; // Variabel untuk menghitung total data yang dilewati
 
     // Ambil data untuk setiap daerah dan tahun
     for (const daerah of daerahList) {
@@ -149,6 +153,7 @@ async function fetchAndSave() {
                 !(tahun === currentYear || 
                   (tahun === currentYear - 1 && currentMonth <= 2))) {
                 console.log(`⏭️ Melewati data tahun ${tahun} untuk ${daerah} (sudah lengkap)`);
+                totalDataSkipped++; // Tambahkan jumlah data yang dilewati
                 continue;
             }
 
@@ -166,6 +171,8 @@ async function fetchAndSave() {
                     console.log(`⚠️ Tidak ada data untuk ${daerah}/Ecat-PaketEPurchasing/${tahun}`);
                     continue;
                 }
+
+                totalDataFetched++; // Tambahkan jumlah data yang diambil
 
                 // Simpan data paket ke file JSON
                 const jsonPath = `data/katalog/${daerah}/Ecat-PaketEPurchasing/${tahun}/data.json`;
@@ -250,6 +257,7 @@ async function fetchAndSave() {
                 console.log(`✅ Detail satker disimpan: ${satkerPath}`);
 
             } catch (err: any) {
+                totalDataFailed++; // Tambahkan jumlah data yang gagal diambil
                 console.error(`❌ Gagal mengambil data untuk ${daerah} tahun ${tahun}:`, err.message);
             }
         }
@@ -258,6 +266,14 @@ async function fetchAndSave() {
     // Konversi semua file JSON ke Parquet dan Excel
     await convertJsonToParquet();
     await convertJsonToExcel();
+
+    // Kirim notifikasi via WhatsApp setelah proses selesai
+    const message = `🎉 Download data KATALOG selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
+    await axios.post('http://localhost:3000/send-message', {
+        number: process.env.WHATSAPP_NUMBER,
+        message: message
+    });
+    console.log(message);
 }
 
 // Jalankan program

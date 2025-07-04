@@ -158,7 +158,6 @@ async function fetchAndSave() {
                     }
 
                     totalDataFetched++;
-                    // totalDataFetched += data.length; // Tambahkan jumlah data yang diambil
 
                     // Simpan data ke file JSON
                     const folder = `data/daring/${daerah}/${jenis}/${tahun}`;
@@ -185,7 +184,7 @@ async function fetchAndSave() {
         number: process.env.WHATSAPP_NUMBER,
         message: message
     });
-    console.log(`🎉 Notifikasi : ${message}`);
+    console.log(message);
 }
 
 // Jalankan program
