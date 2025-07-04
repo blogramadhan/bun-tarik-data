@@ -256,6 +256,9 @@ CMD ["bun", "run", "src/index.ts"]
 
 // ============================================
 // Menjalankan Docker
+
+docker build -t whatsapp-ai-gateway .
+
 docker run -d \
   -e DEEPINFRA_API_KEY=sk-xxx \
   -p 8787:8787 \
