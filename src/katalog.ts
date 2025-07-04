@@ -140,7 +140,7 @@ async function kirimNotifikasiWhatsApp(message: string) {
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
     // Kirim notifikasi awal
-    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data Katalog");
+    // await kirimNotifikasiWhatsApp("🚀 Memulai proses download data Katalog");
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
@@ -280,8 +280,8 @@ async function fetchAndSave() {
     await convertJsonToExcel();
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
-    const message = `🎉 Download data Katalog selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
-    await kirimNotifikasiWhatsApp(message);
+    // const message = `🎉 Download data Katalog selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
+    // await kirimNotifikasiWhatsApp(message);
 }
 
 // Jalankan program
