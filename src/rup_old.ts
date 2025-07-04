@@ -2,7 +2,6 @@ import { mkdirSync, writeFileSync, readdirSync, existsSync } from "fs";
 import { join, dirname } from "path";
 import * as duckdb from "duckdb";
 import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configRUP";
-import axios from "axios"; // Import axios untuk mengirim pesan WhatsApp
 
 const tahunList = [2023, 2024, 2025];
 
@@ -120,8 +119,6 @@ function findJsonFiles(dir: string): string[] {
 async function fetchAndSave() {
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
-    let totalDataFetched = 0; // Variabel untuk menghitung total data yang diambil
-    let totalDataFailed = 0; // Variabel untuk menghitung total data yang gagal diambil
 
     for (const daerah of daerahList) {
         for (const jenis of jenisDataTypes) {
@@ -158,8 +155,6 @@ async function fetchAndSave() {
                         continue;
                     }
 
-                    totalDataFetched += data.length; // Tambahkan jumlah data yang diambil
-
                     // Buat folder penyimpanan
                     const folder = `data/rup/${daerah}/${jenis}/${tahun}`;
                     mkdirSync(folder, { recursive: true });
@@ -179,7 +174,6 @@ async function fetchAndSave() {
                     console.log(`✅ JSON disimpan: ${join(folder, "data.json")}`);
 
                 } catch (err: any) {
-                    totalDataFailed++; // Tambahkan jumlah data yang gagal
                     console.error(`❌ Gagal: ${daerah}/${jenis}/${tahun} =>`, err.message);
                 }
             }
@@ -189,14 +183,6 @@ async function fetchAndSave() {
     // Konversi semua file JSON ke Parquet dan Excel
     await convertJsonToParquet();
     await convertJsonToExcel();
-
-    // Kirim notifikasi via WhatsApp setelah proses selesai
-    const message = `📢 Total data RUP yang berhasil ditarik: ${totalDataFetched}, Total data RUP yang gagal ditarik: ${totalDataFailed}`;
-    await axios.post('http://localhost:3000/send-message', {
-        number: process.env.WHATSAPP_NUMBER,
-        message: message
-    });
-    console.log(`📢 Notifikasi : ${message}`);
 }
 
 // Jalankan program
