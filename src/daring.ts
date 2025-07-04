@@ -125,7 +125,7 @@ async function kirimNotifikasiWhatsApp(message: string) {
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
     // Kirim notifikasi awal
-    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data ISB Toko Daring");
+    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data Toko Daring");
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
