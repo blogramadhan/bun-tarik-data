@@ -122,6 +122,7 @@ async function fetchAndSave() {
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
     let totalDataFetched = 0; // Variabel untuk menghitung total data yang diambil
     let totalDataFailed = 0; // Variabel untuk menghitung total data yang gagal diambil
+    let totalDataSkipped = 0; // Variabel untuk menghitung total data yang dilewati
 
     for (const daerah of daerahList) {
         for (const jenis of jenisDataTypes) {
@@ -140,6 +141,7 @@ async function fetchAndSave() {
                     !(tahun === currentYear || 
                       (tahun === currentYear - 1 && currentMonth <= 2))) {
                     console.log(`⏭️ Melewati data ${jenis} ${tahun} untuk ${daerah} (sudah lengkap)`);
+                    totalDataSkipped++; // Tambahkan jumlah data yang dilewati
                     continue;
                 }
 
@@ -191,12 +193,12 @@ async function fetchAndSave() {
     await convertJsonToExcel();
 
     // Kirim notifikasi via WhatsApp setelah proses selesai
-    const message = `📢 Total data RUP yang berhasil ditarik: ${totalDataFetched}, Total data RUP yang gagal ditarik: ${totalDataFailed}`;
+    const message = `🎉 Download data RUP selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
     await axios.post('http://localhost:3000/send-message', {
         number: process.env.WHATSAPP_NUMBER,
         message: message
     });
-    console.log(`📢 Notifikasi : ${message}`);
+    console.log(`🎉 Notifikasi : ${message}`);
 }
 
 // Jalankan program
