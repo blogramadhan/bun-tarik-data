@@ -191,7 +191,7 @@ async function fetchAndSave() {
     await convertJsonToExcel();
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
-    const message = `🎉 Download data ISB Toko Daring selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
+    const message = `🎉 Download data Toko Daring selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
     await kirimNotifikasiWhatsApp(message);
 }
 

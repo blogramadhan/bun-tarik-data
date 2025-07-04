@@ -116,8 +116,20 @@ function findJsonFiles(dir: string): string[] {
     return results;
 }
 
+// Kirim notifikasi via WhatsApp
+async function kirimNotifikasiWhatsApp(message: string) {
+    await axios.post('http://localhost:3000/send-message', {
+        number: process.env.WHATSAPP_NUMBER,
+        message: message
+    });
+    console.log(message);
+}
+
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
+    // Kirim notifikasi awal
+    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data RUP");
+
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
     let totalDataFetched = 0; // Variabel untuk menghitung total data yang diambil
@@ -192,13 +204,9 @@ async function fetchAndSave() {
     await convertJsonToParquet();
     await convertJsonToExcel();
 
-    // Kirim notifikasi via WhatsApp setelah proses selesai
+    // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
     const message = `🎉 Download data RUP selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
-    await axios.post('http://localhost:3000/send-message', {
-        number: process.env.WHATSAPP_NUMBER,
-        message: message
-    });
-    console.log(message);
+    await kirimNotifikasiWhatsApp(message);
 }
 
 // Jalankan program
