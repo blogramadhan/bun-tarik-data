@@ -157,7 +157,8 @@ async function fetchAndSave() {
                         continue;
                     }
 
-                    totalDataFetched += data.length; // Tambahkan jumlah data yang diambil
+                    totalDataFetched++;
+                    // totalDataFetched += data.length; // Tambahkan jumlah data yang diambil
 
                     // Simpan data ke file JSON
                     const folder = `data/daring/${daerah}/${jenis}/${tahun}`;
