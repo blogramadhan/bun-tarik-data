@@ -181,11 +181,8 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
 async function main() {
   try {
     console.log("🚀 Memulai proses upload data ISB ke Cloudflare R2...");
-    
     // await notifyAll("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
-    
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
-    
     const summary = `🎉 Upload selesai! Berhasil: ${result.uploadedCount}, Gagal: ${result.failedCount}, Dilewati: ${result.skippedCount}`;
     console.log(summary);
     // await notifyAll(summary);
