@@ -1,14 +1,16 @@
 import { Client, LocalAuth, Message } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
-import { readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 
 export const KB: Record<string, string> = {};
 export function loadKnowledgeBase() {
-  KB._last_loaded = new Date().toISOString();
-  readdirSync('data/text').forEach(file => {
-    const key = file.replace('.txt', '');
-    KB[key] = readFileSync(`data/text/${file}`, 'utf8');
-  });
+    KB._last_loaded = new Date().toISOString();
+    if (!existsSync('data/text')) return;
+
+    readdirSync('data/text').forEach(file => {
+        const key = file.replace('.txt', '');
+        KB[key] = readFileSync(`data/text/${file}`, 'utf8');
+    });
 }
 
 loadKnowledgeBase();
