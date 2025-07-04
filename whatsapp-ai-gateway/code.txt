@@ -1,0 +1,265 @@
+// whatsapp-ai-gateway/
+// ├─ bunfig.toml
+// ├─ Dockerfile
+// ├─ package.json
+// ├─ data/
+// │   ├─ raw/
+// │   └─ text/
+// ├─ src/
+// │   ├─ index.ts
+// │   ├─ upload_api.ts
+// │   ├─ whatsapp.ts
+// │   ├─ sendMessage.ts
+// │   └─ utils/
+// │       └─ extractor.ts
+
+// ============================================
+// bunfig.toml
+entrypoint = "src/index.ts"
+
+// ============================================
+// package.json
+{
+  "name": "whatsapp-ai-gateway",
+  "version": "1.0.0",
+  "dependencies": {
+    "hono": "latest",
+    "formidable": "latest",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.31.0",
+    "axios": "latest"
+  }
+}
+
+// ============================================
+// src/utils/extractor.ts
+import { readFileSync } from 'fs';
+import { execSync } from 'child_process';
+
+export async function extractTextFromFile(path: string): Promise<string> {
+  const ext = path.split('.').pop()?.toLowerCase();
+  if (ext === 'pdf') {
+    const outTxt = path.replace('.pdf', '.txt');
+    execSync(`pdftotext "${path}" "${outTxt}"`);
+    return readFileSync(outTxt, 'utf8');
+  }
+  if (ext === 'json') {
+    const raw = readFileSync(path, 'utf8');
+    return JSON.stringify(JSON.parse(raw), null, 2);
+  }
+  return `Ekstensi .${ext} belum didukung.`;
+}
+
+// ============================================
+// src/whatsapp.ts
+import { Client, LocalAuth, Message } from 'whatsapp-web.js';
+import qrcode from 'qrcode-terminal';
+import { readFileSync, readdirSync } from 'fs';
+
+export const KB: Record<string, string> = {};
+export function loadKnowledgeBase() {
+  KB._last_loaded = new Date().toISOString();
+  readdirSync('data/text').forEach(file => {
+    const key = file.replace('.txt', '');
+    KB[key] = readFileSync(`data/text/${file}`, 'utf8');
+  });
+}
+
+loadKnowledgeBase();
+
+export const client = new Client({
+  authStrategy: new LocalAuth({ dataPath: './.wwebjs_auth' }),
+  puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] },
+});
+
+client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
+client.on('ready', () => console.log('✅ WhatsApp client siap!'));
+client.initialize();
+
+const selectedContext: Record<string, string> = {};
+
+client.on('message_create', async (msg: Message) => {
+  if (msg.fromMe) return;
+  const text = msg.body?.trim();
+  if (!text) return;
+
+  if (text === '/materi') {
+    const list = Object.keys(KB).filter(k => k !== '_last_loaded').map(k => `- ${k}`).join('\n');
+    await msg.reply(`📚 Materi:
+${list}`);
+    return;
+  }
+
+  if (text.startsWith('/pilih ')) {
+    const pilihan = text.replace('/pilih ', '').trim();
+    if (KB[pilihan]) {
+      selectedContext[msg.from] = pilihan;
+      await msg.reply(`✅ Materi aktif: ${pilihan}`);
+    } else {
+      await msg.reply('❌ Materi tidak ditemukan.');
+    }
+    return;
+  }
+
+  if (text.startsWith('/ai ')) {
+    const prompt = text.replace('/ai ', '').trim();
+    const contact = await msg.getContact();
+    const chat = await msg.getChat();
+    const contextKey = selectedContext[msg.from];
+    const context = contextKey ? KB[contextKey] : '';
+
+    const finalPrompt = context ? `Berikut materi:
+${context.slice(0, 3000)}
+
+Pertanyaan:
+${prompt}` : prompt;
+
+    const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'mistralai/Mistral-7B-Instruct-v0.1',
+        messages: [{ role: 'user', content: finalPrompt }],
+        max_tokens: 500,
+      })
+    });
+
+    const json = await res.json();
+    const reply = json?.choices?.[0]?.message?.content || '❌ Gagal menjawab.';
+
+    if (chat.isGroup) {
+      await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
+    } else {
+      await msg.reply(reply);
+    }
+  }
+});
+
+// ============================================
+// src/upload_api.ts
+import { Hono } from 'hono';
+import formidable from 'formidable';
+import { writeFileSync, mkdirSync, readdirSync, readFileSync } from 'fs';
+import { extractTextFromFile } from './utils/extractor';
+import { loadKnowledgeBase, KB, client } from './whatsapp';
+
+const app = new Hono();
+
+app.get('/', (c) => {
+  const list = Object.keys(KB).filter(k => k !== '_last_loaded')
+    .map(k => `<li>${k}</li>`).join('');
+
+  return c.html(`
+    <h1>Upload Materi Pembelajaran</h1>
+    <form method="post" enctype="multipart/form-data" action="/upload">
+      <input type="file" name="file" />
+      <button type="submit">Upload</button>
+    </form>
+    <h2>Materi Tersedia:</h2>
+    <ul>${list}</ul>
+    <small>Last reload: ${KB._last_loaded}</small>
+  `);
+});
+
+app.post('/upload', async (c) => {
+  const form = formidable({ uploadDir: '/tmp', keepExtensions: true });
+
+  const body = await new Promise((resolve, reject) => {
+    form.parse(c.req.raw, (err, fields, files) => {
+      if (err) reject(err);
+      else resolve({ fields, files });
+    });
+  });
+
+  const file = (body as any).files.file;
+  const name = file.originalFilename || 'materi';
+  const ext = name.split('.').pop();
+  const base = name.replace(/\.[^/.]+$/, '');
+  const rawPath = `data/raw/${base}.${ext}`;
+  const txtPath = `data/text/${base}.txt`;
+
+  mkdirSync('data/raw', { recursive: true });
+  mkdirSync('data/text', { recursive: true });
+  writeFileSync(rawPath, readFileSync(file.filepath));
+
+  const teks = await extractTextFromFile(rawPath);
+  writeFileSync(txtPath, teks);
+
+  loadKnowledgeBase();
+  return c.redirect('/');
+});
+
+app.post('/send-message', async (c) => {
+  const { number, message } = await c.req.json();
+  if (!number || !message) {
+    return c.json({ status: false, error: 'number dan message wajib' }, 400);
+  }
+  try {
+    await client.sendMessage(`${number}@c.us`, message);
+    return c.json({ status: true, message: '✅ Pesan terkirim.' });
+  } catch (err: any) {
+    return c.json({ status: false, error: err.message }, 500);
+  }
+});
+
+export default app;
+
+// ============================================
+// src/index.ts
+import { serve } from '@hono/node-server';
+import app from './upload_api';
+import './whatsapp';
+
+serve({ fetch: app.fetch, port: 8787 });
+
+console.log('📚 Web & WhatsApp Gateway aktif di http://localhost:8787');
+
+// ============================================
+// src/sendMessage.ts
+import axios from 'axios';
+
+const number = '6281234567890';
+const message = '📣 Ini adalah pesan biasa, bukan AI.';
+
+(async () => {
+  try {
+    const res = await axios.post('http://localhost:8787/send-message', {
+      number,
+      message
+    });
+
+    if (res.data.status) {
+      console.log('✅ Pesan berhasil dikirim');
+    } else {
+      console.error('❌ Gagal:', res.data.error);
+    }
+  } catch (err: any) {
+    console.error('❌ Error:', err.message);
+  }
+})();
+
+// ============================================
+// Dockerfile
+FROM oven/bun:1.2.17
+
+RUN apt-get update && apt-get install -y poppler-utils
+
+WORKDIR /app
+COPY . .
+RUN bun install
+
+EXPOSE 8787
+CMD ["bun", "run", "src/index.ts"]
+
+// ============================================
+// Menjalankan Docker
+docker run -d \
+  -e DEEPINFRA_API_KEY=sk-xxx \
+  -p 8787:8787 \
+  -v $(pwd)/.wwebjs_auth:/app/.wwebjs_auth \
+  -v $(pwd)/data:/app/data \
+  --name wagateway \
+  whatsapp-ai-gateway

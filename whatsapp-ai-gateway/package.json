@@ -1,0 +1,11 @@
+{
+  "name": "whatsapp-ai-gateway",
+  "version": "1.0.0",
+  "dependencies": {
+    "hono": "latest",
+    "formidable": "latest",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.31.0",
+    "axios": "latest"
+  }
+}
