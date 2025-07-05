@@ -94,6 +94,9 @@ Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
 
     // Hapus konten dalam tag <think></think>
     completeResponse = completeResponse.replace(/<think>[\s\S]*?<\/think>/g, '');
+
+    // Hapus spasi di awal respons
+    completeResponse = completeResponse.trimStart();
     
     const reply = completeResponse || '❌ Gagal menjawab.';
 
