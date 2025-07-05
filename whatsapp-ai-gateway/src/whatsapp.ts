@@ -1,4 +1,4 @@
-import { Client, LocalAuth, Message } from 'whatsapp-web.js';
+import { Client, LocalAuth, type Message, type Contact } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
@@ -60,7 +60,11 @@ ${list}`);
 ${context.slice(0, 3000)}
 
 Pertanyaan:
-${prompt}` : prompt;
+${prompt}
+
+Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.` : `${prompt}
+
+Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
 
     let completeResponse = '';
     let hasMore = true;
@@ -74,20 +78,23 @@ ${prompt}` : prompt;
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'google/gemini-2.5-flash',
+          model: 'deepseek-ai/DeepSeek-R1',
           messages: [{ role: 'user', content: finalPrompt }],
           max_tokens: 1000,
           next_token: nextToken,
         })
       });
 
-      const json = await res.json();
+      const json: any = await res.json();
       const replyPart = json?.choices?.[0]?.message?.content || '';
       completeResponse += replyPart;
       hasMore = json?.choices?.[0]?.has_more || false;
       nextToken = json?.choices?.[0]?.next_token || null;
     }
 
+    // Hapus konten dalam tag <think></think>
+    completeResponse = completeResponse.replace(/<think>[\s\S]*?<\/think>/g, '');
+    
     const reply = completeResponse || '❌ Gagal menjawab.';
 
     if (chat.isGroup) {
