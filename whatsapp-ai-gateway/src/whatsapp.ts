@@ -69,14 +69,17 @@ ${prompt}` : prompt;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'deepseek-ai/DeepSeek-R1',
+        model: 'google/gemini-2.5-flash',
         messages: [{ role: 'user', content: finalPrompt }],
         max_tokens: 500,
       })
     });
 
     const json = await res.json();
-    const reply = json?.choices?.[0]?.message?.content || '❌ Gagal menjawab.';
+    let reply = json?.choices?.[0]?.message?.content || '❌ Gagal menjawab.';
+
+    // Menghapus bagian <think>...</think> dari respon
+    reply = reply.replace(/<think>.*?<\/think>/g, '').trim();
 
     if (chat.isGroup) {
       await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
