@@ -71,15 +71,12 @@ ${prompt}` : prompt;
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash',
         messages: [{ role: 'user', content: finalPrompt }],
-        max_tokens: 500,
+        max_tokens: 1000,
       })
     });
 
     const json = await res.json();
-    let reply = json?.choices?.[0]?.message?.content || '❌ Gagal menjawab.';
-
-    // Menghapus bagian <think>...</think> dari respon
-    reply = reply.replace(/<think>.*?<\/think>/g, '').trim();
+    const reply = json?.choices?.[0]?.message?.content || '❌ Gagal menjawab.';
 
     if (chat.isGroup) {
       await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
