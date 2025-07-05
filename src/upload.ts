@@ -28,7 +28,7 @@ const s3 = new S3Client({
 async function notifyAll(message: string) {
   // Hanya kirim pesan ke WhatsApp jika berisi summary (mengandung kata "selesai" atau "dimulai")
   if (message.includes("selesai") || message.includes("dimulai")) {
-    await axios.post('http://localhost:3000/send-message', {
+    await axios.post('http://localhost:8787/send-message', {
       number: WHATSAPP_NUMBER,
       message: message
     });
@@ -181,15 +181,15 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
 async function main() {
   try {
     console.log("🚀 Memulai proses upload data ISB ke Cloudflare R2...");
-    // await notifyAll("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
+    await notifyAll("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     const summary = `🎉 Upload selesai! Berhasil: ${result.uploadedCount}, Gagal: ${result.failedCount}, Dilewati: ${result.skippedCount}`;
     console.log(summary);
-    // await notifyAll(summary);
+    await notifyAll(summary);
   } catch (err: any) {
     const msg = `❌ Upload total gagal: ${err.message}`;
     console.error(msg);
-    // await notifyAll(msg);
+    await notifyAll(msg);
   } finally {
     // Tunggu beberapa detik untuk memastikan pesan terkirim sebelum keluar
     await new Promise(resolve => setTimeout(resolve, 5000));
