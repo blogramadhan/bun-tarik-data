@@ -62,21 +62,33 @@ ${context.slice(0, 3000)}
 Pertanyaan:
 ${prompt}` : prompt;
 
-    const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [{ role: 'user', content: finalPrompt }],
-        max_tokens: 1000,
-      })
-    });
+    let completeResponse = '';
+    let hasMore = true;
+    let nextToken = null;
 
-    const json = await res.json();
-    const reply = json?.choices?.[0]?.message?.content || '❌ Gagal menjawab.';
+    while (hasMore) {
+      const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [{ role: 'user', content: finalPrompt }],
+          max_tokens: 1000,
+          next_token: nextToken,
+        })
+      });
+
+      const json = await res.json();
+      const replyPart = json?.choices?.[0]?.message?.content || '';
+      completeResponse += replyPart;
+      hasMore = json?.choices?.[0]?.has_more || false;
+      nextToken = json?.choices?.[0]?.next_token || null;
+    }
+
+    const reply = completeResponse || '❌ Gagal menjawab.';
 
     if (chat.isGroup) {
       await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
