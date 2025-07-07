@@ -12,8 +12,8 @@ services:
     restart: unless-stopped
     networks:
       - upload-network
-    environment:
-      - WHATSAPP_SERVICE_URL=http://host.docker.internal:8788
+    env_file:
+      - .env
 
 volumes:
   data-volume:

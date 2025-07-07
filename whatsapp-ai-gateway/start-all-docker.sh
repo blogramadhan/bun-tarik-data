@@ -9,6 +9,14 @@ if [ ! -f whatsapp-service/.env ]; then
   exit 1
 fi
 
+# Periksa apakah file .env ada di folder upload-service
+if [ ! -f upload-service/.env ]; then
+  echo "File .env tidak ditemukan di upload-service. Membuat dari contoh..."
+  echo "# URL untuk WhatsApp Service" > upload-service/.env
+  echo "WHATSAPP_SERVICE_URL=http://host.docker.internal:8788" >> upload-service/.env
+  echo "File .env dibuat dengan konfigurasi default di upload-service."
+fi
+
 # Memulai WhatsApp Service
 echo "Memulai WhatsApp Service..."
 cd whatsapp-service
