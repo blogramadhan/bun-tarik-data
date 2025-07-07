@@ -114,10 +114,19 @@ function findJsonFiles(dir: string): string[] {
 }
 
 // Kirim notifikasi via WhatsApp
+// async function kirimNotifikasiWhatsApp(message: string) {
+//     await axios.post('http://localhost:8787/send-message', {
+//         number: process.env.WHATSAPP_NUMBER,
+//         message: message
+//     });
+//     console.log(message);
+// }
+
 async function kirimNotifikasiWhatsApp(message: string) {
-    await axios.post('http://localhost:8787/send-message', {
-        number: process.env.WHATSAPP_NUMBER,
-        message: message
+    await axios.post('https://wa-pbj.kalbarprov.app/send-notification', {
+        toPhoneNumber: process.env.WHATSAPP_NUMBER,
+        message: message,
+        token: process.env.WHATSAPP_TOKEN
     });
     console.log(message);
 }
