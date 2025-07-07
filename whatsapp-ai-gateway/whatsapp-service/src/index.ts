@@ -1,7 +1,10 @@
-import { Client, LocalAuth, type Message, type Contact } from 'whatsapp-web.js';
+import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
+import { Client, LocalAuth, type Message } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import { existsSync, readFileSync, readdirSync } from 'fs';
 
+// Knowledge Base
 export const KB: Record<string, string> = {};
 export function loadKnowledgeBase() {
     KB._last_loaded = new Date().toISOString();
@@ -15,6 +18,7 @@ export function loadKnowledgeBase() {
 
 loadKnowledgeBase();
 
+// WhatsApp Client
 export const client = new Client({
   authStrategy: new LocalAuth({ dataPath: './.wwebjs_auth' }),
   puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] },
@@ -107,3 +111,30 @@ Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
     }
   }
 });
+
+// API untuk mengirim pesan
+const app = new Hono();
+
+app.post('/send-message', async (c) => {
+  const { number, message } = await c.req.json();
+  if (!number || !message) {
+    return c.json({ status: false, error: 'number dan message wajib' }, 400);
+  }
+  try {
+    await client.sendMessage(`${number}@c.us`, message);
+    return c.json({ status: true, message: '✅ Pesan terkirim.' });
+  } catch (err: any) {
+    return c.json({ status: false, error: err.message }, 500);
+  }
+});
+
+// Endpoint untuk reload knowledge base
+app.post('/reload-kb', (c) => {
+  loadKnowledgeBase();
+  console.log('📚 Knowledge Base dimuat ulang:', KB._last_loaded);
+  return c.json({ status: true, message: '✅ Knowledge Base dimuat ulang.' });
+});
+
+// Server
+serve({ fetch: app.fetch, port: 8788 });
+console.log('📱 WhatsApp Gateway aktif di http://localhost:8788'); 

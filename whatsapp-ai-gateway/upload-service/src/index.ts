@@ -1,14 +1,28 @@
 import { Hono } from 'hono';
+import { serve } from '@hono/node-server';
 import formidable from 'formidable';
 import { writeFileSync, mkdirSync, readdirSync, readFileSync } from 'fs';
+import axios from 'axios';
 import { extractTextFromFile } from './utils/extractor';
-import { loadKnowledgeBase, KB, client } from './whatsapp';
 
+// Konfigurasi URL layanan WhatsApp
+const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://whatsapp-service:8788';
+
+// Aplikasi Hono
 const app = new Hono();
 
 app.get('/', (c) => {
-  const list = Object.keys(KB).filter(k => k !== '_last_loaded')
-    .map(k => `<li>${k}</li>`).join('');
+  // Ambil daftar materi dari folder data/text
+  let list = '';
+  try {
+    if (readdirSync('data/text').length > 0) {
+      list = readdirSync('data/text')
+        .map(file => `<li>${file.replace('.txt', '')}</li>`)
+        .join('');
+    }
+  } catch (e) {
+    list = '<li>Belum ada materi</li>';
+  }
 
   return c.html(`
     <h1>Upload Materi Pembelajaran</h1>
@@ -18,7 +32,6 @@ app.get('/', (c) => {
     </form>
     <h2>Materi Tersedia:</h2>
     <ul>${list}</ul>
-    <small>Last reload: ${KB._last_loaded}</small>
   `);
 });
 
@@ -26,7 +39,7 @@ app.post('/upload', async (c) => {
   const form = formidable({ uploadDir: '/tmp', keepExtensions: true });
 
   const body = await new Promise((resolve, reject) => {
-    form.parse(c.req.raw, (err, fields, files) => {
+    form.parse(c.req.raw, (err: any, fields: any, files: any) => {
       if (err) reject(err);
       else resolve({ fields, files });
     });
@@ -46,21 +59,17 @@ app.post('/upload', async (c) => {
   const teks = await extractTextFromFile(rawPath);
   writeFileSync(txtPath, teks);
 
-  loadKnowledgeBase();
+  // Notifikasi layanan WhatsApp untuk memuat ulang knowledge base
+  try {
+    await axios.post(`${WHATSAPP_SERVICE_URL}/reload-kb`);
+    console.log(`✅ Notifikasi reload KB berhasil dikirim ke ${WHATSAPP_SERVICE_URL}`);
+  } catch (err) {
+    console.error(`❌ Gagal mengirim notifikasi reload KB ke ${WHATSAPP_SERVICE_URL}:`, err);
+  }
+
   return c.redirect('/');
 });
 
-app.post('/send-message', async (c) => {
-  const { number, message } = await c.req.json();
-  if (!number || !message) {
-    return c.json({ status: false, error: 'number dan message wajib' }, 400);
-  }
-  try {
-    await client.sendMessage(`${number}@c.us`, message);
-    return c.json({ status: true, message: '✅ Pesan terkirim.' });
-  } catch (err: any) {
-    return c.json({ status: false, error: err.message }, 500);
-  }
-});
-
-export default app;
+// Server
+serve({ fetch: app.fetch, port: 8789 });
+console.log('📚 Upload Service aktif di http://localhost:8789'); 

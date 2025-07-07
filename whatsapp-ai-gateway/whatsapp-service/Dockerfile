@@ -2,7 +2,6 @@ FROM oven/bun:1.2.17
 
 # Puppeteer dependencies
 RUN apt-get update && apt-get install -y \
-    poppler-utils \
     chromium \
     fonts-liberation \
     libappindicator3-1 libasound2 libatk-bridge2.0-0 \
@@ -15,5 +14,8 @@ WORKDIR /app
 COPY . .
 RUN bun install
 
-EXPOSE 8787
-CMD ["bun", "run", "src/index.ts"]
+# Volume untuk menyimpan data autentikasi WhatsApp
+VOLUME ["/app/.wwebjs_auth"]
+
+EXPOSE 8788
+CMD ["bun", "run", "src/index.ts"] 
