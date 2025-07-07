@@ -115,26 +115,17 @@ function findJsonFiles(dir: string): string[] {
 
 // Kirim notifikasi via WhatsApp
 async function kirimNotifikasiWhatsApp(message: string) {
-    await axios.post('http://localhost:8787/send-message', {
+    await axios.post('http://localhost:8788/send-message', {
         number: process.env.WHATSAPP_NUMBER,
         message: message
     });
     console.log(message);
 }
 
-// async function kirimNotifikasiWhatsApp(message: string) {
-//     await axios.post('https://wa-pbj.kalbarprov.app/send-notification', {
-//         toPhoneNumber: process.env.WHATSAPP_NUMBER,
-//         message: message,
-//         token: process.env.WHATSAPP_TOKEN
-//     });
-//     console.log(message);
-// }
-
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
     // Kirim notifikasi awal
-    // await kirimNotifikasiWhatsApp("🚀 Memulai proses download data Toko Daring");
+    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data Toko Daring");
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
@@ -201,7 +192,7 @@ async function fetchAndSave() {
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
     const message = `🎉 Download data Toko Daring selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
-    // await kirimNotifikasiWhatsApp(message);
+    await kirimNotifikasiWhatsApp(message);
 }
 
 // Jalankan program

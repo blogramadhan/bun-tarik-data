@@ -115,7 +115,7 @@ function findJsonFiles(dir: string): string[] {
 
 // Kirim notifikasi via WhatsApp
 async function kirimNotifikasiWhatsApp(message: string) {
-    await axios.post('http://localhost:8787/send-message', {
+    await axios.post('http://localhost:8788/send-message', {
         number: process.env.WHATSAPP_NUMBER,
         message: message
     });
@@ -125,7 +125,7 @@ async function kirimNotifikasiWhatsApp(message: string) {
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
     // Kirim notifikasi awal
-    // await kirimNotifikasiWhatsApp("🚀 Memulai proses download data SIKAP");
+    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data SIKAP");
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
@@ -192,7 +192,7 @@ async function fetchAndSave() {
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
     const message = `🎉 Download data SIKAP selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
-    // await kirimNotifikasiWhatsApp(message);
+    await kirimNotifikasiWhatsApp(message);
 }
 
 // Jalankan program
