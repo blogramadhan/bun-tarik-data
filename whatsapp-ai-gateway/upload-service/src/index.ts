@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
-import formidable from 'formidable';
-import { writeFileSync, mkdirSync, readdirSync, readFileSync } from 'fs';
+import { writeFileSync, mkdirSync, readdirSync, readFileSync, existsSync } from 'fs';
 import axios from 'axios';
 import { extractTextFromFile } from './utils/extractor';
 
@@ -16,20 +15,26 @@ app.get('/', (c) => {
   let list = '';
   let totalFiles = 0;
   try {
-    const files = readdirSync('data/text');
-    totalFiles = files.length;
-    if (files.length > 0) {
-      list = files
-        .map(file => `
-          <div class="material-item">
-            <div class="material-icon">📄</div>
-            <div class="material-name">${file.replace('.txt', '')}</div>
-            <div class="material-status">✅ Siap</div>
-          </div>
-        `)
-        .join('');
+    if (existsSync('data/text')) {
+      const files = readdirSync('data/text');
+      totalFiles = files.length;
+      if (files.length > 0) {
+        list = files
+          .map(file => `
+            <div class="material-item">
+              <div class="material-icon">📄</div>
+              <div class="material-name">${file.replace('.txt', '')}</div>
+              <div class="material-status">✅ Siap</div>
+            </div>
+          `)
+          .join('');
+      }
     }
   } catch (e) {
+    list = '<div class="no-materials">📂 Belum ada materi yang diupload</div>';
+  }
+
+  if (!list) {
     list = '<div class="no-materials">📂 Belum ada materi yang diupload</div>';
   }
 
@@ -315,6 +320,24 @@ app.get('/', (c) => {
           display: block;
         }
 
+        .error-message {
+          background: #fee;
+          color: #c33;
+          padding: 15px;
+          border-radius: 8px;
+          margin-top: 20px;
+          display: none;
+        }
+
+        .success-message {
+          background: #efe;
+          color: #363;
+          padding: 15px;
+          border-radius: 8px;
+          margin-top: 20px;
+          display: none;
+        }
+
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.5; }
@@ -368,7 +391,7 @@ app.get('/', (c) => {
               </label>
             </div>
             
-            <button type="submit" class="upload-btn" id="uploadBtn">
+            <button type="submit" class="upload-btn" id="uploadBtn" disabled>
               ⬆️ Upload Materi
             </button>
             
@@ -386,6 +409,9 @@ app.get('/', (c) => {
           <div class="loading" id="loading">
             📤 Sedang mengupload dan memproses file...
           </div>
+          
+          <div class="error-message" id="errorMessage"></div>
+          <div class="success-message" id="successMessage"></div>
         </div>
 
         <div class="materials-section">
@@ -408,6 +434,8 @@ app.get('/', (c) => {
         const uploadBtn = document.getElementById('uploadBtn');
         const loading = document.getElementById('loading');
         const fileLabel = document.querySelector('.file-input-label');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
 
         fileInput.addEventListener('change', function() {
           if (this.files && this.files[0]) {
@@ -419,20 +447,45 @@ app.get('/', (c) => {
           }
         });
 
-        form.addEventListener('submit', function() {
-          if (fileInput.files && fileInput.files[0]) {
-            uploadBtn.disabled = true;
-            uploadBtn.innerHTML = '⏳ Mengupload...';
-            loading.classList.add('show');
+        form.addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          if (!fileInput.files || !fileInput.files[0]) {
+            return;
+          }
+
+          uploadBtn.disabled = true;
+          uploadBtn.innerHTML = '⏳ Mengupload...';
+          loading.classList.add('show');
+          errorMessage.style.display = 'none';
+          successMessage.style.display = 'none';
+
+          const formData = new FormData();
+          formData.append('file', fileInput.files[0]);
+
+          try {
+            const response = await fetch('/upload', {
+              method: 'POST',
+              body: formData
+            });
+
+            if (response.ok) {
+              successMessage.innerHTML = '✅ File berhasil diupload dan diproses!';
+              successMessage.style.display = 'block';
+              setTimeout(() => {
+                window.location.reload();
+              }, 1500);
+            } else {
+              throw new Error('Upload gagal');
+            }
+          } catch (error) {
+            errorMessage.innerHTML = '❌ Gagal mengupload file. Silakan coba lagi.';
+            errorMessage.style.display = 'block';
+            uploadBtn.disabled = false;
+            uploadBtn.innerHTML = '⬆️ Upload Materi';
+            loading.classList.remove('show');
           }
         });
-
-        // Auto refresh setelah upload berhasil
-        if (window.location.search.includes('uploaded=true')) {
-          setTimeout(() => {
-            window.location.href = '/';
-          }, 2000);
-        }
       </script>
     </body>
     </html>
@@ -440,38 +493,52 @@ app.get('/', (c) => {
 });
 
 app.post('/upload', async (c) => {
-  const form = formidable({ uploadDir: '/tmp', keepExtensions: true });
-
-  const body = await new Promise((resolve, reject) => {
-    form.parse(c.req.raw, (err: any, fields: any, files: any) => {
-      if (err) reject(err);
-      else resolve({ fields, files });
-    });
-  });
-
-  const file = (body as any).files.file;
-  const name = file.originalFilename || 'materi';
-  const ext = name.split('.').pop();
-  const base = name.replace(/\.[^/.]+$/, '');
-  const rawPath = `data/raw/${base}.${ext}`;
-  const txtPath = `data/text/${base}.txt`;
-
-  mkdirSync('data/raw', { recursive: true });
-  mkdirSync('data/text', { recursive: true });
-  writeFileSync(rawPath, readFileSync(file.filepath));
-
-  const teks = await extractTextFromFile(rawPath);
-  writeFileSync(txtPath, teks);
-
-  // Notifikasi layanan WhatsApp untuk memuat ulang knowledge base
   try {
-    await axios.post(`${WHATSAPP_SERVICE_URL}/reload-kb`);
-    console.log(`✅ Notifikasi reload KB berhasil dikirim ke ${WHATSAPP_SERVICE_URL}`);
-  } catch (err) {
-    console.error(`❌ Gagal mengirim notifikasi reload KB ke ${WHATSAPP_SERVICE_URL}:`, err);
-  }
+    // Menggunakan API native Hono untuk menangani multipart form data
+    const formData = await c.req.formData();
+    const file = formData.get('file') as File;
+    
+    if (!file) {
+      return c.json({ error: 'File tidak ditemukan' }, 400);
+    }
 
-  return c.redirect('/?uploaded=true');
+    const name = file.name || 'materi';
+    const ext = name.split('.').pop();
+    const base = name.replace(/\.[^/.]+$/, '');
+    const rawPath = `data/raw/${base}.${ext}`;
+    const txtPath = `data/text/${base}.txt`;
+
+    // Buat direktori jika belum ada
+    mkdirSync('data/raw', { recursive: true });
+    mkdirSync('data/text', { recursive: true });
+
+    // Simpan file asli
+    const arrayBuffer = await file.arrayBuffer();
+    const uint8Array = new Uint8Array(arrayBuffer);
+    writeFileSync(rawPath, uint8Array);
+
+    // Ekstrak teks dari file
+    const teks = await extractTextFromFile(rawPath);
+    writeFileSync(txtPath, teks);
+
+    // Notifikasi layanan WhatsApp untuk memuat ulang knowledge base
+    try {
+      await axios.post(`${WHATSAPP_SERVICE_URL}/reload-kb`);
+      console.log(`✅ Notifikasi reload KB berhasil dikirim ke ${WHATSAPP_SERVICE_URL}`);
+    } catch (err) {
+      console.error(`❌ Gagal mengirim notifikasi reload KB ke ${WHATSAPP_SERVICE_URL}:`, err);
+    }
+
+    return c.json({ 
+      success: true, 
+      message: 'File berhasil diupload dan diproses',
+      filename: base 
+    });
+
+  } catch (error) {
+    console.error('Error processing upload:', error);
+    return c.json({ error: 'Gagal memproses file' }, 500);
+  }
 });
 
 // Server
