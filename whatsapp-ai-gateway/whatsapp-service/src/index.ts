@@ -55,6 +55,62 @@ client.initialize();
 
 const selectedContext: Record<string, string> = {};
 
+// Fungsi untuk mengirim pesan AI
+async function sendAIResponse(msg: Message, prompt: string, context: string) {
+  const contact = await msg.getContact();
+  const chat = await msg.getChat();
+
+  const finalPrompt = context ? `Berikut materi:
+${context.slice(0, 3000)}
+
+Pertanyaan:
+${prompt}
+
+Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.` : `${prompt}
+
+Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
+
+  let completeResponse = '';
+  let hasMore = true;
+  let nextToken = null;
+
+  while (hasMore) {
+    const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'deepseek-ai/DeepSeek-R1',
+        messages: [{ role: 'user', content: finalPrompt }],
+        max_tokens: 1000,
+        next_token: nextToken,
+      })
+    });
+
+    const json: any = await res.json();
+    const replyPart = json?.choices?.[0]?.message?.content || '';
+    completeResponse += replyPart;
+    hasMore = json?.choices?.[0]?.has_more || false;
+    nextToken = json?.choices?.[0]?.next_token || null;
+  }
+
+  // Hapus konten dalam tag <think></think>
+  completeResponse = completeResponse.replace(/<think>[\s\S]*?<\/think>/g, '');
+
+  // Hapus spasi di awal respons
+  completeResponse = completeResponse.trimStart();
+  
+  const reply = completeResponse || '❌ Gagal menjawab.';
+
+  if (chat.isGroup) {
+    await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
+  } else {
+    await msg.reply(reply);
+  }
+}
+
 client.on('message_create', async (msg: Message) => {
   if (msg.fromMe) return;
   const text = msg.body?.trim();
@@ -64,6 +120,17 @@ client.on('message_create', async (msg: Message) => {
     const list = Object.keys(KB).filter(k => k !== '_last_loaded').map(k => `- ${k}`).join('\n');
     await msg.reply(`📚 Materi:
 ${list}`);
+    return;
+  }
+
+  if (text === '/bantuan' || text === '/help') {
+    await msg.reply(`📚 Panduan Penggunaan Bot:
+
+/materi - Melihat daftar materi yang tersedia
+/pilih [nama_materi] - Memilih materi spesifik
+/ai [pertanyaan] - Bertanya dengan materi yang dipilih atau semua materi
+/tanya [pertanyaan] - Bertanya langsung dengan semua materi
+/bantuan - Menampilkan panduan ini`);
     return;
   }
 
@@ -78,62 +145,48 @@ ${list}`);
     return;
   }
 
+  // Perintah /tanya untuk langsung menggunakan semua materi
+  if (text.startsWith('/tanya ')) {
+    const prompt = text.replace('/tanya ', '').trim();
+    
+    // Gabungkan semua materi
+    const allMaterials = Object.keys(KB)
+      .filter(k => k !== '_last_loaded')
+      .map(k => KB[k]);
+    
+    let context = '';
+    if (allMaterials.length > 0) {
+      context = allMaterials.join('\n\n=== BATAS MATERI ===\n\n');
+    }
+
+    await sendAIResponse(msg, prompt, context);
+    return;
+  }
+
+  // Perintah /ai tanpa perlu memilih materi
   if (text.startsWith('/ai ')) {
     const prompt = text.replace('/ai ', '').trim();
-    const contact = await msg.getContact();
-    const chat = await msg.getChat();
-    const contextKey = selectedContext[msg.from];
-    const context = contextKey ? KB[contextKey] : '';
-
-    const finalPrompt = context ? `Berikut materi:
-${context.slice(0, 3000)}
-
-Pertanyaan:
-${prompt}
-
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.` : `${prompt}
-
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
-
-    let completeResponse = '';
-    let hasMore = true;
-    let nextToken = null;
-
-    while (hasMore) {
-      const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'deepseek-ai/DeepSeek-R1',
-          messages: [{ role: 'user', content: finalPrompt }],
-          max_tokens: 1000,
-          next_token: nextToken,
-        })
-      });
-
-      const json: any = await res.json();
-      const replyPart = json?.choices?.[0]?.message?.content || '';
-      completeResponse += replyPart;
-      hasMore = json?.choices?.[0]?.has_more || false;
-      nextToken = json?.choices?.[0]?.next_token || null;
-    }
-
-    // Hapus konten dalam tag <think></think>
-    completeResponse = completeResponse.replace(/<think>[\s\S]*?<\/think>/g, '');
-
-    // Hapus spasi di awal respons
-    completeResponse = completeResponse.trimStart();
     
-    const reply = completeResponse || '❌ Gagal menjawab.';
-
-    if (chat.isGroup) {
-      await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
+    // Dapatkan materi yang dipilih atau gunakan semua materi jika tidak ada yang dipilih
+    const contextKey = selectedContext[msg.from];
+    let context = '';
+    
+    if (contextKey && KB[contextKey]) {
+      // Jika ada materi yang dipilih, gunakan materi tersebut
+      context = KB[contextKey];
     } else {
-      await msg.reply(reply);
+      // Jika tidak ada materi yang dipilih, gabungkan semua materi
+      const allMaterials = Object.keys(KB)
+        .filter(k => k !== '_last_loaded')
+        .map(k => KB[k]);
+      
+      if (allMaterials.length > 0) {
+        context = allMaterials.join('\n\n=== BATAS MATERI ===\n\n');
+      }
     }
+
+    await sendAIResponse(msg, prompt, context);
+    return;
   }
 });
 
