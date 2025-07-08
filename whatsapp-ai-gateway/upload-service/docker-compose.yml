@@ -8,16 +8,19 @@ services:
     ports:
       - "8789:8789"
     volumes:
-      - data-volume:/app/data
+      - shared-data-volume:/app/data
     restart: unless-stopped
     networks:
-      - upload-network
+      - whatsapp-network
     env_file:
       - .env
 
 volumes:
-  data-volume:
+  shared-data-volume:
+    external: true
+    name: whatsapp-ai-gateway_data-volume
 
 networks:
-  upload-network:
-    driver: bridge 
+  whatsapp-network:
+    external: true
+    name: whatsapp-ai-gateway_whatsapp-network 

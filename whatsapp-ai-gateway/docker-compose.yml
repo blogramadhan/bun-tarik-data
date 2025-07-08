@@ -3,7 +3,7 @@ version: '3'
 services:
   whatsapp-service:
     build:
-      context: .
+      context: ./whatsapp-service
     container_name: whatsapp-service
     environment:
       - DEEPINFRA_API_KEY=${DEEPINFRA_API_KEY}
@@ -16,11 +16,26 @@ services:
     networks:
       - whatsapp-network
 
+  upload-service:
+    build:
+      context: ./upload-service
+    container_name: upload-service
+    environment:
+      - WHATSAPP_SERVICE_URL=http://whatsapp-service:8788
+    ports:
+      - "8789:8789"
+    volumes:
+      - shared-data-volume:/app/data
+    restart: unless-stopped
+    networks:
+      - whatsapp-network
+    depends_on:
+      - whatsapp-service
+
 volumes:
   whatsapp-auth:
   shared-data-volume:
-    name: whatsapp-ai-gateway_data-volume
 
 networks:
   whatsapp-network:
-    name: whatsapp-ai-gateway_whatsapp-network 
+    driver: bridge 

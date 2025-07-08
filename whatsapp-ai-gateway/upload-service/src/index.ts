@@ -6,6 +6,7 @@ import { extractTextFromFile } from './utils/extractor';
 
 // Konfigurasi URL layanan WhatsApp
 const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://whatsapp-service:8788';
+console.log(`📱 Menggunakan WhatsApp Service URL: ${WHATSAPP_SERVICE_URL}`);
 
 // Aplikasi Hono
 const app = new Hono();
@@ -523,10 +524,31 @@ app.post('/upload', async (c) => {
 
     // Notifikasi layanan WhatsApp untuk memuat ulang knowledge base
     try {
-      await axios.post(`${WHATSAPP_SERVICE_URL}/reload-kb`);
-      console.log(`✅ Notifikasi reload KB berhasil dikirim ke ${WHATSAPP_SERVICE_URL}`);
+      // Coba beberapa kali jika gagal
+      let retries = 3;
+      let success = false;
+      
+      while (retries > 0 && !success) {
+        try {
+          console.log(`Mengirim notifikasi reload KB ke ${WHATSAPP_SERVICE_URL}, percobaan ${4-retries}...`);
+          const response = await axios.post(`${WHATSAPP_SERVICE_URL}/reload-kb`);
+          console.log(`✅ Notifikasi reload KB berhasil dikirim ke ${WHATSAPP_SERVICE_URL}`, response.data);
+          success = true;
+        } catch (err) {
+          console.error(`❌ Gagal mengirim notifikasi reload KB ke ${WHATSAPP_SERVICE_URL}, percobaan ${4-retries}:`, err);
+          retries--;
+          if (retries > 0) {
+            console.log(`Menunggu 2 detik sebelum mencoba lagi...`);
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          }
+        }
+      }
+      
+      if (!success) {
+        console.error(`❌ Gagal mengirim notifikasi reload KB setelah beberapa percobaan. Pastikan WhatsApp Service berjalan.`);
+      }
     } catch (err) {
-      console.error(`❌ Gagal mengirim notifikasi reload KB ke ${WHATSAPP_SERVICE_URL}:`, err);
+      console.error(`❌ Error saat mencoba mengirim notifikasi reload KB:`, err);
     }
 
     return c.json({ 

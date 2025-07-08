@@ -1,13 +1,6 @@
 #!/bin/bash
 
-echo "Menghentikan WhatsApp Service..."
-cd whatsapp-service
+echo "Menghentikan semua layanan WhatsApp AI Gateway..."
 docker-compose down
-cd ..
 
-echo "Menghentikan Upload Service..."
-cd upload-service
-docker-compose down
-cd ..
-
-echo "Kedua layanan dihentikan." 
+echo "Semua layanan telah dihentikan." 

@@ -2,18 +2,43 @@ import { Hono } from 'hono';
 import { serve } from '@hono/node-server';
 import { Client, LocalAuth, type Message } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
-import { existsSync, readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, readdirSync, mkdirSync } from 'fs';
 
 // Knowledge Base
 export const KB: Record<string, string> = {};
 export function loadKnowledgeBase() {
+    console.log('🔄 Memuat knowledge base...');
     KB._last_loaded = new Date().toISOString();
-    if (!existsSync('data/text')) return;
-
-    readdirSync('data/text').forEach(file => {
-        const key = file.replace('.txt', '');
-        KB[key] = readFileSync(`data/text/${file}`, 'utf8');
-    });
+    
+    if (!existsSync('data/text')) {
+        console.log('❌ Direktori data/text tidak ditemukan. Membuat direktori...');
+        try {
+            mkdirSync('data/text', { recursive: true });
+            console.log('✅ Direktori data/text berhasil dibuat.');
+        } catch (err) {
+            console.error('❌ Gagal membuat direktori data/text:', err);
+        }
+        return;
+    }
+    
+    try {
+        const files = readdirSync('data/text');
+        console.log(`📚 Menemukan ${files.length} file di data/text`);
+        
+        files.forEach(file => {
+            try {
+                const key = file.replace('.txt', '');
+                KB[key] = readFileSync(`data/text/${file}`, 'utf8');
+                console.log(`✅ Berhasil memuat: ${file}`);
+            } catch (err) {
+                console.error(`❌ Gagal memuat file ${file}:`, err);
+            }
+        });
+        
+        console.log(`📚 Total ${Object.keys(KB).length - 1} materi dimuat ke knowledge base`);
+    } catch (err) {
+        console.error('❌ Gagal membaca direktori data/text:', err);
+    }
 }
 
 loadKnowledgeBase();
