@@ -117,12 +117,29 @@ function findJsonFiles(dir: string): string[] {
 }
 
 // Kirim notifikasi via WhatsApp
-async function kirimNotifikasiWhatsApp(message: string) {
-    await axios.post('http://localhost:8788/send-message', {
-        number: process.env.WHATSAPP_NUMBER,
-        message: message
-    });
-    console.log(message);
+// async function kirimNotifikasiWhatsApp(message: string) {
+//     await axios.post('http://localhost:8788/send-message', {
+//         number: process.env.WHATSAPP_NUMBER,
+//         message: message
+//     });
+//     console.log(message);
+// }
+
+async function kirimNotifikasiWhatsApp(message: string, retries = 3) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await axios.post('http://localhost:8788/send-message', {
+            number: process.env.WHATSAPP_NUMBER,
+            message: message
+            }, { timeout: 10000 });
+            console.log(message);
+            return;
+        } catch (err) {
+            console.error(`Gagal mengirim pesan WhatsApp (percobaan ${i+1}/${retries}):`, err.message);
+            if (i === retries - 1) throw err;
+            await new Promise(resolve => setTimeout(resolve, 2000)); // tunggu 2 detik sebelum mencoba lagi
+        }
+    }
 }
 
 // Mengambil data dari API dan menyimpannya

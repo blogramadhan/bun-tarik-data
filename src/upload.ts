@@ -25,15 +25,31 @@ const s3 = new S3Client({
 });
 
 // Fungsi untuk mengirim notifikasi ke semua platform
-async function notifyAll(message: string) {
-  // Hanya kirim pesan ke WhatsApp jika berisi summary (mengandung kata "selesai" atau "dimulai")
-  if (message.includes("selesai") || message.includes("dimulai")) {
-    await axios.post('http://localhost:8788/send-message', {
-      number: WHATSAPP_NUMBER,
-      message: message
-    });
+// async function notifyAll(message: string) {
+//   // Hanya kirim pesan ke WhatsApp jika berisi summary (mengandung kata "selesai" atau "dimulai")
+//   if (message.includes("selesai") || message.includes("dimulai")) {
+//     await axios.post('http://localhost:8788/send-message', {
+//       number: WHATSAPP_NUMBER,
+//       message: message
+//     });
+//   }
+//   console.log(`📢 Notification: ${message}`);
+// }
+async function kirimNotifikasiWhatsApp(message: string, retries = 3) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      await axios.post('http://localhost:8788/send-message', {
+        number: process.env.WHATSAPP_NUMBER,
+        message: message
+      }, { timeout: 10000 });
+      console.log(message);
+      return;
+    } catch (err) {
+      console.error(`Gagal mengirim pesan WhatsApp (percobaan ${i+1}/${retries}):`, err.message);
+      if (i === retries - 1) throw err;
+      await new Promise(resolve => setTimeout(resolve, 2000)); // tunggu 2 detik sebelum mencoba lagi
+    }
   }
-  console.log(`📢 Notification: ${message}`);
 }
 
 // Fungsi untuk memeriksa apakah file perlu diupload berdasarkan tahun pada path file
@@ -137,12 +153,10 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
           uploadedCount++;
           const msg = `✅ Berhasil upload (file baru): ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
           console.log(msg);
-          await notifyAll(msg);
         } catch (error) {
           failedCount++;
           const msg = `❌ Gagal upload: ${key} - ${error}`;
           console.error(msg);
-          await notifyAll(msg);
         }
       } else {
         // File sudah ada, periksa berdasarkan aturan tahun
@@ -159,12 +173,10 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
             uploadedCount++;
             const msg = `✅ Berhasil update: ${key} (${(stat.size / 1024 / 1024).toFixed(2)} MB)`;
             console.log(msg);
-            await notifyAll(msg);
           } catch (error) {
             failedCount++;
             const msg = `❌ Gagal update: ${key} - ${error}`;
             console.error(msg);
-            await notifyAll(msg);
           }
         } else {
           skippedCount++;
@@ -181,15 +193,15 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
 async function main() {
   try {
     console.log("🚀 Memulai proses upload data ISB ke Cloudflare R2...");
-    await notifyAll("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
+    await kirimNotifikasiWhatsApp("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     const summary = `🎉 Upload selesai! Berhasil: ${result.uploadedCount}, Gagal: ${result.failedCount}, Dilewati: ${result.skippedCount}`;
     console.log(summary);
-    await notifyAll(summary);
+    await kirimNotifikasiWhatsApp(summary);
   } catch (err: any) {
     const msg = `❌ Upload total gagal: ${err.message}`;
     console.error(msg);
-    await notifyAll(msg);
+    await kirimNotifikasiWhatsApp(msg);
   } finally {
     // Tunggu beberapa detik untuk memastikan pesan terkirim sebelum keluar
     await new Promise(resolve => setTimeout(resolve, 5000));
