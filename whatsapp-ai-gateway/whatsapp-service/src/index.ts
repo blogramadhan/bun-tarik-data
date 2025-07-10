@@ -82,9 +82,9 @@ Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'deepseek-ai/DeepSeek-R1',
+        model: process.env.DEEPINFRA_MODEL || 'deepseek-ai/DeepSeek-R1',
         messages: [{ role: 'user', content: finalPrompt }],
-        max_tokens: 10000,
+        max_tokens: 1000,
         next_token: nextToken,
       })
     });
