@@ -311,10 +311,10 @@ client.on('message_create', async (msg: Message) => {
   
   // Tambahkan fitur untuk menerima pesan langsung tanpa awalan
   // Ini akan mempermudah pengguna untuk bertanya tanpa perlu mengetik /ai atau /tanya
-  if (!text.startsWith('/')) {
-    await sendAIResponse(msg, text);
-    return;
-  }
+  // if (!text.startsWith('/')) {
+  //   await sendAIResponse(msg, text);
+  //   return;
+  // }
 });
 
 // Inisialisasi WhatsApp client terakhir
