@@ -18,19 +18,31 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
   try {
     switch (extension) {
       case 'pdf':
-        // Gunakan pdftotext dengan opsi layout untuk mempertahankan struktur dokumen
-        await execAsync(`pdftotext -layout -enc UTF-8 "${filePath}" "${outputPath}"`);
+        // Gunakan pdftotext dengan opsi layout dan nopgbrk untuk mempertahankan struktur dokumen
+        // dan menghindari pemisahan paragraf
+        await execAsync(`pdftotext -layout -nopgbrk -enc UTF-8 "${filePath}" "${outputPath}"`);
         const pdfText = readFileSync(outputPath, 'utf8');
         
-        // Tambahkan metadata file
-        return `# Dokumen: ${fileName}.pdf\n\n${pdfText}`;
+        // Hitung jumlah halaman
+        const { stdout: pageCountOutput } = await execAsync(`pdfinfo "${filePath}" | grep Pages | awk '{print $2}'`);
+        const pageCount = parseInt(pageCountOutput.trim()) || 'tidak diketahui';
+        
+        // Tambahkan metadata file yang lebih lengkap
+        return `# Dokumen: ${fileName}.pdf
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+# Jumlah Halaman: ${pageCount}
+
+${pdfText}`;
         
       case 'docx':
-        // Gunakan pandoc dengan opsi yang lebih baik untuk docx
+        // Gunakan pandoc dengan opsi yang lebih baik untuk docx termasuk penanganan tabel
         try {
-          await execAsync(`pandoc "${filePath}" -f docx -t plain --wrap=none -o "${outputPath}"`);
+          await execAsync(`pandoc "${filePath}" -f docx -t plain --wrap=none --extract-media=./media -o "${outputPath}"`);
           const docxText = readFileSync(outputPath, 'utf8');
-          return `# Dokumen: ${fileName}.docx\n\n${docxText}`;
+          return `# Dokumen: ${fileName}.docx
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${docxText}`;
         } catch (err) {
           console.error(`Error saat mengekstrak docx dengan pandoc:`, err);
           return `Tidak dapat mengekstrak teks dari file docx. Pastikan pandoc terinstal.`;
@@ -41,13 +53,19 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
         try {
           await execAsync(`antiword "${filePath}" > "${outputPath}"`);
           const docText = readFileSync(outputPath, 'utf8');
-          return `# Dokumen: ${fileName}.doc\n\n${docText}`;
+          return `# Dokumen: ${fileName}.doc
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${docText}`;
         } catch (docErr) {
           // Fallback ke pandoc jika antiword gagal
           try {
             await execAsync(`pandoc "${filePath}" -f doc -t plain --wrap=none -o "${outputPath}"`);
             const docText = readFileSync(outputPath, 'utf8');
-            return `# Dokumen: ${fileName}.doc\n\n${docText}`;
+            return `# Dokumen: ${fileName}.doc
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${docText}`;
           } catch {
             return `Tidak dapat mengekstrak teks dari file doc. Pastikan antiword atau pandoc terinstal.`;
           }
@@ -57,23 +75,32 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
         // Langsung baca file teks dengan deteksi encoding
         try {
           const txtText = readFileSync(filePath, 'utf8');
-          return `# Dokumen: ${fileName}.txt\n\n${txtText}`;
+          return `# Dokumen: ${fileName}.txt
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${txtText}`;
         } catch (err) {
           // Coba dengan encoding lain jika UTF-8 gagal
           try {
             const txtText = readFileSync(filePath, 'latin1');
-            return `# Dokumen: ${fileName}.txt\n\n${txtText}`;
+            return `# Dokumen: ${fileName}.txt
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${txtText}`;
           } catch {
             return `Error saat membaca file teks: ${err}`;
           }
         }
 
       case 'pptx':
-        // Ekstrak teks dari PowerPoint
+        // Ekstrak teks dari PowerPoint dengan opsi tambahan
         try {
-          await execAsync(`pandoc "${filePath}" -f pptx -t plain --wrap=none -o "${outputPath}"`);
+          await execAsync(`pandoc "${filePath}" -f pptx -t plain --wrap=none --extract-media=./media -o "${outputPath}"`);
           const pptxText = readFileSync(outputPath, 'utf8');
-          return `# Presentasi: ${fileName}.pptx\n\n${pptxText}`;
+          return `# Presentasi: ${fileName}.pptx
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${pptxText}`;
         } catch {
           return `Tidak dapat mengekstrak teks dari file pptx. Pastikan pandoc terinstal.`;
         }
@@ -85,7 +112,10 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
           const csvPath = `${filePath}.csv`;
           await execAsync(`ssconvert "${filePath}" "${csvPath}"`);
           const excelText = readFileSync(csvPath, 'utf8');
-          return `# Spreadsheet: ${fileName}.${extension}\n\n${excelText}`;
+          return `# Spreadsheet: ${fileName}.${extension}
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${excelText}`;
         } catch {
           return `Tidak dapat mengekstrak teks dari file ${extension}. Pastikan gnumeric terinstal.`;
         }
@@ -93,22 +123,35 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
       case 'jpg':
       case 'jpeg':
       case 'png':
-        // OCR dengan tesseract jika tersedia
+        // OCR dengan tesseract dengan opsi tambahan untuk meningkatkan akurasi
         try {
-          await execAsync(`tesseract "${filePath}" "${filePath.replace(/\.[^/.]+$/, '')}" -l ind+eng`);
+          // Pra-proses gambar untuk meningkatkan kualitas OCR
+          const preprocessedPath = `${filePath}.preprocessed.png`;
+          await execAsync(`convert "${filePath}" -colorspace gray -normalize -sharpen 0x1 "${preprocessedPath}"`);
+          
+          // Gunakan OEM 1 (LSTM) dan PSM 3 (fully automatic page segmentation)
+          await execAsync(`tesseract "${preprocessedPath}" "${filePath.replace(/\.[^/.]+$/, '')}" -l ind+eng --oem 1 --psm 3`);
           const ocrText = readFileSync(`${filePath.replace(/\.[^/.]+$/, '')}.txt`, 'utf8');
-          return `# Gambar: ${fileName}.${extension}\n\n${ocrText}`;
-        } catch {
-          return `[Gambar: ${fileName}.${extension}] - OCR tidak tersedia atau gagal. Pastikan tesseract-ocr terinstal.`;
+          return `# Gambar: ${fileName}.${extension}
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+# Metode: OCR (Optical Character Recognition)
+
+${ocrText}`;
+        } catch (err) {
+          console.error(`Error saat OCR gambar:`, err);
+          return `[Gambar: ${fileName}.${extension}] - OCR tidak tersedia atau gagal. Pastikan tesseract-ocr dan imagemagick terinstal.`;
         }
         
       case 'html':
       case 'htm':
-        // Ekstrak teks dari HTML
+        // Ekstrak teks dari HTML dengan opsi tambahan
         try {
-          await execAsync(`pandoc "${filePath}" -f html -t plain --wrap=none -o "${outputPath}"`);
+          await execAsync(`pandoc "${filePath}" -f html -t plain --wrap=none --extract-media=./media -o "${outputPath}"`);
           const htmlText = readFileSync(outputPath, 'utf8');
-          return `# Dokumen HTML: ${fileName}.${extension}\n\n${htmlText}`;
+          return `# Dokumen HTML: ${fileName}.${extension}
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${htmlText}`;
         } catch {
           return `Tidak dapat mengekstrak teks dari file HTML. Pastikan pandoc terinstal.`;
         }
@@ -118,7 +161,10 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
         try {
           await execAsync(`pandoc "${filePath}" -f rtf -t plain --wrap=none -o "${outputPath}"`);
           const rtfText = readFileSync(outputPath, 'utf8');
-          return `# Dokumen RTF: ${fileName}.rtf\n\n${rtfText}`;
+          return `# Dokumen RTF: ${fileName}.rtf
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${rtfText}`;
         } catch {
           return `Tidak dapat mengekstrak teks dari file RTF. Pastikan pandoc terinstal.`;
         }
@@ -128,9 +174,12 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
       case 'odp':
         // Ekstrak teks dari format OpenDocument
         try {
-          await execAsync(`pandoc "${filePath}" -t plain --wrap=none -o "${outputPath}"`);
+          await execAsync(`pandoc "${filePath}" -t plain --wrap=none --extract-media=./media -o "${outputPath}"`);
           const odText = readFileSync(outputPath, 'utf8');
-          return `# Dokumen OpenDocument: ${fileName}.${extension}\n\n${odText}`;
+          return `# Dokumen OpenDocument: ${fileName}.${extension}
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${odText}`;
         } catch {
           return `Tidak dapat mengekstrak teks dari file ${extension}. Pastikan pandoc terinstal.`;
         }
@@ -140,7 +189,10 @@ export async function extractTextFromFile(filePath: string): Promise<string> {
         try {
           await execAsync(`pandoc "${filePath}" -t plain --wrap=none -o "${outputPath}"`);
           const genericText = readFileSync(outputPath, 'utf8');
-          return `# Dokumen: ${fileName}.${extension || 'tidak dikenal'}\n\n${genericText}`;
+          return `# Dokumen: ${fileName}.${extension || 'tidak dikenal'}
+# Tanggal Ekstraksi: ${new Date().toISOString()}
+
+${genericText}`;
         } catch {
           return `Tidak dapat mengekstrak teks dari file dengan format ${extension || 'tidak dikenal'}.`;
         }
