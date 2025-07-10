@@ -9,9 +9,57 @@ export const client = new Client({
   puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] },
 });
 
-client.on('qr', (qr) => qrcode.generate(qr, { small: true }));
-client.on('ready', () => console.log('✅ WhatsApp client siap!'));
-client.initialize();
+// API untuk mengirim pesan
+const app = new Hono();
+
+app.post('/send-message', async (c) => {
+  try {
+    const body = await c.req.json();
+    console.log('📩 Menerima permintaan send-message:', body);
+    const { number, message } = body;
+    
+    if (!number || !message) {
+      console.log('❌ Error: number dan message wajib');
+      return c.json({ status: false, error: 'number dan message wajib' }, 400);
+    }
+    
+    console.log(`📤 Mencoba mengirim pesan ke ${number}...`);
+    await client.sendMessage(`${number}@c.us`, message);
+    console.log('✅ Pesan terkirim.');
+    return c.json({ status: true, message: '✅ Pesan terkirim.' });
+  } catch (err: any) {
+    console.error('❌ Error saat mengirim pesan:', err);
+    return c.json({ status: false, error: err.message }, 500);
+  }
+});
+
+// Status API
+app.get('/', (c) => {
+  console.log('📊 Menerima permintaan status');
+  return c.json({ 
+    status: 'ok', 
+    whatsapp: client.info ? 'connected' : 'initializing'
+  });
+});
+
+// Mulai server HTTP terlebih dahulu
+console.log('🚀 Memulai server HTTP di port 8788...');
+serve({
+  fetch: app.fetch,
+  port: 8788,
+});
+console.log('✅ Server HTTP berjalan di port 8788');
+
+// Kemudian inisialisasi WhatsApp client
+client.on('qr', (qr) => {
+  console.log('📱 Scan QR code untuk login WhatsApp:');
+  qrcode.generate(qr, { small: true });
+});
+
+client.on('ready', () => {
+  console.log('✅ WhatsApp client siap!');
+  console.log('🤖 Bot siap menerima pesan dan permintaan API');
+});
 
 // Fungsi untuk mengirim pesan AI
 async function sendAIResponse(msg: Message, prompt: string) {
@@ -36,7 +84,7 @@ Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: process.env.DEEPINFRA_MODEL,
+          model: process.env.DEEPINFRA_MODEL || 'mistralai/Mistral-7B-Instruct-v0.2',
           messages: [{ role: 'user', content: finalPrompt }],
           max_tokens: 1000,
           next_token: nextToken,
@@ -106,24 +154,6 @@ client.on('message_create', async (msg: Message) => {
   }
 });
 
-// API untuk mengirim pesan
-const app = new Hono();
-
-app.post('/send-message', async (c) => {
-  const { number, message } = await c.req.json();
-  if (!number || !message) {
-    return c.json({ status: false, error: 'number dan message wajib' }, 400);
-  }
-  try {
-    await client.sendMessage(`${number}@c.us`, message);
-    return c.json({ status: true, message: '✅ Pesan terkirim.' });
-  } catch (err: any) {
-    return c.json({ status: false, error: err.message }, 500);
-  }
-});
-
-// Status API
-app.get('/', (c) => c.json({ status: 'ok' }));
-
-serve(app);
-console.log('✅ WhatsApp service berjalan di port 8788'); 
+// Inisialisasi WhatsApp client terakhir
+console.log('📱 Menginisialisasi WhatsApp client...');
+client.initialize(); 
