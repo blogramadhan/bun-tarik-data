@@ -91,7 +91,7 @@ export async function loadAndEmbedKnowledgeBase() {
                     configuration: {
                         baseURL: "https://api.deepinfra.com/v1/openai"
                     },
-                    modelName: process.env.DEEPINFRA_MODEL || "text-embedding-ada-002"
+                    modelName: process.env.DEEPINFRA_MODEL || "deepseek-ai/DeepSeek-R1"
                     // modelName: "text-embedding-ada-002"
                 });
                 
