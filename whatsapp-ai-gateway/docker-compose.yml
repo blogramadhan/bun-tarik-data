@@ -21,7 +21,7 @@ services:
       context: ./upload-service
     container_name: upload-service
     environment:
-      - WHATSAPP_SERVICE_URL=http://whatsapp-service:8788
+      - WHATSAPP_SERVICE_URL=${WHATSAPP_SERVICE_URL}
     ports:
       - "8789:8789"
     volumes:
