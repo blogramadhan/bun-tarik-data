@@ -11,7 +11,8 @@ let knowledgeBase: string[] = [];
 // Fungsi untuk memuat knowledgebase dari file
 function loadKnowledgeBase() {
   try {
-    const textDir = path.join(process.cwd(), '..', 'upload-service', 'data', 'text');
+    // Sesuaikan path dengan volume Docker
+    const textDir = path.join('/app/data/text');
     console.log(`📚 Mencoba memuat knowledgebase dari: ${textDir}`);
     
     if (existsSync(textDir)) {
@@ -36,6 +37,22 @@ function loadKnowledgeBase() {
       console.log(`📚 Total ${knowledgeBase.length} dokumen dimuat ke dalam knowledgebase`);
     } else {
       console.log(`⚠️ Direktori knowledgebase tidak ditemukan: ${textDir}`);
+      
+      // Coba buat direktori jika tidak ada
+      try {
+        const dataDir = '/app/data';
+        if (existsSync(dataDir)) {
+          console.log(`📁 Direktori data ditemukan di: ${dataDir}`);
+          console.log(`📁 Mencoba membuat direktori text...`);
+          const fs = require('fs');
+          fs.mkdirSync(textDir, { recursive: true });
+          console.log(`✅ Direktori text berhasil dibuat: ${textDir}`);
+        } else {
+          console.log(`⚠️ Direktori data tidak ditemukan: ${dataDir}`);
+        }
+      } catch (err) {
+        console.error(`❌ Gagal membuat direktori text:`, err);
+      }
     }
   } catch (err) {
     console.error('❌ Error saat memuat knowledgebase:', err);

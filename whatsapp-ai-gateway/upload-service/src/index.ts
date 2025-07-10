@@ -3,6 +3,11 @@ import { serve } from '@hono/node-server';
 import { writeFileSync, mkdirSync, readdirSync, readFileSync, existsSync } from 'fs';
 import axios from 'axios';
 import { extractTextFromFile } from './utils/extractor';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+// Mengubah exec menjadi Promise-based
+const execAsync = promisify(exec);
 
 // Konfigurasi URL layanan WhatsApp
 const WHATSAPP_SERVICE_URL = process.env.WHATSAPP_SERVICE_URL || 'http://whatsapp-service:8788';
@@ -521,6 +526,23 @@ app.post('/upload', async (c) => {
     // Ekstrak teks dari file
     const teks = await extractTextFromFile(rawPath);
     writeFileSync(txtPath, teks);
+
+    console.log(`✅ File teks disimpan di: ${txtPath}`);
+    
+    // Log direktori untuk debugging
+    console.log(`📂 Direktori saat ini: ${process.cwd()}`);
+    console.log(`📂 Struktur direktori data:`);
+    try {
+      const { stdout } = await execAsync('find data -type d | sort');
+      console.log(stdout);
+      
+      // Tampilkan isi direktori text
+      console.log(`📄 Isi direktori data/text:`);
+      const { stdout: textFiles } = await execAsync('ls -la data/text');
+      console.log(textFiles);
+    } catch (err) {
+      console.error(`❌ Error saat memeriksa struktur direktori:`, err);
+    }
 
     // Notifikasi layanan WhatsApp untuk memuat ulang knowledge base
     try {
