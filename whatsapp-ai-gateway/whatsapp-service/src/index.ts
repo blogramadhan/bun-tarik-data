@@ -3,21 +3,53 @@ import { serve } from '@hono/node-server';
 import { Client, LocalAuth, type Message } from 'whatsapp-web.js';
 import qrcode from 'qrcode-terminal';
 import { existsSync, readFileSync, readdirSync, mkdirSync } from 'fs';
-import { OpenAIEmbeddings } from '@langchain/openai';
-import { MemoryVectorStore } from 'langchain/vectorstores/memory';
-import { Document } from 'langchain/document';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 
 // Knowledge Base
 export const KB: Record<string, string> = {};
 // Variabel untuk menyimpan gabungan semua materi
 export let COMBINED_KB: string = '';
-// Variabel untuk menyimpan vector store
-export let vectorStore: MemoryVectorStore;
 
-// Fungsi untuk memuat dan membuat embedding knowledge base
-export async function loadAndEmbedKnowledgeBase() {
-    console.log('🔄 Memuat dan membuat embedding knowledge base...');
+// Fungsi sederhana untuk mencari teks yang relevan
+function findRelevantContent(query: string, content: string, maxResults: number = 3): string[] {
+  // Bagi konten menjadi paragraf
+  const paragraphs = content.split(/\n\n+/);
+  
+  // Buat skor untuk setiap paragraf berdasarkan kecocokan kata kunci
+  const keywords = query.toLowerCase().split(/\s+/).filter(word => word.length > 3);
+  
+  // Jika tidak ada kata kunci yang cukup panjang, gunakan semua kata
+  const effectiveKeywords = keywords.length > 0 ? keywords : query.toLowerCase().split(/\s+/);
+  
+  // Hitung skor untuk setiap paragraf
+  const scoredParagraphs = paragraphs.map(paragraph => {
+    const paragraphLower = paragraph.toLowerCase();
+    let score = 0;
+    
+    // Hitung kemunculan kata kunci
+    for (const keyword of effectiveKeywords) {
+      // Berikan skor lebih tinggi untuk kecocokan kata lengkap
+      const exactMatches = (paragraphLower.match(new RegExp(`\\b${keyword}\\b`, 'g')) || []).length;
+      const partialMatches = (paragraphLower.match(new RegExp(keyword, 'g')) || []).length - exactMatches;
+      
+      score += exactMatches * 10 + partialMatches * 3;
+    }
+    
+    return { paragraph, score };
+  });
+  
+  // Urutkan paragraf berdasarkan skor dan ambil yang tertinggi
+  const relevantParagraphs = scoredParagraphs
+    .filter(item => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, maxResults)
+    .map(item => item.paragraph);
+  
+  return relevantParagraphs;
+}
+
+// Fungsi untuk memuat knowledge base
+export async function loadKnowledgeBase() {
+    console.log('🔄 Memuat knowledge base...');
     KB._last_loaded = new Date().toISOString();
     
     if (!existsSync('data/text')) {
@@ -35,42 +67,18 @@ export async function loadAndEmbedKnowledgeBase() {
         const files = readdirSync('data/text');
         console.log(`📚 Menemukan ${files.length} file di data/text`);
         
-        const documents: Document[] = [];
-        
         for (const file of files) {
             try {
                 const key = file.replace('.txt', '');
                 const content = readFileSync(`data/text/${file}`, 'utf8');
                 KB[key] = content;
                 console.log(`✅ Berhasil memuat: ${file}`);
-                
-                // Bagi teks menjadi chunk yang lebih kecil
-                const textSplitter = new RecursiveCharacterTextSplitter({
-                    chunkSize: 1000,
-                    chunkOverlap: 200
-                });
-                
-                const chunks = await textSplitter.splitText(content);
-                
-                // Buat dokumen untuk setiap chunk
-                chunks.forEach((chunk, i) => {
-                    documents.push(
-                        new Document({
-                            pageContent: chunk,
-                            metadata: {
-                                source: key,
-                                chunk: i
-                            }
-                        })
-                    );
-                });
-                
             } catch (err) {
                 console.error(`❌ Gagal memuat file ${file}:`, err);
             }
         }
         
-        // Gabungkan semua materi menjadi satu (untuk backward compatibility)
+        // Gabungkan semua materi menjadi satu
         const allMaterials = Object.keys(KB)
             .filter(k => k !== '_last_loaded')
             .map(k => `=== MATERI: ${k} ===\n${KB[k]}`);
@@ -80,35 +88,14 @@ export async function loadAndEmbedKnowledgeBase() {
             console.log(`📚 Berhasil menggabungkan ${allMaterials.length} materi (${COMBINED_KB.length} karakter)`);
         }
         
-        if (documents.length > 0) {
-            // Gunakan metode sederhana tanpa embedding jika tidak ada dokumen
-            console.log(`📚 Total ${Object.keys(KB).length - 1} materi dimuat ke knowledge base`);
-            
-            try {
-                // Buat vector store dari dokumen menggunakan API DeepInfra sebagai OpenAI compatible API
-                const embeddings = new OpenAIEmbeddings({
-                    apiKey: process.env.DEEPINFRA_API_KEY,
-                    configuration: {
-                        baseURL: "https://api.deepinfra.com/v1/openai"
-                    },
-                    modelName: process.env.DEEPINFRA_MODEL || "deepseek-ai/DeepSeek-R1"
-                    // modelName: "text-embedding-ada-002"
-                });
-                
-                vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
-                console.log(`📚 Total ${documents.length} chunk dokumen berhasil diembedding`);
-            } catch (err) {
-                console.error('❌ Gagal membuat embedding:', err);
-                console.log('⚠️ Melanjutkan tanpa fitur RAG');
-            }
-        }
+        console.log(`📚 Total ${Object.keys(KB).length - 1} materi dimuat ke knowledge base`);
     } catch (err) {
         console.error('❌ Gagal membaca direktori data/text:', err);
     }
 }
 
 // Inisialisasi knowledge base
-loadAndEmbedKnowledgeBase();
+loadKnowledgeBase();
 
 // WhatsApp Client
 export const client = new Client({
@@ -122,7 +109,7 @@ client.initialize();
 
 const selectedContext: Record<string, string> = {};
 
-// Fungsi untuk mengirim pesan AI dengan konteks cerdas dan RAG
+// Fungsi untuk mengirim pesan AI dengan konteks cerdas
 async function sendAIResponse(msg: Message, prompt: string, context?: string, useKnowledgeBaseOnly: boolean = false) {
   const contact = await msg.getContact();
   const chat = await msg.getChat();
@@ -131,24 +118,20 @@ async function sendAIResponse(msg: Message, prompt: string, context?: string, us
     let finalPrompt = '';
     let hasRelevantContent = false;
     
-    // Gunakan RAG jika vector store tersedia
-    if (vectorStore) {
-      try {
-        // Cari dokumen yang relevan menggunakan vector store
-        const relevantDocs = await vectorStore.similaritySearch(prompt, 3);
+    // Cari konten yang relevan dari knowledge base
+    const contentToSearch = context || COMBINED_KB;
+    
+    if (contentToSearch && contentToSearch.length > 0) {
+      const relevantParagraphs = findRelevantContent(prompt, contentToSearch, 5);
+      
+      if (relevantParagraphs.length > 0) {
+        hasRelevantContent = true;
+        const relevantContent = relevantParagraphs.join('\n\n');
         
-        if (relevantDocs && relevantDocs.length > 0) {
-          hasRelevantContent = true;
-          
-          // Ekstrak konten dari dokumen yang relevan
-          const relevantContent = relevantDocs.map(doc => {
-            return `[Sumber: ${doc.metadata.source}]\n${doc.pageContent}`;
-          }).join('\n\n');
-          
-          // Batasi konteks untuk menghindari token yang terlalu banyak
-          const trimmedContext = relevantContent.slice(0, 3000);
+        // Batasi konteks untuk menghindari token yang terlalu banyak
+        const trimmedContext = relevantContent.slice(0, 3000);
 
-          finalPrompt = `Berikut materi yang relevan dengan pertanyaan:
+        finalPrompt = `Berikut materi yang relevan dengan pertanyaan:
 ${trimmedContext}
 
 Pertanyaan:
@@ -157,19 +140,15 @@ ${prompt}
 ${useKnowledgeBaseOnly ? 
   "Catatan: Jawab hanya berdasarkan informasi dari materi yang diberikan. Jika informasi tidak ada dalam materi, katakan dengan jujur bahwa informasi tersebut tidak tersedia dalam materi." : 
   "Catatan: Jawab berdasarkan informasi dari materi yang diberikan jika relevan. Jika informasi tidak ada dalam materi atau tidak lengkap, Anda dapat menggunakan pengetahuan umum Anda untuk memberikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban."}`;
-        }
-      } catch (err) {
-        console.error('❌ Error saat pencarian vektor:', err);
       }
     }
     
-    // Jika tidak ada konten yang relevan dari RAG, gunakan metode lama atau pengetahuan umum
+    // Jika tidak ada konten yang relevan, gunakan metode lama atau pengetahuan umum
     if (!hasRelevantContent) {
-      const finalContext = context || COMBINED_KB;
-      
-      if (finalContext && finalContext.length > 0) {
-        // Ada konten di knowledge base
-        const trimmedContext = finalContext.slice(0, 3000);
+      if (contentToSearch && contentToSearch.length > 0) {
+        // Ada konten di knowledge base, tapi tidak ada yang relevan
+        // Ambil bagian awal saja untuk konteks
+        const trimmedContext = contentToSearch.slice(0, 3000);
 
         finalPrompt = `Berikut materi:
 ${trimmedContext}
@@ -266,7 +245,9 @@ ${list}`);
   if (text.startsWith('/pilih ')) {
     const pilihan = text.replace('/pilih ', '').trim();
     if (KB[pilihan]) {
-      selectedContext[msg.from] = pilihan;
+      // Dapatkan ID chat yang dapat digunakan sebagai kunci
+      const chatId = typeof msg.from === 'string' ? msg.from : (msg.from ? msg.from.toString() : '');
+      selectedContext[chatId] = pilihan;
       await msg.reply(`✅ Materi aktif: ${pilihan}`);
     } else {
       await msg.reply('❌ Materi tidak ditemukan.');
@@ -286,7 +267,8 @@ ${list}`);
     const prompt = text.replace('/ai ', '').trim();
     
     // Dapatkan materi yang dipilih atau gunakan semua materi secara otomatis
-    const contextKey = selectedContext[msg.from];
+    const chatId = typeof msg.from === 'string' ? msg.from : (msg.from ? msg.from.toString() : '');
+    const contextKey = selectedContext[chatId];
     
     if (contextKey && KB[contextKey]) {
       // Jika ada materi yang dipilih, gunakan materi tersebut
@@ -303,7 +285,8 @@ ${list}`);
     const prompt = text.replace('/kb ', '').trim();
     
     // Dapatkan materi yang dipilih atau gunakan semua materi secara otomatis
-    const contextKey = selectedContext[msg.from];
+    const chatId = typeof msg.from === 'string' ? msg.from : (msg.from ? msg.from.toString() : '');
+    const contextKey = selectedContext[chatId];
     
     if (contextKey && KB[contextKey]) {
       // Jika ada materi yang dipilih, gunakan materi tersebut
@@ -342,7 +325,7 @@ app.post('/send-message', async (c) => {
 // API untuk reload knowledge base
 app.post('/reload-kb', async (c) => {
   try {
-    await loadAndEmbedKnowledgeBase();
+    await loadKnowledgeBase();
     return c.json({ status: true, message: '✅ Knowledge base berhasil dimuat ulang.' });
   } catch (err: any) {
     return c.json({ status: false, error: err.message }, 500);
