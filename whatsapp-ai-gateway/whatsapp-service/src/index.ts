@@ -123,12 +123,13 @@ client.initialize();
 const selectedContext: Record<string, string> = {};
 
 // Fungsi untuk mengirim pesan AI dengan konteks cerdas dan RAG
-async function sendAIResponse(msg: Message, prompt: string, context?: string) {
+async function sendAIResponse(msg: Message, prompt: string, context?: string, useKnowledgeBaseOnly: boolean = false) {
   const contact = await msg.getContact();
   const chat = await msg.getChat();
 
   try {
     let finalPrompt = '';
+    let hasRelevantContent = false;
     
     // Gunakan RAG jika vector store tersedia
     if (vectorStore) {
@@ -136,51 +137,56 @@ async function sendAIResponse(msg: Message, prompt: string, context?: string) {
         // Cari dokumen yang relevan menggunakan vector store
         const relevantDocs = await vectorStore.similaritySearch(prompt, 3);
         
-        // Ekstrak konten dari dokumen yang relevan
-        const relevantContent = relevantDocs.map(doc => {
-          return `[Sumber: ${doc.metadata.source}]\n${doc.pageContent}`;
-        }).join('\n\n');
-        
-        // Batasi konteks untuk menghindari token yang terlalu banyak
-        const trimmedContext = relevantContent.slice(0, 3000);
+        if (relevantDocs && relevantDocs.length > 0) {
+          hasRelevantContent = true;
+          
+          // Ekstrak konten dari dokumen yang relevan
+          const relevantContent = relevantDocs.map(doc => {
+            return `[Sumber: ${doc.metadata.source}]\n${doc.pageContent}`;
+          }).join('\n\n');
+          
+          // Batasi konteks untuk menghindari token yang terlalu banyak
+          const trimmedContext = relevantContent.slice(0, 3000);
 
-        finalPrompt = `Berikut materi yang relevan dengan pertanyaan:
+          finalPrompt = `Berikut materi yang relevan dengan pertanyaan:
 ${trimmedContext}
 
 Pertanyaan:
 ${prompt}
 
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban. Gunakan hanya informasi dari materi yang diberikan. Jika informasi tidak ada dalam materi, katakan dengan jujur bahwa informasi tersebut tidak tersedia dalam materi.`;
+${useKnowledgeBaseOnly ? 
+  "Catatan: Jawab hanya berdasarkan informasi dari materi yang diberikan. Jika informasi tidak ada dalam materi, katakan dengan jujur bahwa informasi tersebut tidak tersedia dalam materi." : 
+  "Catatan: Jawab berdasarkan informasi dari materi yang diberikan jika relevan. Jika informasi tidak ada dalam materi atau tidak lengkap, Anda dapat menggunakan pengetahuan umum Anda untuk memberikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban."}`;
+        }
       } catch (err) {
         console.error('❌ Error saat pencarian vektor:', err);
-        // Fallback ke metode lama jika pencarian vektor gagal
-        const finalContext = context || COMBINED_KB;
+      }
+    }
+    
+    // Jika tidak ada konten yang relevan dari RAG, gunakan metode lama atau pengetahuan umum
+    if (!hasRelevantContent) {
+      const finalContext = context || COMBINED_KB;
+      
+      if (finalContext && finalContext.length > 0) {
+        // Ada konten di knowledge base
         const trimmedContext = finalContext.slice(0, 3000);
 
-        finalPrompt = finalContext ? `Berikut materi:
+        finalPrompt = `Berikut materi:
 ${trimmedContext}
 
 Pertanyaan:
 ${prompt}
 
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.` : `${prompt}
+${useKnowledgeBaseOnly ? 
+  "Catatan: Jawab hanya berdasarkan informasi dari materi yang diberikan. Jika informasi tidak ada dalam materi, katakan dengan jujur bahwa informasi tersebut tidak tersedia dalam materi." : 
+  "Catatan: Jawab berdasarkan informasi dari materi yang diberikan jika relevan. Jika informasi tidak ada dalam materi atau tidak lengkap, Anda dapat menggunakan pengetahuan umum Anda untuk memberikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban."}`;
+      } else {
+        // Tidak ada konten di knowledge base, gunakan pengetahuan umum
+        finalPrompt = `Pertanyaan:
+${prompt}
 
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
+Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
       }
-    } else {
-      // Fallback ke metode lama jika RAG tidak tersedia
-      const finalContext = context || COMBINED_KB;
-      const trimmedContext = finalContext.slice(0, 3000);
-
-      finalPrompt = finalContext ? `Berikut materi:
-${trimmedContext}
-
-Pertanyaan:
-${prompt}
-
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.` : `${prompt}
-
-Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
     }
 
     let completeResponse = '';
@@ -236,8 +242,12 @@ client.on('message_create', async (msg: Message) => {
 
   if (text === '/materi') {
     const list = Object.keys(KB).filter(k => k !== '_last_loaded').map(k => `- ${k}`).join('\n');
-    await msg.reply(`📚 Materi:
+    if (list.length > 0) {
+      await msg.reply(`📚 Materi:
 ${list}`);
+    } else {
+      await msg.reply(`📚 Belum ada materi yang tersedia. Silakan upload materi terlebih dahulu.`);
+    }
     return;
   }
 
@@ -248,6 +258,7 @@ ${list}`);
 /pilih [nama_materi] - Memilih materi spesifik (opsional)
 /ai [pertanyaan] - Bertanya dengan semua materi secara otomatis
 /tanya [pertanyaan] - Sama dengan /ai, bertanya dengan semua materi
+/kb [pertanyaan] - Bertanya hanya menggunakan knowledge base (tidak menggunakan pengetahuan umum)
 /bantuan - Menampilkan panduan ini`);
     return;
   }
@@ -283,6 +294,23 @@ ${list}`);
     } else {
       // Jika tidak ada materi yang dipilih, gunakan semua materi
       await sendAIResponse(msg, prompt);
+    }
+    return;
+  }
+  
+  // Perintah /kb untuk bertanya hanya menggunakan knowledge base
+  if (text.startsWith('/kb ')) {
+    const prompt = text.replace('/kb ', '').trim();
+    
+    // Dapatkan materi yang dipilih atau gunakan semua materi secara otomatis
+    const contextKey = selectedContext[msg.from];
+    
+    if (contextKey && KB[contextKey]) {
+      // Jika ada materi yang dipilih, gunakan materi tersebut
+      await sendAIResponse(msg, prompt, KB[contextKey], true);
+    } else {
+      // Jika tidak ada materi yang dipilih, gunakan semua materi
+      await sendAIResponse(msg, prompt, undefined, true);
     }
     return;
   }
