@@ -157,6 +157,7 @@ Pertanyaan:
 ${prompt}
 
 ${useKnowledgeBaseOnly ? 
+  "Catatan: Jawab hanya berdasarkan informasi dari materi yang diberikan. Jika informasi tidak ada dalam materi, katakan dengan jujur bahwa informasi tersebut tidak tersedia dalam materi." : 
   "Catatan: Jawab berdasarkan informasi dari materi yang diberikan jika relevan. Jika informasi tidak ada dalam materi atau tidak lengkap, Anda dapat menggunakan pengetahuan umum Anda untuk memberikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban."}`;
       } else {
         // Tidak ada konten di knowledge base, gunakan pengetahuan umum
