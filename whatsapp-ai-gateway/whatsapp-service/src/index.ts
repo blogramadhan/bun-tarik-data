@@ -6,6 +6,9 @@ import { existsSync, readFileSync, readdirSync, mkdirSync } from 'fs';
 
 // Knowledge Base
 export const KB: Record<string, string> = {};
+// Variabel untuk menyimpan gabungan semua materi
+export let COMBINED_KB: string = '';
+
 export function loadKnowledgeBase() {
     console.log('🔄 Memuat knowledge base...');
     KB._last_loaded = new Date().toISOString();
@@ -35,6 +38,16 @@ export function loadKnowledgeBase() {
             }
         });
         
+        // Gabungkan semua materi menjadi satu
+        const allMaterials = Object.keys(KB)
+            .filter(k => k !== '_last_loaded')
+            .map(k => `=== MATERI: ${k} ===\n${KB[k]}`);
+        
+        if (allMaterials.length > 0) {
+            COMBINED_KB = allMaterials.join('\n\n=== BATAS MATERI ===\n\n');
+            console.log(`📚 Berhasil menggabungkan ${allMaterials.length} materi (${COMBINED_KB.length} karakter)`);
+        }
+        
         console.log(`📚 Total ${Object.keys(KB).length - 1} materi dimuat ke knowledge base`);
     } catch (err) {
         console.error('❌ Gagal membaca direktori data/text:', err);
@@ -55,13 +68,19 @@ client.initialize();
 
 const selectedContext: Record<string, string> = {};
 
-// Fungsi untuk mengirim pesan AI
-async function sendAIResponse(msg: Message, prompt: string, context: string) {
+// Fungsi untuk mengirim pesan AI dengan konteks cerdas
+async function sendAIResponse(msg: Message, prompt: string, context?: string) {
   const contact = await msg.getContact();
   const chat = await msg.getChat();
 
-  const finalPrompt = context ? `Berikut materi:
-${context.slice(0, 3000)}
+  // Jika tidak ada konteks yang diberikan, gunakan gabungan semua materi
+  const finalContext = context || COMBINED_KB;
+  
+  // Batasi konteks untuk menghindari token yang terlalu banyak
+  const trimmedContext = finalContext.slice(0, 3000);
+
+  const finalPrompt = finalContext ? `Berikut materi:
+${trimmedContext}
 
 Pertanyaan:
 ${prompt}
@@ -127,9 +146,9 @@ ${list}`);
     await msg.reply(`📚 Panduan Penggunaan Bot:
 
 /materi - Melihat daftar materi yang tersedia
-/pilih [nama_materi] - Memilih materi spesifik
-/ai [pertanyaan] - Bertanya dengan materi yang dipilih atau semua materi
-/tanya [pertanyaan] - Bertanya langsung dengan semua materi
+/pilih [nama_materi] - Memilih materi spesifik (opsional)
+/ai [pertanyaan] - Bertanya dengan semua materi secara otomatis
+/tanya [pertanyaan] - Sama dengan /ai, bertanya dengan semua materi
 /bantuan - Menampilkan panduan ini`);
     return;
   }
@@ -148,44 +167,31 @@ ${list}`);
   // Perintah /tanya untuk langsung menggunakan semua materi
   if (text.startsWith('/tanya ')) {
     const prompt = text.replace('/tanya ', '').trim();
-    
-    // Gabungkan semua materi
-    const allMaterials = Object.keys(KB)
-      .filter(k => k !== '_last_loaded')
-      .map(k => KB[k]);
-    
-    let context = '';
-    if (allMaterials.length > 0) {
-      context = allMaterials.join('\n\n=== BATAS MATERI ===\n\n');
-    }
-
-    await sendAIResponse(msg, prompt, context);
+    await sendAIResponse(msg, prompt);
     return;
   }
 
-  // Perintah /ai tanpa perlu memilih materi
+  // Perintah /ai menggunakan semua materi secara otomatis
   if (text.startsWith('/ai ')) {
     const prompt = text.replace('/ai ', '').trim();
     
-    // Dapatkan materi yang dipilih atau gunakan semua materi jika tidak ada yang dipilih
+    // Dapatkan materi yang dipilih atau gunakan semua materi secara otomatis
     const contextKey = selectedContext[msg.from];
-    let context = '';
     
     if (contextKey && KB[contextKey]) {
       // Jika ada materi yang dipilih, gunakan materi tersebut
-      context = KB[contextKey];
+      await sendAIResponse(msg, prompt, KB[contextKey]);
     } else {
-      // Jika tidak ada materi yang dipilih, gabungkan semua materi
-      const allMaterials = Object.keys(KB)
-        .filter(k => k !== '_last_loaded')
-        .map(k => KB[k]);
-      
-      if (allMaterials.length > 0) {
-        context = allMaterials.join('\n\n=== BATAS MATERI ===\n\n');
-      }
+      // Jika tidak ada materi yang dipilih, gunakan semua materi
+      await sendAIResponse(msg, prompt);
     }
-
-    await sendAIResponse(msg, prompt, context);
+    return;
+  }
+  
+  // Tambahkan fitur untuk menerima pesan langsung tanpa awalan
+  // Ini akan mempermudah pengguna untuk bertanya tanpa perlu mengetik /ai atau /tanya
+  if (!text.startsWith('/')) {
+    await sendAIResponse(msg, text);
     return;
   }
 });

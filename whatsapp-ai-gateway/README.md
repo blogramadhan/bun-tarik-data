@@ -4,6 +4,13 @@ Aplikasi ini terdiri dari dua layanan terpisah:
 1. **WhatsApp Service**: Menangani koneksi WhatsApp dan menjawab pertanyaan dengan AI
 2. **Upload Service**: Mengelola upload materi pembelajaran
 
+## Fitur Utama
+
+- **Pemahaman Konteks Otomatis**: AI secara otomatis memahami konteks dari semua materi yang diupload tanpa perlu memilih materi terlebih dahulu
+- **Ekstraksi Teks Cerdas**: Mendukung berbagai format file (PDF, DOCX, DOC, TXT, PPTX, XLSX, JPG/PNG dengan OCR, HTML, RTF, ODT, dll.)
+- **Deteksi Bahasa**: Mendukung teks dalam Bahasa Indonesia dan Inggris
+- **Respon Cepat**: Jawaban langsung tanpa perlu perintah khusus
+
 ## Struktur Folder
 
 ```
@@ -33,12 +40,36 @@ whatsapp-ai-gateway/
             └── extractor.ts
 ```
 
+## Format File yang Didukung
+
+Sistem mendukung ekstraksi teks dari berbagai format file:
+
+- **Dokumen**: PDF, DOCX, DOC, TXT, RTF, ODT
+- **Presentasi**: PPTX, ODP
+- **Spreadsheet**: XLSX, XLS, ODS
+- **Web**: HTML, HTM
+- **Gambar**: JPG, JPEG, PNG (dengan OCR)
+
+## Cara Menggunakan Bot WhatsApp
+
+Bot WhatsApp mendukung perintah berikut:
+
+- `/materi` - Melihat daftar materi yang tersedia
+- `/pilih [nama_materi]` - Memilih materi spesifik (opsional)
+- `/ai [pertanyaan]` - Bertanya dengan semua materi secara otomatis
+- `/tanya [pertanyaan]` - Sama dengan /ai, bertanya dengan semua materi
+- `/bantuan` - Menampilkan panduan penggunaan
+
+**Fitur Baru**: Anda juga dapat langsung mengirim pertanyaan tanpa perintah khusus, dan bot akan secara otomatis menggunakan semua materi untuk menjawab.
+
 ## Konfigurasi File .env
 
 ### WhatsApp Service (.env)
 ```
 # API Key untuk DeepInfra
 DEEPINFRA_API_KEY=your_api_key_here
+# Opsional: Model AI yang akan digunakan
+DEEPINFRA_MODEL=deepseek-ai/DeepSeek-R1
 ```
 Ganti `your_api_key_here` dengan API key DeepInfra yang valid untuk menggunakan fitur AI.
 
@@ -53,134 +84,48 @@ Nilai default menggunakan `host.docker.internal` untuk komunikasi antar kontaine
 
 ### Opsi 1: Menjalankan Kedua Layanan Bersama dengan Docker
 
-Menggunakan script di folder utama:
-
-1. Pastikan file `.env` ada di folder whatsapp-service dengan API key yang diperlukan, atau script akan membuat file contoh:
-   ```bash
+1. Pastikan Docker dan Docker Compose terinstal di sistem Anda
+2. Buat file `.env` di folder `whatsapp-service` dengan API key yang valid
+3. Jalankan perintah:
+   ```
    ./start-all-docker.sh
    ```
-
-2. Untuk menghentikan layanan:
-   ```bash
+4. Untuk menghentikan semua layanan:
+   ```
    ./stop-all-docker.sh
    ```
 
-### Opsi 2: Menjalankan Layanan Secara Terpisah dengan Docker
+### Opsi 2: Menjalankan Layanan Secara Terpisah
 
 #### WhatsApp Service
-
-1. Masuk ke folder whatsapp-service:
-   ```bash
-   cd whatsapp-service
+1. Masuk ke folder `whatsapp-service`
+2. Buat file `.env` dengan API key yang valid
+3. Jalankan:
    ```
-
-2. Pastikan file `.env` berisi API key DeepInfra yang valid:
-   ```bash
-   echo "DEEPINFRA_API_KEY=your_api_key_here" > .env
-   ```
-
-3. Jalankan dengan Docker Compose:
-   ```bash
    ./start-docker.sh
-   ```
-
-4. Untuk menghentikan layanan:
-   ```bash
-   ./stop-docker.sh
    ```
 
 #### Upload Service
-
-1. Masuk ke folder upload-service:
-   ```bash
-   cd upload-service
+1. Masuk ke folder `upload-service`
+2. Buat file `.env` dengan URL WhatsApp Service yang benar
+3. Jalankan:
    ```
-
-2. Pastikan file `.env` berisi URL yang benar untuk WhatsApp Service:
-   ```bash
-   echo "WHATSAPP_SERVICE_URL=http://host.docker.internal:8788" > .env
-   ```
-
-3. Jalankan dengan Docker Compose:
-   ```bash
    ./start-docker.sh
-   ```
-
-4. Untuk menghentikan layanan:
-   ```bash
-   ./stop-docker.sh
    ```
 
 ### Opsi 3: Menjalankan Secara Lokal (Tanpa Docker)
 
-```bash
-./start-local.sh
-```
-
-## Cara Scan QR Code WhatsApp
-
-Saat pertama kali menjalankan WhatsApp Service, Anda perlu melakukan autentikasi dengan WhatsApp Web. Berikut langkah-langkahnya:
-
-### Saat Menjalankan dengan Docker
-
-1. Setelah menjalankan WhatsApp Service, lihat log untuk mendapatkan QR code:
-   ```bash
-   # Jika menjalankan kedua layanan bersama
-   cd whatsapp-ai-gateway && docker-compose logs -f whatsapp-service
-   
-   # Jika menjalankan WhatsApp Service secara terpisah
-   cd whatsapp-service && docker-compose logs -f
+1. Pastikan Bun terinstal di sistem Anda
+2. Pastikan semua dependensi ekstraksi teks terinstal (poppler-utils, pandoc, tesseract-ocr, dll.)
+3. Jalankan:
+   ```
+   ./start-local.sh
    ```
 
-2. QR code akan ditampilkan dalam bentuk ASCII di terminal. Scan QR code ini menggunakan aplikasi WhatsApp di smartphone Anda:
-   - Buka WhatsApp di smartphone
-   - Ketuk Menu (tiga titik) > WhatsApp Web
-   - Arahkan kamera ke QR code yang ditampilkan di terminal
+## Pengembangan
 
-3. Setelah berhasil scan, Anda akan melihat pesan "✅ WhatsApp client siap!" di log.
+Untuk mengembangkan lebih lanjut:
 
-### Saat Menjalankan Secara Lokal
-
-1. Saat menjalankan `./start-local.sh`, QR code akan ditampilkan langsung di terminal.
-
-2. Scan QR code menggunakan aplikasi WhatsApp di smartphone Anda seperti langkah di atas.
-
-### Catatan Penting
-
-- Autentikasi hanya perlu dilakukan sekali karena data sesi disimpan di volume Docker `.wwebjs_auth`.
-- Jika Anda menghapus volume Docker atau folder `.wwebjs_auth`, Anda perlu melakukan autentikasi ulang.
-- QR code hanya valid untuk beberapa menit. Jika kedaluwarsa, restart layanan untuk mendapatkan QR code baru.
-- Pastikan smartphone Anda terhubung ke internet saat melakukan scan QR code.
-
-## Alamat Layanan
-
-- WhatsApp Service: http://localhost:8788
-- Upload Service: http://localhost:8789
-
-## Fitur
-
-### WhatsApp Service
-- Menerima dan memproses pesan WhatsApp
-- Menjawab pertanyaan dengan AI berdasarkan materi yang dipilih
-- Endpoint API untuk mengirim pesan WhatsApp
-
-### Upload Service
-- Upload file materi pembelajaran (PDF, DOC, DOCX, TXT)
-- Ekstraksi teks otomatis dari file
-- Notifikasi ke WhatsApp Service untuk memuat ulang knowledge base
-
-## Endpoint API
-
-### WhatsApp Service (port 8788)
-- `POST /send-message`: Mengirim pesan WhatsApp
-  ```json
-  {
-    "number": "6281234567890",
-    "message": "Hello World"
-  }
-  ```
-- `POST /reload-kb`: Memuat ulang knowledge base
-
-### Upload Service (port 8789)
-- `GET /`: Halaman web untuk upload materi
-- `POST /upload`: Endpoint untuk upload file 
+1. Semua kode WhatsApp Service ada di `whatsapp-service/src/index.ts`
+2. Kode Upload Service ada di `upload-service/src/index.ts`
+3. Kode ekstraksi teks ada di `upload-service/src/utils/extractor.ts` 
