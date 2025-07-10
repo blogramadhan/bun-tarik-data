@@ -81,17 +81,27 @@ export async function loadAndEmbedKnowledgeBase() {
         }
         
         if (documents.length > 0) {
-            // Buat vector store dari dokumen
-            const embeddings = new OpenAIEmbeddings({
-                openAIApiKey: process.env.DEEPINFRA_API_KEY,
-                modelName: "text-embedding-ada-002"
-            });
+            // Gunakan metode sederhana tanpa embedding jika tidak ada dokumen
+            console.log(`📚 Total ${Object.keys(KB).length - 1} materi dimuat ke knowledge base`);
             
-            vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
-            console.log(`📚 Total ${documents.length} chunk dokumen berhasil diembedding`);
+            try {
+                // Buat vector store dari dokumen menggunakan API DeepInfra sebagai OpenAI compatible API
+                const embeddings = new OpenAIEmbeddings({
+                    apiKey: process.env.DEEPINFRA_API_KEY,
+                    configuration: {
+                        baseURL: "https://api.deepinfra.com/v1/openai"
+                    },
+                    modelName: process.env.DEEPINFRA_MODEL || "text-embedding-ada-002"
+                    // modelName: "text-embedding-ada-002"
+                });
+                
+                vectorStore = await MemoryVectorStore.fromDocuments(documents, embeddings);
+                console.log(`📚 Total ${documents.length} chunk dokumen berhasil diembedding`);
+            } catch (err) {
+                console.error('❌ Gagal membuat embedding:', err);
+                console.log('⚠️ Melanjutkan tanpa fitur RAG');
+            }
         }
-        
-        console.log(`📚 Total ${Object.keys(KB).length - 1} materi dimuat ke knowledge base`);
     } catch (err) {
         console.error('❌ Gagal membaca direktori data/text:', err);
     }
@@ -122,24 +132,41 @@ async function sendAIResponse(msg: Message, prompt: string, context?: string) {
     
     // Gunakan RAG jika vector store tersedia
     if (vectorStore) {
-      // Cari dokumen yang relevan menggunakan vector store
-      const relevantDocs = await vectorStore.similaritySearch(prompt, 3);
-      
-      // Ekstrak konten dari dokumen yang relevan
-      const relevantContent = relevantDocs.map(doc => {
-        return `[Sumber: ${doc.metadata.source}]\n${doc.pageContent}`;
-      }).join('\n\n');
-      
-      // Batasi konteks untuk menghindari token yang terlalu banyak
-      const trimmedContext = relevantContent.slice(0, 3000);
+      try {
+        // Cari dokumen yang relevan menggunakan vector store
+        const relevantDocs = await vectorStore.similaritySearch(prompt, 3);
+        
+        // Ekstrak konten dari dokumen yang relevan
+        const relevantContent = relevantDocs.map(doc => {
+          return `[Sumber: ${doc.metadata.source}]\n${doc.pageContent}`;
+        }).join('\n\n');
+        
+        // Batasi konteks untuk menghindari token yang terlalu banyak
+        const trimmedContext = relevantContent.slice(0, 3000);
 
-      finalPrompt = `Berikut materi yang relevan dengan pertanyaan:
+        finalPrompt = `Berikut materi yang relevan dengan pertanyaan:
 ${trimmedContext}
 
 Pertanyaan:
 ${prompt}
 
 Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban. Gunakan hanya informasi dari materi yang diberikan. Jika informasi tidak ada dalam materi, katakan dengan jujur bahwa informasi tersebut tidak tersedia dalam materi.`;
+      } catch (err) {
+        console.error('❌ Error saat pencarian vektor:', err);
+        // Fallback ke metode lama jika pencarian vektor gagal
+        const finalContext = context || COMBINED_KB;
+        const trimmedContext = finalContext.slice(0, 3000);
+
+        finalPrompt = finalContext ? `Berikut materi:
+${trimmedContext}
+
+Pertanyaan:
+${prompt}
+
+Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.` : `${prompt}
+
+Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
+      }
     } else {
       // Fallback ke metode lama jika RAG tidak tersedia
       const finalContext = context || COMBINED_KB;
@@ -191,7 +218,8 @@ Catatan: Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
     const reply = completeResponse || '❌ Gagal menjawab.';
 
     if (chat.isGroup) {
-      await chat.sendMessage(`@${contact.id.user}\n${reply}`, { mentions: [contact] });
+      const mentionText = `@${contact.id.user}`;
+      await chat.sendMessage(`${mentionText}\n${reply}`, { mentions: [contact] });
     } else {
       await msg.reply(reply);
     }
