@@ -226,27 +226,87 @@ Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang
     let completeResponse = '';
     let hasMore = true;
     let nextToken = null;
+    let retries = 0;
+    const maxRetries = 2;
+    let success = false;
 
-    while (hasMore) {
-      const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: process.env.DEEPINFRA_MODEL,
-          messages: [{ role: 'user', content: generalKnowledgePrompt }],
-          max_tokens: 1000,
-          next_token: nextToken,
-        })
-      });
+    // Daftar model fallback jika model utama gagal
+    const fallbackModels = [
+      'mistralai/Mistral-7B-Instruct-v0.2',
+      'meta-llama/Llama-2-7b-chat-hf',
+      'google/gemma-7b-it'
+    ];
 
-      const json: any = await res.json();
-      const replyPart = json?.choices?.[0]?.message?.content || '';
-      completeResponse += replyPart;
-      hasMore = json?.choices?.[0]?.has_more || false;
-      nextToken = json?.choices?.[0]?.next_token || null;
+    while (!success && retries <= maxRetries) {
+      try {
+        // Pilih model: gunakan env var, atau fallback ke model alternatif jika gagal
+        let currentModel = process.env.DEEPINFRA_MODEL;
+        if (retries > 0) {
+          currentModel = fallbackModels[retries - 1];
+          console.log(`🔄 Mencoba dengan model fallback (percobaan ${retries}): ${currentModel}`);
+        }
+
+        completeResponse = '';
+        hasMore = true;
+        nextToken = null;
+
+        while (hasMore) {
+          console.log(`📤 Mengirim permintaan ke API dengan model: ${currentModel}`);
+          const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: currentModel,
+              messages: [{ role: 'user', content: generalKnowledgePrompt }],
+              max_tokens: 1000,
+              next_token: nextToken,
+              temperature: 0.7
+            })
+          });
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            console.error(`❌ API error (${res.status}): ${errorText}`);
+            throw new Error(`API error: ${res.status} ${errorText}`);
+          }
+
+          const json: any = await res.json();
+          
+          if (!json || !json.choices || json.choices.length === 0) {
+            console.error('❌ Invalid API response:', json);
+            throw new Error('Invalid API response');
+          }
+          
+          const replyPart = json?.choices?.[0]?.message?.content || '';
+          if (replyPart) {
+            completeResponse += replyPart;
+            hasMore = json?.choices?.[0]?.has_more || false;
+            nextToken = json?.choices?.[0]?.next_token || null;
+          } else {
+            hasMore = false;
+          }
+        }
+
+        // Jika kita sampai di sini tanpa error, tandai sebagai sukses
+        success = true;
+        
+      } catch (err) {
+        console.error(`❌ Error saat mengakses API (percobaan ${retries + 1}/${maxRetries + 1}):`, err);
+        retries++;
+        
+        // Jika sudah mencoba semua model dan masih gagal
+        if (retries > maxRetries) {
+          console.error('❌ Semua model gagal, mencoba dengan knowledgebase...');
+          // Lanjut ke pencarian knowledgebase
+          break;
+        }
+        
+        // Tunggu sebentar sebelum mencoba lagi
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
 
     // Hapus konten dalam tag <think></think>
@@ -255,7 +315,7 @@ Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang
     // Hapus spasi di awal respons
     completeResponse = completeResponse.trimStart();
     
-    // Cek apakah jawaban mengandung "tidak tahu" atau "tidak memiliki informasi"
+    // Cek apakah jawaban kosong atau mengandung "tidak tahu"
     const unknownPhrases = [
       "tidak tahu", "tidak memiliki informasi", "tidak memiliki pengetahuan", 
       "tidak dapat memberikan", "tidak dapat menjawab", "tidak memiliki data",
@@ -263,13 +323,12 @@ Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang
       "tidak tersedia", "tidak ada informasi", "maaf, saya tidak"
     ];
     
-    const containsUnknownPhrase = unknownPhrases.some(phrase => 
-      completeResponse.toLowerCase().includes(phrase)
-    );
+    const containsUnknownPhrase = completeResponse.length < 10 || 
+      unknownPhrases.some(phrase => completeResponse.toLowerCase().includes(phrase));
     
-    // Jika AI tidak tahu jawabannya, coba cari di knowledgebase
-    if (containsUnknownPhrase) {
-      console.log(`🔍 AI tidak memiliki informasi, mencoba mencari di knowledgebase...`);
+    // Jika AI tidak tahu jawabannya atau respons kosong, coba cari di knowledgebase
+    if (!success || containsUnknownPhrase) {
+      console.log(`🔍 AI tidak memiliki informasi atau gagal, mencoba mencari di knowledgebase...`);
       
       // Cari di knowledgebase
       const knowledgeResult = await searchKnowledgeBase(prompt);
@@ -290,27 +349,78 @@ Catatan: Jawab pertanyaan berdasarkan informasi dari knowledgebase di atas. Beri
         completeResponse = '';
         hasMore = true;
         nextToken = null;
+        retries = 0;
+        success = false;
 
-        while (hasMore) {
-          const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              model: process.env.DEEPINFRA_MODEL,
-              messages: [{ role: 'user', content: kbPrompt }],
-              max_tokens: 1000,
-              next_token: nextToken,
-            })
-          });
+        while (!success && retries <= maxRetries) {
+          try {
+            // Pilih model: gunakan env var, atau fallback ke model alternatif jika gagal
+            let currentModel = process.env.DEEPINFRA_MODEL;
+            if (retries > 0) {
+              currentModel = fallbackModels[retries - 1];
+              console.log(`🔄 Mencoba dengan model fallback untuk KB (percobaan ${retries}): ${currentModel}`);
+            }
 
-          const json: any = await res.json();
-          const replyPart = json?.choices?.[0]?.message?.content || '';
-          completeResponse += replyPart;
-          hasMore = json?.choices?.[0]?.has_more || false;
-          nextToken = json?.choices?.[0]?.next_token || null;
+            completeResponse = '';
+            hasMore = true;
+            nextToken = null;
+
+            while (hasMore) {
+              console.log(`📤 Mengirim permintaan KB ke API dengan model: ${currentModel}`);
+              const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
+                method: 'POST',
+                headers: {
+                  Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  model: currentModel,
+                  messages: [{ role: 'user', content: kbPrompt }],
+                  max_tokens: 1000,
+                  next_token: nextToken,
+                  temperature: 0.5
+                })
+              });
+
+              if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`❌ API KB error (${res.status}): ${errorText}`);
+                throw new Error(`API error: ${res.status} ${errorText}`);
+              }
+
+              const json: any = await res.json();
+              
+              if (!json || !json.choices || json.choices.length === 0) {
+                console.error('❌ Invalid API KB response:', json);
+                throw new Error('Invalid API KB response');
+              }
+              
+              const replyPart = json?.choices?.[0]?.message?.content || '';
+              if (replyPart) {
+                completeResponse += replyPart;
+                hasMore = json?.choices?.[0]?.has_more || false;
+                nextToken = json?.choices?.[0]?.next_token || null;
+              } else {
+                hasMore = false;
+              }
+            }
+
+            // Jika kita sampai di sini tanpa error, tandai sebagai sukses
+            success = true;
+            
+          } catch (err) {
+            console.error(`❌ Error saat mengakses API KB (percobaan ${retries + 1}/${maxRetries + 1}):`, err);
+            retries++;
+            
+            // Jika sudah mencoba semua model dan masih gagal
+            if (retries > maxRetries) {
+              console.error('❌ Semua model gagal untuk KB');
+              break;
+            }
+            
+            // Tunggu sebentar sebelum mencoba lagi
+            await new Promise(resolve => setTimeout(resolve, 1000));
+          }
         }
 
         // Hapus konten dalam tag <think></think>
@@ -321,18 +431,22 @@ Catatan: Jawab pertanyaan berdasarkan informasi dari knowledgebase di atas. Beri
       }
     }
     
-    const reply = completeResponse || '❌ Gagal menjawab.';
-
+    // Jika masih kosong, berikan pesan default
+    if (!completeResponse || completeResponse.trim().length < 10) {
+      completeResponse = 'Maaf, saya tidak dapat menjawab pertanyaan tersebut saat ini. Mohon coba pertanyaan lain atau hubungi administrator untuk bantuan.';
+    }
+    
+    // Kirim jawaban
     if (chat.isGroup) {
       const mentionText = `@${contact.id.user}`;
       // Tambahkan anotasi tipe untuk contact
-      await chat.sendMessage(`${mentionText}\n${reply}`, { mentions: [contact as any] });
+      await chat.sendMessage(`${mentionText}\n${completeResponse}`, { mentions: [contact as any] });
     } else {
-      await msg.reply(reply);
+      await msg.reply(completeResponse);
     }
   } catch (error) {
     console.error('Error in AI response:', error);
-    await msg.reply('❌ Terjadi kesalahan saat memproses pertanyaan Anda.');
+    await msg.reply('❌ Terjadi kesalahan saat memproses pertanyaan Anda. Mohon coba lagi nanti.');
   }
 }
 
