@@ -215,27 +215,13 @@ async function sendAIResponse(msg: Message, prompt: string) {
   const chat = await msg.getChat();
 
   try {
-    // Cari di knowledgebase terlebih dahulu
-    const knowledgeResult = await searchKnowledgeBase(prompt);
+    // Pertama, gunakan pengetahuan umum untuk menjawab
+    console.log(`🤖 Mencoba menjawab dengan pengetahuan umum: "${prompt}"`);
     
-    let finalPrompt: string;
-    
-    if (knowledgeResult) {
-      // Jika ada hasil dari knowledgebase, gunakan sebagai konteks tambahan
-      finalPrompt = `Pertanyaan:
-${prompt}
-
-Informasi dari knowledgebase:
-${knowledgeResult}
-
-Catatan: Jawab pertanyaan berdasarkan informasi dari knowledgebase di atas. Jika informasi di knowledgebase tidak mencukupi, gunakan pengetahuan umum Anda. Berikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
-    } else {
-      // Jika tidak ada hasil dari knowledgebase, gunakan pengetahuan umum
-      finalPrompt = `Pertanyaan:
+    const generalKnowledgePrompt = `Pertanyaan:
 ${prompt}
 
 Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
-    }
 
     let completeResponse = '';
     let hasMore = true;
@@ -249,8 +235,8 @@ Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: process.env.DEEPINFRA_MODEL || 'deepseek-ai/DeepSeek-R1',
-          messages: [{ role: 'user', content: finalPrompt }],
+          model: process.env.DEEPINFRA_MODEL,
+          messages: [{ role: 'user', content: generalKnowledgePrompt }],
           max_tokens: 1000,
           next_token: nextToken,
         })
@@ -268,6 +254,72 @@ Catatan: Jawab pertanyaan ini dengan pengetahuan umum Anda. Berikan jawaban yang
 
     // Hapus spasi di awal respons
     completeResponse = completeResponse.trimStart();
+    
+    // Cek apakah jawaban mengandung "tidak tahu" atau "tidak memiliki informasi"
+    const unknownPhrases = [
+      "tidak tahu", "tidak memiliki informasi", "tidak memiliki pengetahuan", 
+      "tidak dapat memberikan", "tidak dapat menjawab", "tidak memiliki data",
+      "tidak memiliki detail", "tidak memiliki konteks", "tidak diketahui",
+      "tidak tersedia", "tidak ada informasi", "maaf, saya tidak"
+    ];
+    
+    const containsUnknownPhrase = unknownPhrases.some(phrase => 
+      completeResponse.toLowerCase().includes(phrase)
+    );
+    
+    // Jika AI tidak tahu jawabannya, coba cari di knowledgebase
+    if (containsUnknownPhrase) {
+      console.log(`🔍 AI tidak memiliki informasi, mencoba mencari di knowledgebase...`);
+      
+      // Cari di knowledgebase
+      const knowledgeResult = await searchKnowledgeBase(prompt);
+      
+      if (knowledgeResult) {
+        console.log(`📚 Informasi ditemukan di knowledgebase, menjawab ulang...`);
+        
+        // Jika ada hasil dari knowledgebase, gunakan sebagai konteks tambahan
+        const kbPrompt = `Pertanyaan:
+${prompt}
+
+Informasi dari knowledgebase:
+${knowledgeResult}
+
+Catatan: Jawab pertanyaan berdasarkan informasi dari knowledgebase di atas. Berikan jawaban yang lengkap dan akurat. Jawab langsung tanpa menampilkan <think></think> di jawaban.`;
+
+        // Reset variabel untuk permintaan baru
+        completeResponse = '';
+        hasMore = true;
+        nextToken = null;
+
+        while (hasMore) {
+          const res = await fetch('https://api.deepinfra.com/v1/openai/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${process.env.DEEPINFRA_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: process.env.DEEPINFRA_MODEL,
+              messages: [{ role: 'user', content: kbPrompt }],
+              max_tokens: 1000,
+              next_token: nextToken,
+            })
+          });
+
+          const json: any = await res.json();
+          const replyPart = json?.choices?.[0]?.message?.content || '';
+          completeResponse += replyPart;
+          hasMore = json?.choices?.[0]?.has_more || false;
+          nextToken = json?.choices?.[0]?.next_token || null;
+        }
+
+        // Hapus konten dalam tag <think></think>
+        completeResponse = completeResponse.replace(/<think>[\s\S]*?<\/think>/g, '');
+
+        // Hapus spasi di awal respons
+        completeResponse = completeResponse.trimStart();
+      }
+    }
     
     const reply = completeResponse || '❌ Gagal menjawab.';
 
@@ -292,10 +344,12 @@ client.on('message_create', async (msg: Message) => {
   if (text === '/bantuan' || text === '/help') {
     await msg.reply(`📚 Panduan Penggunaan Bot:
 
-/ai [pertanyaan] - Bertanya ke AI
+/ai [pertanyaan] - Bertanya ke AI dengan pengetahuan umum terlebih dahulu
 /tanya [pertanyaan] - Sama dengan /ai
-/kb [pertanyaan] - Mencari di knowledgebase
-/bantuan - Menampilkan panduan ini`);
+/kb [pertanyaan] - Mencari khusus di knowledgebase
+/bantuan - Menampilkan panduan ini
+
+Bot akan mencoba menjawab pertanyaan dengan pengetahuan umum terlebih dahulu. Jika AI tidak memiliki informasi yang cukup, bot akan mencari di knowledgebase yang telah diupload.`);
     return;
   }
 
