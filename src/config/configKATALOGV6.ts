@@ -1,7 +1,7 @@
 export const daerahList = [
     "D197", "D199", "D202", "D552", "D200", 
     "D206", "D205", "D204", "D198", "D211", 
-    "D210", "D209", "D201", "D50"
+    "D210", "D209", "D201", "D50", "D236"
 ] as const;
 
 export type Daerah = typeof daerahList[number];
@@ -54,5 +54,8 @@ export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: st
     },
     "D50": { // Kab Tanggerang
         "Ecat-PaketEPurchasingV6": { apiKey: "2f2895f7-f360-4afc-ad2d-06f6b431114b", kode: "30933" },
+    },
+    "D236": { // Kab Katingan
+        "Ecat-PaketEPurchasingV6": { apiKey: "a61ee84c-3b75-4bcd-be29-14e78186131a", kode: "31056" },
     }
 }; 

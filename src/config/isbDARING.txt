@@ -38,7 +38,7 @@ https://isb.lkpp.go.id/isb-2/api/9538ac44-082d-4da8-b71b-85baaf56354f/json/8986/
 https://isb.lkpp.go.id/isb-2/api/7e5f0d13-a675-4f85-8ece-db677d9575f3/json/11577/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D201:2025
 
 // Kab Katingan
-
+https://isb.lkpp.go.id/isb-2/api/2f731e7e-c8c5-4bd4-a67d-528e87e98bf2/json/9376/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D236:2025
 
 // Kab Tanggerang
 https://isb.lkpp.go.id/isb-2/api/9db47be6-905f-4bed-a85a-f1743727a46a/json/3056/Bela-TokoDaringRealisasi/tipe/12:4/parameter/D50:2025

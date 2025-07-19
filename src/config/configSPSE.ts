@@ -1,7 +1,7 @@
 export const daerahList = [
     "97", "62", "188", "118", "132", "444",
     "496", "298", "175", "345", "540", "488",
-    "110", "333"
+    "110", "333", "438"
 ] as const;
 
 export type Daerah = typeof daerahList[number];
@@ -309,5 +309,25 @@ export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: st
         "SPSE-PencatatanSwakelola": { apiKey: "ee25c8d4-0570-48df-a41c-a2e11a7e5e5b", kode: "2670" },
         "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "1a1ba8ad-6ec1-4590-8464-16b5aea90750", kode: "2713" },
         "SPSE-PesertaTender": { apiKey: "a0984b05-85e5-48c6-add0-62523841b007", kode: "3922" }
+    },
+    "438": { // Kab Katingan
+        "SPSE-TenderPengumuman": { apiKey: "4e768df4-2cb8-4fce-a6e0-8813ccddebd8", kode: "9368" },
+        "SPSE-TenderSelesai": { apiKey: "a2c7f0a1-99e6-4554-89a3-69696be87446", kode: "9393" },
+        "SPSE-TenderSelesaiNilai": { apiKey: "b29277be-d53a-4940-a237-396a0e0cab20", kode: "9392" },
+        "SPSE-TenderEkontrak-SPPBJ": { apiKey: "d143d20b-1854-4001-86e5-b6120c324ed0", kode: "9372" },
+        "SPSE-TenderEkontrak-Kontrak": { apiKey: "5c642c81-2f7f-4dad-bc20-7f789ce7bea9", kode: "9375" },
+        "SPSE-TenderEkontrak-SPMKSPP": { apiKey: "29c018cc-e1ec-4a61-b343-aa9919bf2b40", kode: "9373" },
+        "SPSE-TenderEkontrak-BAPBAST": { apiKey: "6dc88530-19a8-4e40-af59-877448cec955", kode: "9374" },    
+        "SPSE-NonTenderPengumuman": { apiKey: "04501a41-6dc0-4945-8022-df4a3948a54a", kode: "9369" },
+        "SPSE-NonTenderSelesai": { apiKey: "7a7c7a1f-58e2-4e4d-a305-85bf0698e895", kode: "9370" },
+        "SPSE-NonTenderEkontrak-SPPBJ": { apiKey: "640bd9cf-2696-4c29-af8f-92d33dc741f0", kode: "9386" },
+        "SPSE-NonTenderEkontrak-Kontrak": { apiKey: "7d2166f4-c496-44c8-b36a-4806ed6278c5", kode: "9353" },
+        "SPSE-NonTenderEkontrak-SPMKSPP": { apiKey: "6a97b843-2e9b-424d-9595-b4c9de032985", kode: "9363" },
+        "SPSE-NonTenderEkontrak-BAPBAST": { apiKey: "b26192ab-cf92-437d-b006-09d1915dd711", kode: "9364" },
+        "SPSE-PencatatanNonTender": { apiKey: "dcfdf0d4-9f28-411f-b748-205db876bc06", kode: "9379" },
+        "SPSE-PencatatanNonTenderRealisasi": { apiKey: "8b20940f-433d-4e31-bb4a-609c56118b98", kode: "9381" },
+        "SPSE-PencatatanSwakelola": { apiKey: "9ebd78a5-8190-4226-bf05-f7fd56db4b06", kode: "9377" },
+        "SPSE-PencatatanSwakelolaRealisasi": { apiKey: "79b5bad1-df32-403b-9a39-2c3971d19f7e", kode: "9378" },
+        "SPSE-PesertaTender": { apiKey: "6870c866-1a13-42f9-b35a-4e30cd7c46eb", kode: "9391" }
     }
 }; 

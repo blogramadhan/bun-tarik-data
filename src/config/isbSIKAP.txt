@@ -50,7 +50,8 @@ https://isb.lkpp.go.id/isb-2/api/683f68a2-9a32-46c6-bd70-23fe922a3628/json/12029
 
 
 // Kab Katingan
-
+https://isb.lkpp.go.id/isb-2/api/d6ad4a1d-4812-4dd1-b646-d49f09b45c4a/json/20448/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D236
+https://isb.lkpp.go.id/isb-2/api/db14cf4c-4501-4ff4-9ce8-40e95690f687/json/20447/SiKAP-PenilaianKinerjaPenyedia-NonTender/tipe/4:12/parameter/2025:D236
 
 // Kab Tanggerang
 https://isb.lkpp.go.id/isb-2/api/4fc8a3cd-6ef1-4998-86ac-f373b22687e8/json/4071/SIKaP-PenilaianKinerjaPenyedia-Tender/tipe/4:12/parameter/2025:D50

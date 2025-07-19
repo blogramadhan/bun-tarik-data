@@ -38,7 +38,7 @@ https://isb.lkpp.go.id/isb-2/api/a715dca3-e7c4-4e48-b907-7a7b328e2985/json/31034
 https://isb.lkpp.go.id/isb-2/api/ad505a5f-58e8-4626-9572-8a6cb64ecadd/json/31086/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D201
 
 // Kab Katingan
-
+https://isb.lkpp.go.id/isb-2/api/a61ee84c-3b75-4bcd-be29-14e78186131a/json/31056/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D236
 
 // Kab Tanggerang
 https://isb.lkpp.go.id/isb-2/api/2f2895f7-f360-4afc-ad2d-06f6b431114b/json/30933/Ecat-PaketEPurchasingV6/tipe/4:12/parameter/2025:D50

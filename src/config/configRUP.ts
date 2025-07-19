@@ -1,7 +1,8 @@
 export const daerahList = [
     "D197", "D199", "D202", "D552", "D200", 
     "D206", "D205", "D204", "D198", "D211", 
-    "D210", "D209", "D201", "D50"] as const;
+    "D210", "D209", "D201", "D50", "D236"
+] as const;
 
 export type Daerah = typeof daerahList[number];
 
@@ -159,4 +160,14 @@ export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: st
         "RUP-SubKegiatanMaster": { apiKey: "7ab7d33f-d980-4c04-bedb-5ba56c417e94", kode: "2417" },
         "RUP-PaketAnggaranPenyedia": { apiKey: "5490829d-7eb0-4e67-9511-2432f95e0625", kode: "2443" }
     },
+    "D236": { // Kab Katingan
+        "RUP-PaketPenyedia-Terumumkan": { apiKey: "31d95dc0-463f-476c-978c-ffebb8ecef4e", kode: "9388" },
+        "RUP-PaketSwakelola-Terumumkan": { apiKey: "f800e5a3-2b4b-4b52-af04-4dd20953fda8", kode: "9352" },
+        "RUP-StrukturAnggaranPD": { apiKey: "8004f7b5-208e-4501-9e35-c40ad790aac3", kode: "9384" },
+        "RUP-MasterSatker": { apiKey: "41dde050-e0b3-478f-b13a-0d5907002ca2", kode: "9367" },
+        "RUP-ProgramMaster": { apiKey: "bcb54580-0ec4-442e-b581-c0f27ea59c31", kode: "9365" },
+        "RUP-KegiatanMaster": { apiKey: "3087d403-bc8c-4deb-beab-8d0da67dacbd", kode: "9345" },
+        "RUP-SubKegiatanMaster": { apiKey: "7e64ea83-761a-4046-8d35-6678c7d0b8c7", kode: "9354" },
+        "RUP-PaketAnggaranPenyedia": { apiKey: "cef78066-448e-481a-a252-ff8a5cd814d5", kode: "9355" }
+    }
 }; 

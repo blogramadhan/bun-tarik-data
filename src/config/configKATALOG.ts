@@ -1,7 +1,7 @@
 export const daerahList = [
     "D197", "D199", "D202", "D552", "D200", 
     "D206", "D205", "D204", "D198", "D211", 
-    "D210", "D209", "D201", "D50"
+    "D210", "D209", "D201", "D50", "D236"
 ] as const;
 
 export type Daerah = typeof daerahList[number];
@@ -99,5 +99,11 @@ export const configMap: Record<Daerah, Record<string, { apiKey: string, kode: st
         "Ecat-KomoditasDetail": { apiKey: "a9f68efa-d479-487c-af02-cb3b1272b19c", kode: "2428" },
         "Ecat-PenyediaDetail": { apiKey: "3eec651f-3d17-420c-bfb0-0516d3e662c1", kode: "2420" },
         "Ecat-InstansiSatker": { apiKey: "bd06c716-cf67-4b1a-aab2-7a4eb59eca78", kode: "2421" }
+    },
+    "D236": { // Kab Katingan
+        "Ecat-PaketEPurchasing": { apiKey: "37b25d97-ce9e-4d95-a23a-c290d7b6f588", kode: "9362" },
+        "Ecat-KomoditasDetail": { apiKey: "13693eb3-69d7-493e-abb1-72c4c3ace67b", kode: "9357" },
+        "Ecat-PenyediaDetail": { apiKey: "3f565dcb-16e7-4fdc-849e-8815270412d3", kode: "9347" },
+        "Ecat-InstansiSatker": { apiKey: "24f052f4-0fc0-4fbd-b537-fc1cabb40a2e", kode: "9348" }
     }
 }; 
