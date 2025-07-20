@@ -128,14 +128,6 @@ function findJsonFiles(dir: string): string[] {
     return results;
 }
 
-// Kirim notifikasi via WhatsApp
-// async function kirimNotifikasiWhatsApp(message: string) {
-//     await axios.post('http://localhost:8788/send-message', {
-//         number: process.env.WHATSAPP_NUMBER,
-//         message: message
-//     });
-//     console.log(message);
-// }
 async function kirimNotifikasiWhatsApp(message: string, retries = 3) {
     for (let i = 0; i < retries; i++) {
         try {
@@ -162,28 +154,28 @@ async function fetchAndSave() {
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
     let totalDataFetched = 0; // Variabel untuk menghitung total data yang diambil
     let totalDataFailed = 0; // Variabel untuk menghitung total data yang gagal diambil
-    let totalDataSkipped = 0; // Variabel untuk menghitung total data yang dilewati
+    // let totalDataSkipped = 0; // Variabel untuk menghitung total data yang dilewati
 
     // Ambil data untuk setiap daerah dan tahun
     for (const daerah of daerahList) {
         for (const tahun of tahunList) {
             // Cek apakah semua file sudah ada
-            const allFilesExist = jenisDataTypes.every(jenis => {
-                const jsonPath = `data/katalog/${daerah}/${jenis}/${tahun}/data.json`;
-                return existsSync(jsonPath);
-            });
+            // const allFilesExist = jenisDataTypes.every(jenis => {
+            //     const jsonPath = `data/katalog/${daerah}/${jenis}/${tahun}/data.json`;
+            //     return existsSync(jsonPath);
+            // });
 
             // Skip jika:
             // 1. Semua file sudah ada
             // 2. Bukan tahun berjalan
             // 3. Bukan tahun sebelumnya (jika sudah melewati Februari tahun berjalan)
-            if (allFilesExist && 
-                !(tahun === currentYear || 
-                  (tahun === currentYear - 1 && currentMonth <= 2))) {
-                console.log(`⏭️ Melewati data tahun ${tahun} untuk ${daerah} (sudah lengkap)`);
-                totalDataSkipped++; // Tambahkan jumlah data yang dilewati
-                continue;
-            }
+            // if (allFilesExist && 
+            //     !(tahun === currentYear || 
+            //       (tahun === currentYear - 1 && currentMonth <= 2))) {
+            //     console.log(`⏭️ Melewati data tahun ${tahun} untuk ${daerah} (sudah lengkap)`);
+            //     totalDataSkipped++; // Tambahkan jumlah data yang dilewati
+            //     continue;
+            // }
 
             console.log(`🔄 Mengambil data untuk ${daerah} tahun ${tahun}...`);
             try {
@@ -296,7 +288,7 @@ async function fetchAndSave() {
     await convertJsonToExcel();
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
-    const message = `🎉 Download data Katalog selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
+    const message = `🎉 Download data Katalog selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}`;
     await kirimNotifikasiWhatsApp(message);
 }
 
