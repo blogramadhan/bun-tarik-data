@@ -143,28 +143,28 @@ async function fetchAndSave() {
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
     let totalDataFetched = 0; // Variabel untuk menghitung total data yang diambil
     let totalDataFailed = 0; // Variabel untuk menghitung total data yang gagal diambil
-    // let totalDataSkipped = 0; // Variabel untuk menghitung total data yang dilewati
+    let totalDataSkipped = 0; // Variabel untuk menghitung total data yang dilewati
 
     for (const daerah of daerahList) {
         for (const jenis of jenisDataTypes) {
             for (const tahun of tahunList) {
                 // Cek apakah semua file sudah ada
-                // const allFilesExist = jenisDataTypes.every(jenis => {
-                //     const jsonPath = `data/rup/${daerah}/${jenis}/${tahun}/data.json`;
-                //     return existsSync(jsonPath);
-                // });
+                const allFilesExist = jenisDataTypes.every(jenis => {
+                    const jsonPath = `data/rup/${daerah}/${jenis}/${tahun}/data.json`;
+                    return existsSync(jsonPath);
+                });
 
                 // Skip jika:
                 // 1. Semua file sudah ada
                 // 2. Bukan tahun berjalan
                 // 3. Bukan tahun sebelumnya (jika sudah melewati Februari tahun berjalan)
-                // if (allFilesExist && 
-                //     !(tahun === currentYear || 
-                //       (tahun === currentYear - 1 && currentMonth <= 2))) {
-                //     console.log(`⏭️ Melewati data ${jenis} ${tahun} untuk ${daerah} (sudah lengkap)`);
-                //     totalDataSkipped++; // Tambahkan jumlah data yang dilewati
-                //     continue;
-                // }
+                if (allFilesExist && 
+                    !(tahun === currentYear || 
+                      (tahun === currentYear - 1 && currentMonth <= 2))) {
+                    console.log(`⏭️ Melewati data ${jenis} ${tahun} untuk ${daerah} (sudah lengkap)`);
+                    totalDataSkipped++; // Tambahkan jumlah data yang dilewati
+                    continue;
+                }
 
                 console.log(`🔄 Mengambil ${jenis} ${tahun} untuk ${daerah} ...`);
                 try {
@@ -214,7 +214,7 @@ async function fetchAndSave() {
     await convertJsonToExcel();
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
-    const message = `🎉 Download data RUP selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}`;
+    const message = `🎉 Download data RUP selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
     await kirimNotifikasiWhatsApp(message);
 }
 
