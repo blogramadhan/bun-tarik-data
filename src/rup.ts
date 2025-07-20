@@ -5,6 +5,7 @@ import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } fr
 import axios from "axios"; // Import axios untuk mengirim pesan WhatsApp
 
 const tahunList = [2023, 2024, 2025];
+const tahun31Maret = 2025;
 
 // Membuat URL API berdasarkan parameter
 function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
@@ -188,7 +189,7 @@ async function fetchAndSave() {
                     
                     // Simpan data khusus 31 Maret jika sesuai kriteria
                     const today = new Date();
-                    if (today.getDate() === 31 && today.getMonth() === 2 && 
+                    if (today.getDate() === 31 && today.getMonth() === 2 && today.getFullYear() === tahun31Maret && 
                         ["RUP-PaketPenyedia-Terumumkan", 
                         "RUP-PaketSwakelola-Terumumkan", 
                         "RUP-StrukturAnggaranPD"].includes(jenis)) {
