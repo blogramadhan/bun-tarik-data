@@ -89,12 +89,10 @@ docker run -d \
   bun-whatsapp-gateway
 
 docker run -d \
-  --name whatsapp-ai-gateway \
-  -e DEEPINFRA_API_KEY=sk-xxx \
+  --name whatsapp-gateway \
   -p 3000:3000 \
   -v $(pwd)/.wwebjs_auth:/app/.wwebjs_auth \
-  -v $(pwd)/data:/app/data \
-  whatsapp-ai-gateway
+  whatsapp-gateway
 
 docker logs -f whatsapp-gateway
 

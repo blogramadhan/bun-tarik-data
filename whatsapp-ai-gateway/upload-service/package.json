@@ -1,9 +1,0 @@
-{
-  "name": "upload-service",
-  "version": "1.0.0",
-  "dependencies": {
-    "@hono/node-server": "^1.15.0",
-    "axios": "latest",
-    "hono": "latest"
-  }
-} 

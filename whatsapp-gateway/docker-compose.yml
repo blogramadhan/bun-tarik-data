@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  whatsapp-service:
+    build:
+      context: ./whatsapp-service
+    container_name: whatsapp-service
+    ports:
+      - "8788:8788"
+    volumes:
+      - whatsapp-auth:/app/.wwebjs_auth
+    restart: unless-stopped
+    networks:
+      - whatsapp-network
+
+volumes:
+  whatsapp-auth:
+    name: whatsapp-gateway_whatsapp-auth
+
+networks:
+  whatsapp-network:
+    name: whatsapp-gateway_whatsapp-network
+    driver: bridge 
