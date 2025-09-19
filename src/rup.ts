@@ -137,8 +137,7 @@ async function kirimNotifikasiWhatsApp(message: string, retries = 3) {
 // Mengambil data dari API dan menyimpannya
 async function fetchAndSave() {
     // Kirim notifikasi awal
-    // await kirimNotifikasiWhatsApp("🚀 Memulai proses download data RUP");
-    console.log("🚀 Memulai proses download data RUP");
+    await kirimNotifikasiWhatsApp("🚀 Memulai proses download data RUP");
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1; // getMonth() returns 0-11
@@ -216,8 +215,7 @@ async function fetchAndSave() {
 
     // Panggil fungsi kirimNotifikasiWhatsApp dengan statistik
     const message = `🎉 Download data RUP selesai! Berhasil: ${totalDataFetched}, Gagal: ${totalDataFailed}, Dilewati: ${totalDataSkipped}`;
-    // await kirimNotifikasiWhatsApp(message);
-    console.log(message);
+    await kirimNotifikasiWhatsApp(message);
 }
 
 // Jalankan program
