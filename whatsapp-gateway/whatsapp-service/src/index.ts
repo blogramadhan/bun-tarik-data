@@ -16,10 +16,12 @@ export const client = new Client({
       '--disable-accelerated-2d-canvas',
       '--no-first-run',
       '--no-zygote',
+      '--single-process',
       '--disable-gpu',
       '--disable-background-timer-throttling',
       '--disable-backgrounding-occluded-windows',
-      '--disable-renderer-backgrounding'
+      '--disable-renderer-backgrounding',
+      '--user-data-dir=/tmp/chromium-data'
     ],
     executablePath: '/usr/bin/chromium'
   },

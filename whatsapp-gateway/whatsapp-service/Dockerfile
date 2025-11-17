@@ -41,5 +41,9 @@ RUN bun install
 # Volume untuk menyimpan data autentikasi WhatsApp
 VOLUME ["/app/.wwebjs_auth"]
 
+# Create cleanup script
+RUN echo '#!/bin/sh\nrm -rf /tmp/chromium-data\nexec bun run src/index.ts' > /app/start.sh && \
+    chmod +x /app/start.sh
+
 EXPOSE 8788
-CMD ["bun", "run", "src/index.ts"] 
+CMD ["/app/start.sh"] 
