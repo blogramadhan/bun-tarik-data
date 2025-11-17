@@ -7,7 +7,22 @@ import qrcode from 'qrcode-terminal';
 // WhatsApp Client
 export const client = new Client({
   authStrategy: new LocalAuth({ dataPath: './.wwebjs_auth' }),
-  puppeteer: { headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] },
+  puppeteer: {
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--disable-gpu',
+      '--disable-background-timer-throttling',
+      '--disable-backgrounding-occluded-windows',
+      '--disable-renderer-backgrounding'
+    ],
+    executablePath: '/usr/bin/chromium'
+  },
 });
 
 // API untuk mengirim pesan
