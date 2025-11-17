@@ -193,15 +193,18 @@ async function uploadAllFiles(localDir: string, bucketName: string, prefix = "")
 async function main() {
   try {
     console.log("🚀 Memulai proses upload data ISB ke Cloudflare R2...");
-    await kirimNotifikasiWhatsApp("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
+    // await kirimNotifikasiWhatsApp("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
+    console.log("🚀 Proses upload data ISB ke Cloudflare R2 dimulai...");
     const result = await uploadAllFiles("data", R2_BUCKET_NAME!);
     const summary = `🎉 Upload selesai! Berhasil: ${result.uploadedCount}, Gagal: ${result.failedCount}, Dilewati: ${result.skippedCount}`;
     console.log(summary);
-    await kirimNotifikasiWhatsApp(summary);
+    // await kirimNotifikasiWhatsApp(summary);
+    console.log(summary)
   } catch (err: any) {
     const msg = `❌ Upload total gagal: ${err.message}`;
     console.error(msg);
-    await kirimNotifikasiWhatsApp(msg);
+    // await kirimNotifikasiWhatsApp(msg);
+    console.log(msg);
   } finally {
     // Tunggu beberapa detik untuk memastikan pesan terkirim sebelum keluar
     await new Promise(resolve => setTimeout(resolve, 5000));
