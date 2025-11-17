@@ -7,6 +7,9 @@ services:
       - "8788:8788"
     volumes:
       - whatsapp-auth:/app/.wwebjs_auth
+    tmpfs:
+      - /tmp/chromium-data:rw,noexec,nosuid,size=512m
+    shm_size: '2gb'
     restart: unless-stopped
     networks:
       - whatsapp-network
