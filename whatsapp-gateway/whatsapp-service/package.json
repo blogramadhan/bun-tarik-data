@@ -1,6 +1,9 @@
 {
   "name": "whatsapp-service",
   "version": "1.0.0",
+  "scripts": {
+    "postinstall": "echo 'Skipping puppeteer download - using system chromium'"
+  },
   "dependencies": {
     "@hono/node-server": "^1.19.1",
     "hono": "latest",

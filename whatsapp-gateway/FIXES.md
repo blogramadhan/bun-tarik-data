@@ -155,16 +155,19 @@ docker restart whatsapp-service
 1. ❌ **Error: Cannot find package 'hono'**
    - ✅ **Fix**: Install dependencies dengan `bun install`
 
-2. ❌ **Chromium crashes di production**
+2. ❌ **Error: Cannot find package 'https-proxy-agent' from puppeteer**
+   - ✅ **Fix**: Override postinstall script di package.json untuk skip puppeteer download (kita sudah install chromium via apt-get)
+
+3. ❌ **Chromium crashes di production**
    - ✅ **Fix**: Tambah `shm_size: '2gb'` dan `tmpfs` configuration
 
-3. ❌ **Container restart terus menerus**
+4. ❌ **Container restart terus menerus**
    - ✅ **Fix**: Tambah health check dan cleanup script
 
-4. ❌ **Build Docker lambat**
+5. ❌ **Build Docker lambat**
    - ✅ **Fix**: Layer caching di Dockerfile dan .dockerignore
 
-5. ❌ **No health monitoring**
+6. ❌ **No health monitoring**
    - ✅ **Fix**: Health check configuration di docker-compose
 
 ## Testing
