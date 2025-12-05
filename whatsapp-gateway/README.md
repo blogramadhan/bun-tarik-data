@@ -43,34 +43,84 @@ Gateway ini menyediakan endpoint untuk mengirim pesan WhatsApp. Bot akan merespo
 
 ## Cara Menjalankan
 
-### Opsi 1: Menjalankan dengan Docker
+### Opsi 1: Menjalankan dengan Docker (Recommended untuk Production)
 
 1. Pastikan Docker dan Docker Compose terinstal di sistem Anda
-2. Jalankan perintah:
+2. Install dependencies terlebih dahulu:
+   ```bash
+   cd whatsapp-service
+   bun install
+   cd ..
    ```
+3. Jalankan service:
+   ```bash
    ./start-all-docker.sh
    ```
-3. Untuk menghentikan service:
-   ```
+4. Untuk menghentikan service:
+   ```bash
    ./stop-all-docker.sh
    ```
-4. Untuk restart service:
-   ```
+5. Untuk restart service:
+   ```bash
    ./restart-services.sh
    ```
 
 ### Opsi 2: Menjalankan Secara Lokal (Tanpa Docker)
 
 1. Pastikan Bun terinstal di sistem Anda
-2. Jalankan:
+2. Install dependencies:
+   ```bash
+   cd whatsapp-service
+   bun install
    ```
+3. Jalankan:
+   ```bash
+   cd ..
    ./start-local.sh
+   ```
+
+## Konfigurasi Production
+
+Service ini sudah dikonfigurasi untuk production dengan:
+
+- **Health Check**: Monitoring otomatis setiap 30 detik
+- **Auto Restart**: Service akan restart otomatis jika crash
+- **Memory Management**: Shared memory 2GB untuk Puppeteer/Chromium
+- **Temporary Files**: tmpfs 512MB untuk cache Chromium
+- **Security**: Konfigurasi sandbox Chromium yang optimal
+- **Cleanup Script**: Automatic cleanup temporary files saat start
+
+### Troubleshooting Production
+
+Jika service tidak berjalan di production:
+
+1. **Check logs**:
+   ```bash
+   docker logs whatsapp-service
+   ```
+
+2. **Restart container**:
+   ```bash
+   docker restart whatsapp-service
+   ```
+
+3. **Rebuild image** (jika ada perubahan kode):
+   ```bash
+   docker-compose down
+   docker-compose build --no-cache
+   docker-compose up -d
+   ```
+
+4. **Check health status**:
+   ```bash
+   docker inspect whatsapp-service | grep -A 10 Health
    ```
 
 ## Pengembangan
 
 Untuk mengembangkan lebih lanjut:
 
-1. Semua kode WhatsApp Service ada di `whatsapp-service/src/index.ts`
+1. Semua kode WhatsApp Service ada di [whatsapp-service/src/index.ts](whatsapp-service/src/index.ts)
 2. Service berjalan di port 8788
-3. Gunakan endpoint `/send-message` untuk mengirim pesan melalui API 
+3. Gunakan endpoint `/send-message` untuk mengirim pesan melalui API
+4. TypeScript configuration ada di [whatsapp-service/tsconfig.json](whatsapp-service/tsconfig.json) 

@@ -1,7 +1,10 @@
+version: '3.8'
+
 services:
   whatsapp-service:
     build:
       context: ./whatsapp-service
+      dockerfile: Dockerfile
     container_name: whatsapp-service
     ports:
       - "8788:8788"
@@ -11,8 +14,22 @@ services:
       - /tmp/chromium-data:rw,noexec,nosuid,size=512m
     shm_size: '2gb'
     restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+      - PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
     networks:
       - whatsapp-network
+    healthcheck:
+      test: ["CMD", "bun", "run", "-e", "fetch('http://localhost:8788/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    security_opt:
+      - seccomp:unconfined
+    cap_add:
+      - SYS_ADMIN
 
 volumes:
   whatsapp-auth:
