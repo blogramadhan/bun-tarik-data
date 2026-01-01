@@ -4,7 +4,7 @@ import * as duckdb from "duckdb";
 import { daerahList, jenisDataTypes, configMap, type Daerah, type JenisData } from "./config/configSIKAP";
 import axios from "axios"; // Import axios untuk mengirim pesan WhatsApp
 
-const tahunList = [2023, 2024, 2025];
+const tahunList = [2023, 2024, 2025, 2026];
 
 // Membuat URL API berdasarkan parameter
 function buildURL(daerah: Daerah, jenis: JenisData, tahun: number): string {
